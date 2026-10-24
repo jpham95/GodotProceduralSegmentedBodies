@@ -1,16 +1,15 @@
 using Godot;
-using System;
-using System.Numerics;
-using Quaternion = Godot.Quaternion;
 using Vector3 = Godot.Vector3;
 
 [Tool]
 public partial class TestLimb : Skeleton3D
 {
-    [ExportToolButton("Generate / Regenerate")] 
-    public Callable CreateLimbButton => Callable.From(CreateLimb);
+    [ExportToolButton("Generate / Regenerate From Definition")] 
+    public Callable CreateLimbFromDefinitionButton => Callable.From(() => Callable.From(CreateLimbFromDefinition).CallDeferred());
     [ExportToolButton("Clear")] 
     public Callable ClearButton => Callable.From(Clear);
+
+    [Export] public BodyDef BodyDefinition = null;
 
     private void Clear()
     {
@@ -21,35 +20,121 @@ public partial class TestLimb : Skeleton3D
         }
         ClearBones();
     }
-    private void CreateLimb()
+
+    private void CreateLimbFromDefinition()
     {
+        string err = ValidateResources();
+        if (err != null)
+        {
+            GD.PrintErr(err);
+            return;
+        }
+        
         Clear();
         
-        ClearBones();
+        var limb = BodyDefinition.Limbs[0];
+        int parentBone = -1;
 
-        int hipIdx = AddBone("Hip");
-        int kneeIdx = AddBone("Knee");
-        int ankleIdx = AddBone("Ankle");
+        for (int i = 0; i < limb.Segments.Count; i++)
+        {
+            var segment = limb.Segments[i];
+
+            int bone = AddBone($"{limb.LimbID}_segment_{i}");
+
+            Basis rotation = Basis.FromEuler(segment.RestRotationDegrees * (Mathf.Pi / 180f));
+
+            Vector3 position;
+
+            if (i == 0) // first segment attaches at hip
+            {
+                position = limb.AttachmentPosition;
+
+                Basis attachmentRotation = Basis.FromEuler(limb.AttachmentRotationDegrees * (Mathf.Pi / 180f));
+
+                rotation = attachmentRotation * rotation;
+            }
+            else
+            {
+                SetBoneParent(bone, parentBone);
+                SegmentDef previousSegment = limb.Segments[i - 1];
+                position = previousSegment.LimbDirection * previousSegment.Length;
+            }
+            
+            SetBoneRest(bone, new Transform3D(rotation, position));
+            parentBone = bone;
+        }
         
-        SetBoneParent(kneeIdx, hipIdx);
-        SetBoneParent(ankleIdx, kneeIdx);
+        SegmentDef lastSegment = limb.Segments[limb.Segments.Count - 1];
         
-        // rest transforms relative to bone parent
-        SetBoneRest(hipIdx, new Transform3D(Basis.Identity, new Vector3(0, 2, 0)));
-        SetBoneRest(kneeIdx, new Transform3D(Basis.Identity, new Vector3(0, -1, 0.2f)));
-        SetBoneRest(ankleIdx, new Transform3D(Basis.Identity, new Vector3(0, -1, -0.2f)));
-        
+        int endBone = AddBone($"{limb.LimbID}_end");
+        SetBoneParent(endBone, parentBone);
+
+        SetBoneRest(endBone, new Transform3D(Basis.Identity, lastSegment.LimbDirection * lastSegment.Length));
+
         ResetBonePoses();
-        
-        AddLimbMesh(hipIdx, GetBoneRest(kneeIdx).Origin);
-        AddLimbMesh(kneeIdx, GetBoneRest(ankleIdx).Origin);
-        AddLimbMesh(ankleIdx, Vector3.Zero);
-        // bake to combined arraymesh?
 
+        for (int i = 0; i < limb.Segments.Count; i++)
+        {
+            SegmentDef segment = limb.Segments[i];
+            AddSegmentMesh(i, segment.LimbDirection * segment.Length, segment);
+        }
+
+        AddSegmentMesh(endBone, Vector3.Zero);
+        
+        AddIK(0, endBone, limb);
+    }
+
+    private string ValidateResources()
+    {
+        if (BodyDefinition == null)
+        {
+            return "Body definition missing";
+        }
+
+        if (BodyDefinition.Limbs.Count == 0)
+        {
+            return "Body definition has no limbs";
+        }
+
+        var limb = BodyDefinition.Limbs[0];
+
+        if (limb == null)
+        {
+            return "Initial limb resource is not set";
+        }
+        
+        if (limb.Segments.Count == 0)
+        {
+            return "Initial limb has no segments";
+        }
+
+        for (int i = 0; i < limb.Segments.Count; i++)
+        {
+            SegmentDef segment = limb.Segments[i];
+            if (segment == null)
+            {
+                return $"Segment {i} is null";
+            }
+
+            if (segment.Mesh == null)
+            {
+                return $"Segment {i} has no mesh";
+            }
+            
+            if (segment.Length <= 0f)
+            {
+                return $"Segment {i} must have a positive length";
+            }
+        }
+
+        return null;
+    }
+    private void AddIK(int rootBoneIdx, int endBoneIdx, LimbDef limb)
+    {
         Marker3D targetNode = new Marker3D
         {
-            Name = "TargetNode",
-            Position = GetBoneGlobalRest(ankleIdx).Origin
+            Name = $"{limb.LimbID}_TargetNode",
+            Position = GetBoneGlobalRest(endBoneIdx).Origin
         };
         
         AddChild(targetNode);
@@ -63,21 +148,24 @@ public partial class TestLimb : Skeleton3D
         AddChild(IKNode);
         
         IKNode.Owner = Owner;
+        
         IKNode.SetSettingCount(1);
-        IKNode.SetRootBoneName(0, "Hip");
-        IKNode.SetEndBoneName(0, "Ankle");
+        IKNode.SetRootBoneName(0, GetBoneName(rootBoneIdx));
+        IKNode.SetEndBoneName(0, GetBoneName(endBoneIdx));
+        
+        IKNode.SetExtendEndBone(0, false);
         
         IKNode.SetTargetNode(0, IKNode.GetPathTo(targetNode));
 
-        IKNode.SetExtendEndBone(0, false);
-        
-        for (int i = 0; i < IKNode.GetJointCount(0); i++)
+        if (limb.LockIKToAxis)
         {
-            IKNode.SetJointRotationAxis(0, i, SkeletonModifier3D.RotationAxis.X);
+            for (int i = 0; i < IKNode.GetJointCount(0); i++)
+            {
+                IKNode.SetJointRotationAxis(0, i, limb.IKLockAxis);
+            }
         }
     }
-
-    private void AddLimbMesh(int boneIndex, Vector3 segmentOffset)
+    private void AddSegmentMesh(int boneIndex, Vector3 segmentOffset, SegmentDef segmentDef = null)
     {
         var attachment = new BoneAttachment3D
         {
@@ -87,15 +175,11 @@ public partial class TestLimb : Skeleton3D
         
         AddChild(attachment);
         attachment.Owner = Owner;
-
+        
         var joint = new MeshInstance3D
         {
             Name = $"{GetBoneName(boneIndex)}_Joint",
-            Mesh = new SphereMesh
-            {
-                Radius = 0.12f,
-                Height = 0.24f
-            }
+            Mesh = this.BodyDefinition.JointMesh ?? new SphereMesh{ Radius = 0.12f, Height = 0.24f }
         };
 
         attachment.AddChild(joint);
@@ -106,23 +190,26 @@ public partial class TestLimb : Skeleton3D
             return;
         }
 
-        var segment = new MeshInstance3D
+        if (segmentDef?.Mesh == null)
         {
-            Name = "Segment",
-            Mesh = new BoxMesh
-            {
-                Size = new Vector3(0.15f, segmentOffset.Length(), 0.15f)
-            },
-            
-            Position = segmentOffset / 2f,
-            
-            Quaternion = new Quaternion(
-                Vector3.Up,
-                segmentOffset.Normalized()
-            )
-        };
+            GD.PrintErr("Segment mesh is null");
+            return;
+        }
+
         
-        attachment.AddChild(segment);
-        segment.Owner = Owner;
+        
+        MeshInstance3D meshInstance = new MeshInstance3D { Name = "SegmentMesh" };
+        meshInstance.Mesh = segmentDef.Mesh;
+        meshInstance.RotationDegrees = segmentDef.MeshRotationDegrees;
+        meshInstance.Scale = segmentDef.Scale;
+        
+        // account for mesh origin, rotation + scale
+        Vector3 meshCenter = segmentDef.Mesh.GetAabb().GetCenter();
+        Vector3 transformedCenter = meshInstance.Basis * meshCenter;
+        
+        meshInstance.Position = segmentOffset / 2f - transformedCenter + segmentDef.MeshOffset;
+        
+        attachment.AddChild(meshInstance);
+        meshInstance.Owner = Owner;
     }
 }

@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 [Tool, GlobalClass]
-public partial class BodyDef : Node
+public partial class BodyDef : Resource
 {
     [Export] public Mesh BodyMesh = null;
     [Export] public Mesh JointMesh = null;
