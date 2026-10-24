@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://demnv03jshfkv"]
+
+[ext_resource type="Script" uid="uid://b2o6rdr1om1jh" path="res://Scripts/ProceduralSegmentedBody.cs" id="1_qlu5l"]
+
+[node name="ProceduralSegmentedBody" type="Node3D" unique_id=806204303]
+script = ExtResource("1_qlu5l")
