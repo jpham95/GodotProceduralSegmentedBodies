@@ -71,6 +71,11 @@ public partial class TestLimb : Skeleton3D
 
         SetBoneRest(endBone, new Transform3D(Basis.Identity, lastSegment.LimbDirection * lastSegment.Length));
 
+        float endHeight = GetBoneGlobalRest(endBone).Origin.Y;
+
+        Transform3D rootRest = GetBoneRest(0);
+        rootRest.Origin += Vector3.Up * -endHeight + new Vector3(0, limb.EndMeshHeight, 0);
+        SetBoneRest(0, rootRest);
         ResetBonePoses();
 
         for (int i = 0; i < limb.Segments.Count; i++)
@@ -79,7 +84,14 @@ public partial class TestLimb : Skeleton3D
             AddSegmentMesh(i, segment.LimbDirection * segment.Length, segment);
         }
 
-        AddSegmentMesh(endBone, Vector3.Zero);
+        if (limb.EndMesh != null)
+        {
+            AddEndMesh(endBone, limb.EndMesh, limb.EndMeshOffset);
+        }
+        else
+        {
+            AddSegmentMesh(endBone, Vector3.Zero);
+        }
         
         AddIK(0, endBone, limb);
     }
@@ -129,20 +141,31 @@ public partial class TestLimb : Skeleton3D
 
         return null;
     }
-    private void AddIK(int rootBoneIdx, int endBoneIdx, LimbDef limb)
+    private void AddIK(int rootBoneIndex, int endBoneIndex, LimbDef limb)
     {
+        Vector3 targetPosition = GetBoneGlobalRest(endBoneIndex).Origin;
+        Vector3 rootPosition = GetBoneGlobalRest(rootBoneIndex).Origin;
+
+        targetPosition.Y = 0f;
+        targetPosition.Z = rootPosition.Z;
+        
         Marker3D targetNode = new Marker3D
         {
             Name = $"{limb.LimbID}_TargetNode",
-            Position = GetBoneGlobalRest(endBoneIdx).Origin
+            Position = targetPosition
         };
         
         AddChild(targetNode);
         targetNode.Owner = Owner;
 
-        Fabrik3D IKNode = new Fabrik3D
+        // Fabrik3D IKNode = new Fabrik3D
+        // {
+        //     Name = "FABRIK3D"
+        // };
+
+        Ccdik3D IKNode = new Ccdik3D
         {
-            Name = "FABRIK3D"
+            Name = "CCDIK3D"
         };
         
         AddChild(IKNode);
@@ -150,20 +173,30 @@ public partial class TestLimb : Skeleton3D
         IKNode.Owner = Owner;
         
         IKNode.SetSettingCount(1);
-        IKNode.SetRootBoneName(0, GetBoneName(rootBoneIdx));
-        IKNode.SetEndBoneName(0, GetBoneName(endBoneIdx));
+        IKNode.SetRootBoneName(0, GetBoneName(rootBoneIndex));
+        IKNode.SetEndBoneName(0, GetBoneName(endBoneIndex));
         
         IKNode.SetExtendEndBone(0, false);
         
         IKNode.SetTargetNode(0, IKNode.GetPathTo(targetNode));
-
-        if (limb.LockIKToAxis)
+        
+        for (int i = 0; i < IKNode.GetJointCount(0); i++)
         {
-            for (int i = 0; i < IKNode.GetJointCount(0); i++)
+            if (limb.LockIKToAxis)
             {
                 IKNode.SetJointRotationAxis(0, i, limb.IKLockAxis);
             }
+
+            if (i != 0 && i != IKNode.GetJointCount(0) - 1)
+            {
+                JointLimitationCone3D limitation = new JointLimitationCone3D();
+                IKNode.SetJointLimitation(0, i, limitation);
+                IKNode.SetJointLimitationRotationOffset(0, i, new Quaternion(0, -0.3f, 0.125f, 0));
+            }
         }
+        
+        
+        AddFootOrientation(endBoneIndex, targetNode);
     }
     private void AddSegmentMesh(int boneIndex, Vector3 segmentOffset, SegmentDef segmentDef = null)
     {
@@ -211,5 +244,57 @@ public partial class TestLimb : Skeleton3D
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
+    }
+
+    private void AddEndMesh(int boneIndex, Mesh mesh, Vector3 offset)
+    {
+        BoneAttachment3D attachment = new BoneAttachment3D
+        {
+            Name = GetBoneName(boneIndex),
+            BoneName = GetBoneName(boneIndex)
+        };
+        
+        AddChild(attachment);
+        attachment.Owner = Owner;
+
+        MeshInstance3D meshInstance = new MeshInstance3D
+        {
+            Name = "EndMesh",
+            Mesh = mesh,
+            Position = offset
+        };
+        
+        attachment.AddChild(meshInstance);
+        meshInstance.Owner = Owner;
+    }
+
+    private void AddFootOrientation(int endBoneIndex, Node3D targetNode)
+    {
+        CopyTransformModifier3D footOrientation = new CopyTransformModifier3D
+        {
+            Name = "FootOrientation"
+        };
+        
+        AddChild(footOrientation);
+        footOrientation.Owner = Owner;
+        
+        footOrientation.SetSettingCount(1);
+        footOrientation.SetApplyBoneName(0, GetBoneName(endBoneIndex));
+        
+        footOrientation.SetReferenceType(0, BoneConstraint3D.ReferenceType.Node);
+        
+        footOrientation.SetReferenceNode(0, footOrientation.GetPathTo(targetNode));
+        
+        footOrientation.SetCopyPosition(0, false);
+        footOrientation.SetCopyRotation(0, true);
+        footOrientation.SetCopyScale(0, false);
+        
+        footOrientation.SetRelative(0, false);
+        footOrientation.SetAdditive(0, false);
+        footOrientation.SetAmount(0, 1f);
+        
+        footOrientation.SetAxisXEnabled(0, true);
+        footOrientation.SetAxisYEnabled(0, true);
+        footOrientation.SetAxisZEnabled(0, true);
     }
 }

@@ -11,4 +11,6 @@ public partial class LimbDef : Resource
     [Export] public Vector3 AttachmentRotationDegrees = Vector3.Zero;
     [Export] public Godot.Collections.Array<SegmentDef> Segments = new();
     [Export] public Mesh EndMesh;
+    [Export] public Vector3 EndMeshOffset = Vector3.Zero;
+    public float EndMeshHeight => EndMesh.GetAabb().Size.Y;
 }
