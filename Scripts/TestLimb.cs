@@ -4,6 +4,7 @@ using Vector3 = Godot.Vector3;
 [Tool]
 public partial class TestLimb : Skeleton3D
 {
+    [Export] private bool DebugMode = false;
     [ExportToolButton("Generate / Regenerate From Definition")] 
     public Callable CreateLimbFromDefinitionButton => Callable.From(() => Callable.From(CreateLimbFromDefinition).CallDeferred());
     [ExportToolButton("Clear")] 
@@ -69,13 +70,47 @@ public partial class TestLimb : Skeleton3D
         int endBone = AddBone($"{limb.LimbID}_end");
         SetBoneParent(endBone, parentBone);
 
-        SetBoneRest(endBone, new Transform3D(Basis.Identity, lastSegment.LimbDirection * lastSegment.Length));
+        SetBoneRest(endBone, new Transform3D(
+            Basis.Identity, 
+            lastSegment.LimbDirection * lastSegment.Length
+        ));
 
-        float endHeight = GetBoneGlobalRest(endBone).Origin.Y;
+        Transform3D ankleRest = GetBoneRest(endBone);
+        ankleRest.Basis = GetBoneGlobalRest(parentBone).Basis.Inverse();
+        SetBoneRest(endBone, ankleRest);
+
+        int soleBone = endBone;
+        
+        if (limb.EndMesh != null)
+        {
+            Aabb footBounds = limb.EndMesh.GetAabb();
+
+            // float soleY = limb.EndMeshOffset.Y + footBounds.Position.Y;
+
+            Vector3 soleOffset = Vector3.Down * limb.AnkleToSoleDistance;
+                // new Vector3(0f, soleY, 0f);
+            // Vector3 soleOffset =
+            //     limb.EndMeshOffset
+            //     + footBounds.GetCenter()
+            //     + Vector3.Down * (limb.EndMeshHeight / 2f);
+
+            soleBone = AddBone($"{limb.LimbID}_sole");
+            SetBoneParent(soleBone, endBone);
+            
+            SetBoneRest(soleBone, new Transform3D(
+                Basis.Identity,
+                soleOffset
+            ));
+            
+            
+        }
+
+        float endHeight = GetBoneGlobalRest(soleBone).Origin.Y;
 
         Transform3D rootRest = GetBoneRest(0);
-        rootRest.Origin += Vector3.Up * -endHeight + new Vector3(0, limb.EndMeshHeight, 0);
+        rootRest.Origin += Vector3.Up * -endHeight; // + new Vector3(0, limb.EndMeshHeight, 0);
         SetBoneRest(0, rootRest);
+        
         ResetBonePoses();
 
         for (int i = 0; i < limb.Segments.Count; i++)
@@ -86,7 +121,7 @@ public partial class TestLimb : Skeleton3D
 
         if (limb.EndMesh != null)
         {
-            AddEndMesh(endBone, limb.EndMesh, limb.EndMeshOffset);
+            AddEndMesh(endBone, limb.EndMesh, limb.EndMeshOffset, limb.EndMeshRotationDegrees);
         }
         else
         {
@@ -94,6 +129,15 @@ public partial class TestLimb : Skeleton3D
         }
         
         AddIK(0, endBone, limb);
+
+        if (DebugMode)
+        {
+            GD.Print(
+                $"Before AddIK: bones={GetBoneCount()}, " +
+                $"ankle={endBone}, sole={soleBone}, " +
+                $"soleParent={GetBoneParent(soleBone)}"
+            );
+        }
     }
 
     private string ValidateResources()
@@ -139,6 +183,16 @@ public partial class TestLimb : Skeleton3D
             }
         }
 
+        if (limb.EndMesh != null)
+        {
+            float distance = limb.AnkleToSoleDistance;
+
+            if (!float.IsFinite(distance) || distance <= 0.001f)
+            {
+                return "The foot mesh sole must sit below the ankle with non-zero gap.";
+            }
+        }
+
         return null;
     }
     private void AddIK(int rootBoneIndex, int endBoneIndex, LimbDef limb)
@@ -146,7 +200,10 @@ public partial class TestLimb : Skeleton3D
         Vector3 targetPosition = GetBoneGlobalRest(endBoneIndex).Origin;
         Vector3 rootPosition = GetBoneGlobalRest(rootBoneIndex).Origin;
 
-        targetPosition.Y = 0f;
+        if (limb.GroundFoot)
+        {
+            targetPosition.Y = limb.AnkleToSoleDistance + limb.GroundClearance;
+        }
         targetPosition.Z = rootPosition.Z;
         
         Marker3D targetNode = new Marker3D
@@ -187,16 +244,17 @@ public partial class TestLimb : Skeleton3D
                 IKNode.SetJointRotationAxis(0, i, limb.IKLockAxis);
             }
 
-            if (i != 0 && i != IKNode.GetJointCount(0) - 1)
+            if (i != 0 && i != IKNode.GetJointCount(0) - 1) // middle segments only
             {
                 JointLimitationCone3D limitation = new JointLimitationCone3D();
                 IKNode.SetJointLimitation(0, i, limitation);
-                IKNode.SetJointLimitationRotationOffset(0, i, new Quaternion(0, -0.3f, 0.125f, 0));
+                IKNode.SetJointLimitationRotationOffset(
+                    0, 
+                    i,
+                    new Quaternion(0, -0.3f, 0.125f, 0) // TODO: make this based on segment variables
+                );
             }
         }
-        
-        
-        AddFootOrientation(endBoneIndex, targetNode);
     }
     private void AddSegmentMesh(int boneIndex, Vector3 segmentOffset, SegmentDef segmentDef = null)
     {
@@ -246,7 +304,7 @@ public partial class TestLimb : Skeleton3D
         meshInstance.Owner = Owner;
     }
 
-    private void AddEndMesh(int boneIndex, Mesh mesh, Vector3 offset)
+    private void AddEndMesh(int boneIndex, Mesh mesh, Vector3 offset, Vector3 endMeshRotationDegrees)
     {
         BoneAttachment3D attachment = new BoneAttachment3D
         {
@@ -263,38 +321,10 @@ public partial class TestLimb : Skeleton3D
             Mesh = mesh,
             Position = offset
         };
+
+        meshInstance.RotationDegrees = endMeshRotationDegrees;
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
-    }
-
-    private void AddFootOrientation(int endBoneIndex, Node3D targetNode)
-    {
-        CopyTransformModifier3D footOrientation = new CopyTransformModifier3D
-        {
-            Name = "FootOrientation"
-        };
-        
-        AddChild(footOrientation);
-        footOrientation.Owner = Owner;
-        
-        footOrientation.SetSettingCount(1);
-        footOrientation.SetApplyBoneName(0, GetBoneName(endBoneIndex));
-        
-        footOrientation.SetReferenceType(0, BoneConstraint3D.ReferenceType.Node);
-        
-        footOrientation.SetReferenceNode(0, footOrientation.GetPathTo(targetNode));
-        
-        footOrientation.SetCopyPosition(0, false);
-        footOrientation.SetCopyRotation(0, true);
-        footOrientation.SetCopyScale(0, false);
-        
-        footOrientation.SetRelative(0, false);
-        footOrientation.SetAdditive(0, false);
-        footOrientation.SetAmount(0, 1f);
-        
-        footOrientation.SetAxisXEnabled(0, true);
-        footOrientation.SetAxisYEnabled(0, true);
-        footOrientation.SetAxisZEnabled(0, true);
     }
 }

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bwod40lnyjatm"]
 
-[ext_resource type="Script" uid="uid://cbrkjaunq7pu7" path="res://Scenes/TestLimb.cs" id="1_vv0p8"]
+[ext_resource type="Script" uid="uid://cbrkjaunq7pu7" path="res://Scripts/TestLimb.cs" id="1_vv0p8"]
 [ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/Definitions/LimbDef.cs" id="2_2ji3j"]
 [ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="3_issoc"]
 [ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="4_kfrj6"]
@@ -60,11 +60,12 @@ metadata/_custom_type_script = "uid://bgc8d1lhe00ad"
 [node name="IKTest" type="Node3D" unique_id=193671123]
 
 [node name="Skeleton3D" type="Skeleton3D" parent="." unique_id=423003686]
+transform = Transform3D(1, 0, 0, 0, 0.9943824, 0.105847314, 0, -0.105847314, 0.9943824, 0, 0, 0)
 bones/0/name = "Leg_segment_0"
 bones/0/parent = -1
-bones/0/rest = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 2.2213204, 0)
+bones/0/rest = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 2.1713204, 0)
 bones/0/enabled = true
-bones/0/position = Vector3(0, 2.2213204, 0)
+bones/0/position = Vector3(0, 2.1713204, 0)
 bones/0/rotation = Quaternion(-0.38268346, 0, 0, 0.92387956)
 bones/0/scale = Vector3(1, 0.99999994, 0.99999994)
 bones/1/name = "Leg_segment_1"
@@ -83,63 +84,67 @@ bones/2/rotation = Quaternion(0, 0, 0, 1)
 bones/2/scale = Vector3(1, 1, 1)
 bones/3/name = "Leg_end"
 bones/3/parent = 2
-bones/3/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+bones/3/rest = Transform3D(1, 0, 0, 0, 0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, -1, 0)
 bones/3/enabled = true
 bones/3/position = Vector3(0, -1, 0)
-bones/3/rotation = Quaternion(0, 0, 0, 1)
+bones/3/rotation = Quaternion(0.38268346, 0, 0, 0.92387956)
 bones/3/scale = Vector3(1, 1, 1)
+bones/4/name = "Leg_sole"
+bones/4/parent = 3
+bones/4/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+bones/4/enabled = true
+bones/4/position = Vector3(0, -0.05, 0)
+bones/4/rotation = Quaternion(0, 0, 0, 1)
+bones/4/scale = Vector3(1, 1, 1)
 script = ExtResource("1_vv0p8")
 BodyDefinition = SubResource("Resource_yih1u")
 
-[node name="Leg_segment_0" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1028436726]
-transform = Transform3D(1, 0, 0, 0, 0.73969835, 0.67293847, 0, -0.67293847, 0.73969835, 0, 2.2213204, 0)
+[node name="Leg_segment_0" type="BoneAttachment3D" parent="Skeleton3D" unique_id=712918950]
+transform = Transform3D(1, 0, 0, 0, 0.24112956, 0.9704929, 0, -0.9704929, 0.24112956, 0, 2.1713204, 0)
 bone_name = "Leg_segment_0"
 bone_idx = 0
 
-[node name="Leg_segment_0_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_0" unique_id=179434021]
+[node name="Leg_segment_0_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_0" unique_id=942761774]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_0" unique_id=1517294640]
+[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_0" unique_id=2005736901]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_8goml")
 
-[node name="Leg_segment_1" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1341800484]
-transform = Transform3D(1, 0, 0, 0, 0.9858898, 0.16739559, 0, -0.16739559, 0.9858898, 0, 1.481622, 0.67293847)
+[node name="Leg_segment_1" type="BoneAttachment3D" parent="Skeleton3D" unique_id=79833821]
+transform = Transform3D(1, 0, 0, 0, 0.8726044, 0.48842752, 0, -0.48842752, 0.8726044, 0, 1.9301909, 0.9704929)
 bone_name = "Leg_segment_1"
 bone_idx = 1
 
-[node name="Leg_segment_1_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_1" unique_id=1376231019]
-mesh = SubResource("SphereMesh_bfesj")
-
-[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_1" unique_id=1291114291]
+[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_1" unique_id=1887059279]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_8goml")
 
-[node name="Leg_segment_2" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1211092074]
-transform = Transform3D(1, 0, 0, 0, 0.4835595, -0.87531143, 0, 0.87531143, 0.4835595, 0, 0.4957322, 0.84033406)
+[node name="Leg_segment_2" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1672101831]
+transform = Transform3D(1, 0, 0, 0, 0.84539187, -0.53414667, 0, 0.53414667, 0.84539187, 0, 1.0575864, 1.4589205)
 bone_name = "Leg_segment_2"
 bone_idx = 2
 
-[node name="Leg_segment_2_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_2" unique_id=1510756963]
+[node name="Leg_segment_2_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_2" unique_id=1144120214]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_2" unique_id=1211963428]
+[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_2" unique_id=476235850]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_8goml")
 
-[node name="Leg_end" type="BoneAttachment3D" parent="Skeleton3D" unique_id=735156843]
-transform = Transform3D(1, 0, 0, 0, 0.99999994, 2.682209e-07, 0, -2.682209e-07, 0.99999994, 0, 0.012172699, -0.034977376)
+[node name="Leg_end" type="BoneAttachment3D" parent="Skeleton3D" unique_id=155953118]
+transform = Transform3D(1, 0, 0, 0, 0.22008368, -0.97548103, 0, 0.97548103, 0.22008368, 0, 0.21219456, 0.9247738)
 bone_name = "Leg_end"
 bone_idx = 3
 
-[node name="EndMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_end" unique_id=132632759]
+[node name="EndMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_end" unique_id=1748612081]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 mesh = SubResource("BoxMesh_2ji3j")
 
-[node name="Leg_TargetNode" type="Marker3D" parent="Skeleton3D" unique_id=999958257]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.011453986, -0.03627634)
+[node name="Leg_TargetNode" type="Marker3D" parent="Skeleton3D" unique_id=1289782577]
+transform = Transform3D(1, 0, 0, 0, 1.0000004, -7.450581e-09, 0, 7.450581e-09, 1.0000004, 0, 0.21143761, 0.9242962)
 
-[node name="CCDIK3D" type="CCDIK3D" parent="Skeleton3D" unique_id=739857001]
+[node name="CCDIK3D" type="CCDIK3D" parent="Skeleton3D" unique_id=1676393101]
 setting_count = 1
 settings/0/target_node = NodePath("../Leg_TargetNode")
 settings/0/root_bone_name = "Leg_segment_0"
@@ -160,15 +165,3 @@ settings/0/joints/2/limitation/right_axis = 0
 settings/0/joints/2/limitation/rotation_offset = Quaternion(0, -0.3, 0.125, 0)
 settings/0/joints/3/rotation_axis = 0
 settings/0/joints/3/limitation = null
-
-[node name="FootOrientation" type="CopyTransformModifier3D" parent="Skeleton3D" unique_id=1459094567]
-setting_count = 1
-settings/0/amount = 1.0
-settings/0/apply_bone_name = "Leg_end"
-settings/0/apply_bone = 3
-settings/0/reference_type = 1
-settings/0/reference_node = NodePath("../Leg_TargetNode")
-settings/0/copy = 2
-settings/0/axes = 7
-settings/0/invert = 0
-settings/0/additive = false
