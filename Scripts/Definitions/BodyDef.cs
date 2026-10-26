@@ -15,4 +15,6 @@ public partial class BodyDef : Resource
 
     [Export] public float GroundProbeHeight = 1f;
     [Export] public float GroundProbeDepth = 2f;
+
+    public Vector3 TorsoSize => this.BodyMesh != null ? this.BodyMesh.GetAabb().Size : Vector3.Zero;
 }

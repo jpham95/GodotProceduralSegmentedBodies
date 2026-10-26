@@ -1,57 +1,17 @@
 [gd_scene format=3 uid="uid://bwod40lnyjatm"]
 
 [ext_resource type="Script" uid="uid://cbrkjaunq7pu7" path="res://Scripts/TestLimb.cs" id="1_vv0p8"]
-[ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/Definitions/LimbDef.cs" id="2_2ji3j"]
-[ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="3_issoc"]
-[ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="4_kfrj6"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_8e6yc"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_4k87g"]
+[ext_resource type="Resource" uid="uid://sni1j1gic2u3" path="res://Resources/BipedalBodyDefinition.tres" id="2_ara5n"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
 radius = 0.1
 height = 0.2
 
-[sub_resource type="BoxMesh" id="BoxMesh_2ji3j"]
-size = Vector3(0.2, 0.1, 0.5)
-
 [sub_resource type="BoxMesh" id="BoxMesh_8goml"]
 size = Vector3(0.1, 1, 0.1)
 
-[sub_resource type="Resource" id="Resource_b2h2w"]
-script = ExtResource("3_issoc")
-Mesh = SubResource("BoxMesh_8goml")
-metadata/_custom_type_script = "uid://dj8l7qj8xaces"
-
-[sub_resource type="Resource" id="Resource_45tr1"]
-script = ExtResource("3_issoc")
-Mesh = SubResource("BoxMesh_8goml")
-metadata/_custom_type_script = "uid://dj8l7qj8xaces"
-
-[sub_resource type="Resource" id="Resource_2ji3j"]
-script = ExtResource("3_issoc")
-Mesh = SubResource("BoxMesh_8goml")
-metadata/_custom_type_script = "uid://dj8l7qj8xaces"
-
-[sub_resource type="Resource" id="Resource_bfdir"]
-script = ExtResource("2_2ji3j")
-LimbID = "Leg"
-LockIKToAxis = true
-AttachmentPosition = Vector3(0, 2, 0)
-AttachmentRotationDegrees = Vector3(-45, 0, 0)
-Segments = Array[ExtResource("3_issoc")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1"), SubResource("Resource_2ji3j")])
-EndMesh = SubResource("BoxMesh_2ji3j")
-EndMeshOffset = Vector3(0, 0, 0.1)
-metadata/_custom_type_script = "uid://vw061olhvyob"
-
-[sub_resource type="Resource" id="Resource_yih1u"]
-script = ExtResource("4_kfrj6")
-BodyMesh = SubResource("BoxMesh_8e6yc")
-JointMesh = SubResource("SphereMesh_bfesj")
-HeadMesh = SubResource("BoxMesh_4k87g")
-Limbs = Array[ExtResource("2_2ji3j")]([SubResource("Resource_bfdir")])
-metadata/_custom_type_script = "uid://bgc8d1lhe00ad"
+[sub_resource type="BoxMesh" id="BoxMesh_2ji3j"]
+size = Vector3(0.2, 0.1, 0.5)
 
 [sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_2ji3j"]
 
@@ -97,54 +57,57 @@ bones/4/position = Vector3(0, -0.05, 0)
 bones/4/rotation = Quaternion(0, 0, 0, 1)
 bones/4/scale = Vector3(1, 1, 1)
 script = ExtResource("1_vv0p8")
-BodyDefinition = SubResource("Resource_yih1u")
+BodyDefinition = ExtResource("2_ara5n")
 
-[node name="Leg_segment_0" type="BoneAttachment3D" parent="Skeleton3D" unique_id=712918950]
-transform = Transform3D(1, 0, 0, 0, 0.24112956, 0.9704929, 0, -0.9704929, 0.24112956, 0, 2.1713204, 0)
+[node name="Leg_segment_0" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1974553275]
+transform = Transform3D(1, 0, 0, 0, 0.8232481, 0.5676816, 0, -0.5676816, 0.8232481, 0, 2.1713204, 0)
 bone_name = "Leg_segment_0"
 bone_idx = 0
 
-[node name="Leg_segment_0_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_0" unique_id=942761774]
+[node name="Leg_segment_0_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_0" unique_id=666106217]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_0" unique_id=2005736901]
+[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_0" unique_id=1735349127]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_8goml")
 
-[node name="Leg_segment_1" type="BoneAttachment3D" parent="Skeleton3D" unique_id=79833821]
-transform = Transform3D(1, 0, 0, 0, 0.8726044, 0.48842752, 0, -0.48842752, 0.8726044, 0, 1.9301909, 0.9704929)
+[node name="Leg_segment_1" type="BoneAttachment3D" parent="Skeleton3D" unique_id=499515792]
+transform = Transform3D(1, 0, 0, 0, 0.9313975, 0.36400354, 0, -0.36400354, 0.9313975, 0, 1.3480723, 0.5676816)
 bone_name = "Leg_segment_1"
 bone_idx = 1
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_1" unique_id=1887059279]
+[node name="Leg_segment_1_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_1" unique_id=1352407872]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_1" unique_id=1638164592]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_8goml")
 
-[node name="Leg_segment_2" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1672101831]
-transform = Transform3D(1, 0, 0, 0, 0.84539187, -0.53414667, 0, 0.53414667, 0.84539187, 0, 1.0575864, 1.4589205)
+[node name="Leg_segment_2" type="BoneAttachment3D" parent="Skeleton3D" unique_id=1107180793]
+transform = Transform3D(1, 0, 0, 0, 0.3601033, -0.9329124, 0, 0.9329124, 0.3601033, 0, 0.4166748, 0.93168515)
 bone_name = "Leg_segment_2"
 bone_idx = 2
 
-[node name="Leg_segment_2_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_2" unique_id=1144120214]
+[node name="Leg_segment_2_Joint" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_2" unique_id=746414264]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_2" unique_id=476235850]
+[node name="SegmentMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_segment_2" unique_id=1636378889]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_8goml")
 
-[node name="Leg_end" type="BoneAttachment3D" parent="Skeleton3D" unique_id=155953118]
-transform = Transform3D(1, 0, 0, 0, 0.22008368, -0.97548103, 0, 0.97548103, 0.22008368, 0, 0.21219456, 0.9247738)
+[node name="Leg_end" type="BoneAttachment3D" parent="Skeleton3D" unique_id=453736555]
+transform = Transform3D(1, 0, 0, 0, -0.4050371, -0.9143002, 0, 0.9143002, -0.4050371, 0, 0.056571484, -0.0012272596)
 bone_name = "Leg_end"
 bone_idx = 3
 
-[node name="EndMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_end" unique_id=1748612081]
+[node name="EndMesh" type="MeshInstance3D" parent="Skeleton3D/Leg_end" unique_id=730939898]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 mesh = SubResource("BoxMesh_2ji3j")
 
-[node name="Leg_TargetNode" type="Marker3D" parent="Skeleton3D" unique_id=1289782577]
-transform = Transform3D(1, 0, 0, 0, 1.0000004, -7.450581e-09, 0, 7.450581e-09, 1.0000004, 0, 0.21143761, 0.9242962)
+[node name="Leg_TargetNode" type="Marker3D" parent="Skeleton3D" unique_id=438271428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.060000002, 0)
 
-[node name="CCDIK3D" type="CCDIK3D" parent="Skeleton3D" unique_id=1676393101]
+[node name="CCDIK3D" type="CCDIK3D" parent="Skeleton3D" unique_id=169948420]
 setting_count = 1
 settings/0/target_node = NodePath("../Leg_TargetNode")
 settings/0/root_bone_name = "Leg_segment_0"

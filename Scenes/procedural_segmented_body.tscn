@@ -1,6 +1,256 @@
 [gd_scene format=3 uid="uid://demnv03jshfkv"]
 
 [ext_resource type="Script" uid="uid://b2o6rdr1om1jh" path="res://Scripts/ProceduralSegmentedBody.cs" id="1_qlu5l"]
+[ext_resource type="Resource" uid="uid://sni1j1gic2u3" path="res://Resources/BipedalBodyDefinition.tres" id="2_v5rd0"]
 
-[node name="ProceduralSegmentedBody" type="Node3D" unique_id=806204303]
+[sub_resource type="BoxMesh" id="BoxMesh_8e6yc"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_8goml"]
+size = Vector3(0.1, 1, 0.1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2ji3j"]
+size = Vector3(0.2, 0.1, 0.5)
+
+[sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_v5rd0"]
+
+[sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_qf403"]
+
+[sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_a0h3n"]
+
+[sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_nlhnu"]
+
+[node name="Root" type="Node3D" unique_id=806204303]
+
+[node name="ProceduralSegmentedBody" type="Skeleton3D" parent="." unique_id=590985275]
+bones/0/name = "Torso"
+bones/0/parent = -1
+bones/0/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6813204, 0)
+bones/0/enabled = true
+bones/0/position = Vector3(0, 2.6813204, 0)
+bones/0/rotation = Quaternion(0, 0, 0, 1)
+bones/0/scale = Vector3(1, 1, 1)
+bones/1/name = "Leg1_segment_0"
+bones/1/parent = 0
+bones/1/rest = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, -0.5, -0.5, 0)
+bones/1/enabled = true
+bones/1/position = Vector3(-0.5, -0.5, 0)
+bones/1/rotation = Quaternion(-0.38268346, 0, 0, 0.92387956)
+bones/1/scale = Vector3(1, 0.99999994, 0.99999994)
+bones/2/name = "Leg1_segment_1"
+bones/2/parent = 1
+bones/2/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+bones/2/enabled = true
+bones/2/position = Vector3(0, -1, 0)
+bones/2/rotation = Quaternion(0, 0, 0, 1)
+bones/2/scale = Vector3(1, 1, 1)
+bones/3/name = "Leg1_segment_2"
+bones/3/parent = 2
+bones/3/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+bones/3/enabled = true
+bones/3/position = Vector3(0, -1, 0)
+bones/3/rotation = Quaternion(0, 0, 0, 1)
+bones/3/scale = Vector3(1, 1, 1)
+bones/4/name = "Leg1_end"
+bones/4/parent = 3
+bones/4/rest = Transform3D(1, 0, 0, 0, 0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, -1, 0)
+bones/4/enabled = true
+bones/4/position = Vector3(0, -1, 0)
+bones/4/rotation = Quaternion(0.38268346, 0, 0, 0.92387956)
+bones/4/scale = Vector3(1, 1, 1)
+bones/5/name = "Leg1_sole"
+bones/5/parent = 4
+bones/5/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+bones/5/enabled = true
+bones/5/position = Vector3(0, -0.05, 0)
+bones/5/rotation = Quaternion(0, 0, 0, 1)
+bones/5/scale = Vector3(1, 1, 1)
+bones/6/name = "Leg2_segment_0"
+bones/6/parent = 0
+bones/6/rest = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0.5, -0.5, 0)
+bones/6/enabled = true
+bones/6/position = Vector3(0.5, -0.5, 0)
+bones/6/rotation = Quaternion(-0.38268346, 0, 0, 0.92387956)
+bones/6/scale = Vector3(1, 0.99999994, 0.99999994)
+bones/7/name = "Leg2_segment_1"
+bones/7/parent = 6
+bones/7/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+bones/7/enabled = true
+bones/7/position = Vector3(0, -1, 0)
+bones/7/rotation = Quaternion(0, 0, 0, 1)
+bones/7/scale = Vector3(1, 1, 1)
+bones/8/name = "Leg2_segment_2"
+bones/8/parent = 7
+bones/8/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+bones/8/enabled = true
+bones/8/position = Vector3(0, -1, 0)
+bones/8/rotation = Quaternion(0, 0, 0, 1)
+bones/8/scale = Vector3(1, 1, 1)
+bones/9/name = "Leg2_end"
+bones/9/parent = 8
+bones/9/rest = Transform3D(1, 0, 0, 0, 0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, -1, 0)
+bones/9/enabled = true
+bones/9/position = Vector3(0, -1, 0)
+bones/9/rotation = Quaternion(0.38268346, 0, 0, 0.92387956)
+bones/9/scale = Vector3(1, 1, 1)
+bones/10/name = "Leg2_sole"
+bones/10/parent = 9
+bones/10/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+bones/10/enabled = true
+bones/10/position = Vector3(0, -0.05, 0)
+bones/10/rotation = Quaternion(0, 0, 0, 1)
+bones/10/scale = Vector3(1, 1, 1)
 script = ExtResource("1_qlu5l")
+BodyDefinition = ExtResource("2_v5rd0")
+metadata/_custom_type_script = "uid://b2o6rdr1om1jh"
+
+[node name="Torso" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=1443602902]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6813204, 0)
+bone_name = "Torso"
+bone_idx = 0
+
+[node name="TorsoMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Torso" unique_id=388179942]
+mesh = SubResource("BoxMesh_8e6yc")
+
+[node name="Leg1_segment_0" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=1134043885]
+transform = Transform3D(1, 0, 0, 0, 0.734875, 0.67820245, 0, -0.67820245, 0.734875, -0.5, 2.1813204, 0)
+bone_name = "Leg1_segment_0"
+bone_idx = 1
+
+[node name="Leg1_segment_0_Joint" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg1_segment_0" unique_id=581190961]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg1_segment_0" unique_id=975619146]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_8goml")
+
+[node name="Leg1_segment_1" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=870441762]
+transform = Transform3D(1, 0, 0, 0, 0.96171445, 0.27405345, 0, -0.27405345, 0.96171445, -0.5, 1.4464455, 0.67820245)
+bone_name = "Leg1_segment_1"
+bone_idx = 2
+
+[node name="Leg1_segment_1_Joint" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg1_segment_1" unique_id=767471175]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg1_segment_1" unique_id=2050602918]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_8goml")
+
+[node name="Leg1_segment_2" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=1118462657]
+transform = Transform3D(1, 0, 0, 0, 0.27002725, -0.9628527, 0, 0.9628527, 0.27002725, -0.5, 0.48473102, 0.9522559)
+bone_name = "Leg1_segment_2"
+bone_idx = 3
+
+[node name="Leg1_segment_2_Joint" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg1_segment_2" unique_id=1480523185]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg1_segment_2" unique_id=2575416]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_8goml")
+
+[node name="Leg1_end" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=526044171]
+transform = Transform3D(1, 0, 0, 0, -0.48990148, -0.8717778, 0, 0.8717778, -0.48990148, -0.5, 0.21470377, -0.010596812)
+bone_name = "Leg1_end"
+bone_idx = 4
+
+[node name="EndMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg1_end" unique_id=388157704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
+mesh = SubResource("BoxMesh_2ji3j")
+
+[node name="Leg2_segment_0" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=2071060633]
+transform = Transform3D(1, 0, 0, 0, 0.97479236, 0.22311363, 0, -0.22311363, 0.97479236, 0.5, 2.1813204, 0)
+bone_name = "Leg2_segment_0"
+bone_idx = 6
+
+[node name="Leg2_segment_0_Joint" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg2_segment_0" unique_id=833996417]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg2_segment_0" unique_id=1703679537]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_8goml")
+
+[node name="Leg2_segment_1" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=462265927]
+transform = Transform3D(1, 0, 0, 0, 0.98266137, 0.18540892, 0, -0.18540892, 0.98266137, 0.5, 1.2065281, 0.22311363)
+bone_name = "Leg2_segment_1"
+bone_idx = 7
+
+[node name="Leg2_segment_1_Joint" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg2_segment_1" unique_id=82651821]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg2_segment_1" unique_id=468733513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_8goml")
+
+[node name="Leg2_segment_2" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=1173793864]
+transform = Transform3D(1, 0, 0, 0, 0.9900876, 0.14045054, 0, -0.14045054, 0.9900876, 0.5, 0.2238667, 0.40852255)
+bone_name = "Leg2_segment_2"
+bone_idx = 8
+
+[node name="Leg2_segment_2_Joint" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg2_segment_2" unique_id=554930411]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg2_segment_2" unique_id=1023857277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_8goml")
+
+[node name="Leg2_end" type="BoneAttachment3D" parent="ProceduralSegmentedBody" unique_id=884055708]
+transform = Transform3D(1, 0, 0, 0, 0.79941124, -0.60078406, 0, 0.60078406, 0.79941124, 0.5, -0.7662209, 0.5489731)
+bone_name = "Leg2_end"
+bone_idx = 9
+
+[node name="EndMesh" type="MeshInstance3D" parent="ProceduralSegmentedBody/Leg2_end" unique_id=1200715168]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
+mesh = SubResource("BoxMesh_2ji3j")
+
+[node name="Leg1_TargetNode" type="Marker3D" parent="ProceduralSegmentedBody" unique_id=485612155]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.21481603, -0.010649681)
+
+[node name="Leg1_CCDIK3D" type="CCDIK3D" parent="ProceduralSegmentedBody" unique_id=931029182]
+setting_count = 1
+settings/0/target_node = NodePath("../Leg1_TargetNode")
+settings/0/root_bone_name = "Leg1_segment_0"
+settings/0/root_bone = 1
+settings/0/end_bone_name = "Leg1_end"
+settings/0/end_bone = 4
+settings/0/extend_end_bone = false
+settings/0/joint_count = 4
+settings/0/joints/0/rotation_axis = 0
+settings/0/joints/0/limitation = null
+settings/0/joints/1/rotation_axis = 0
+settings/0/joints/1/limitation = SubResource("JointLimitationCone3D_v5rd0")
+settings/0/joints/1/limitation/right_axis = 0
+settings/0/joints/1/limitation/rotation_offset = Quaternion(0, -0.3, 0.125, 0)
+settings/0/joints/2/rotation_axis = 0
+settings/0/joints/2/limitation = SubResource("JointLimitationCone3D_qf403")
+settings/0/joints/2/limitation/right_axis = 0
+settings/0/joints/2/limitation/rotation_offset = Quaternion(0, -0.3, 0.125, 0)
+settings/0/joints/3/rotation_axis = 0
+settings/0/joints/3/limitation = null
+
+[node name="Leg2_TargetNode" type="Marker3D" parent="ProceduralSegmentedBody" unique_id=942233221]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.7865785, 0.55186105)
+
+[node name="Leg2_CCDIK3D" type="CCDIK3D" parent="ProceduralSegmentedBody" unique_id=279654640]
+setting_count = 1
+settings/0/target_node = NodePath("../Leg2_TargetNode")
+settings/0/root_bone_name = "Leg2_segment_0"
+settings/0/root_bone = 6
+settings/0/end_bone_name = "Leg2_end"
+settings/0/end_bone = 9
+settings/0/extend_end_bone = false
+settings/0/joint_count = 4
+settings/0/joints/0/rotation_axis = 0
+settings/0/joints/0/limitation = null
+settings/0/joints/1/rotation_axis = 0
+settings/0/joints/1/limitation = SubResource("JointLimitationCone3D_a0h3n")
+settings/0/joints/1/limitation/right_axis = 0
+settings/0/joints/1/limitation/rotation_offset = Quaternion(0, -0.3, 0.125, 0)
+settings/0/joints/2/rotation_axis = 0
+settings/0/joints/2/limitation = SubResource("JointLimitationCone3D_nlhnu")
+settings/0/joints/2/limitation/right_axis = 0
+settings/0/joints/2/limitation/rotation_offset = Quaternion(0, -0.3, 0.125, 0)
+settings/0/joints/3/rotation_axis = 0
+settings/0/joints/3/limitation = null

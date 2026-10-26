@@ -1,0 +1,79 @@
+[gd_resource type="Resource" script_class="BodyDef" format=3 uid="uid://sni1j1gic2u3"]
+
+[ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/Definitions/LimbDef.cs" id="1_wwjl5"]
+[ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="2_gkyp0"]
+[ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="3_y0i3b"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_8e6yc"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_4k87g"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_2ji3j"]
+size = Vector3(0.2, 0.1, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8goml"]
+size = Vector3(0.1, 1, 0.1)
+
+[sub_resource type="Resource" id="Resource_b2h2w"]
+script = ExtResource("2_gkyp0")
+Mesh = SubResource("BoxMesh_8goml")
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
+
+[sub_resource type="Resource" id="Resource_45tr1"]
+script = ExtResource("2_gkyp0")
+Mesh = SubResource("BoxMesh_8goml")
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
+
+[sub_resource type="Resource" id="Resource_wwjl5"]
+script = ExtResource("2_gkyp0")
+Mesh = SubResource("BoxMesh_8goml")
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
+
+[sub_resource type="Resource" id="Resource_bfdir"]
+script = ExtResource("1_wwjl5")
+LimbID = "Leg1"
+LockIKToAxis = true
+AttachmentPosition = Vector3(-0.5, 0, 0)
+AttachmentRotationDegrees = Vector3(-45, 0, 0)
+Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1"), SubResource("Resource_wwjl5")])
+EndMesh = SubResource("BoxMesh_2ji3j")
+EndMeshOffset = Vector3(0, 0, 0.1)
+metadata/_custom_type_script = "uid://vw061olhvyob"
+
+[sub_resource type="Resource" id="Resource_gkyp0"]
+script = ExtResource("2_gkyp0")
+Mesh = SubResource("BoxMesh_8goml")
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
+
+[sub_resource type="Resource" id="Resource_y0i3b"]
+script = ExtResource("2_gkyp0")
+Mesh = SubResource("BoxMesh_8goml")
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
+
+[sub_resource type="Resource" id="Resource_eyh1v"]
+script = ExtResource("2_gkyp0")
+Mesh = SubResource("BoxMesh_8goml")
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
+
+[sub_resource type="Resource" id="Resource_qvwpr"]
+script = ExtResource("1_wwjl5")
+LimbID = "Leg2"
+LockIKToAxis = true
+AttachmentPosition = Vector3(0.5, 0, 0)
+AttachmentRotationDegrees = Vector3(-45, 0, 0)
+Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_gkyp0"), SubResource("Resource_y0i3b"), SubResource("Resource_eyh1v")])
+EndMesh = SubResource("BoxMesh_2ji3j")
+EndMeshOffset = Vector3(0, 0, 0.1)
+metadata/_custom_type_script = "uid://vw061olhvyob"
+
+[resource]
+script = ExtResource("3_y0i3b")
+BodyMesh = SubResource("BoxMesh_8e6yc")
+JointMesh = SubResource("SphereMesh_bfesj")
+HeadMesh = SubResource("BoxMesh_4k87g")
+Limbs = Array[ExtResource("1_wwjl5")]([SubResource("Resource_bfdir"), SubResource("Resource_qvwpr")])
+metadata/_custom_type_script = "uid://bgc8d1lhe00ad"

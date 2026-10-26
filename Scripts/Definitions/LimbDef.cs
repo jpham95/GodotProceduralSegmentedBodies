@@ -17,7 +17,7 @@ public partial class LimbDef : Resource
     [Export] public bool AlignFootToGround = true;
     [Export] public Vector3 EndMeshRotationDegrees = Vector3.Zero;
     public float EndMeshHeight => EndMesh.GetAabb().Size.Y;
-    
+    public Vector3 LimbDirection => this.Segments.Count > 0 ? this.Segments[0].LimbDirection : Vector3.Down;   
     public float AnkleToSoleDistance
     {
         get
