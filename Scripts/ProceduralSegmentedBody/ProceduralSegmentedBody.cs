@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using Godot;
 using Vector3 = Godot.Vector3;
 
@@ -29,18 +28,42 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     public Callable GenerateButton => Callable.From(() => Callable.From(Generate).CallDeferred());
     [ExportToolButton("Clear")] 
     public Callable ClearButton => Callable.From(() => Callable.From(Clear).CallDeferred());
+    [ExportCategory("Default Step Curves")]
+    [Export] public Curve DefaultStepProgressCurve;
+    [Export] public Curve DefaultStepLiftCurve;
+    [ExportCategory("Body Definition")]
     [Export] public BodyDef BodyDefinition = null;
-
+    
+    private ProceduralLocomotion locomotionController;
     private void Clear()
     {
+        foreach (Node child in GetChildren())
+        {
+            if (child is SkeletonModifier3D modifier)
+            {
+                modifier.Active = false;
+            }
+
+            if (child is IKModifier3D ik)
+            {
+                ik.ClearSettings();
+            }
+
+            if (child is CopyTransformModifier3D footOrientation)
+            {
+                footOrientation.SetSettingCount(0);
+            }
+        }
+
         foreach (Node child in GetChildren())
         {
             RemoveChild(child);
             child.QueueFree();
         }
         ClearBones();
+        locomotionController = null;
     }
-    private string ValidateResources()
+    public string ValidateResources()
     {
         if (BodyDefinition == null)
         {
@@ -124,10 +147,22 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             GD.PrintErr(err);
             return;
         }
+        if (DebugMode)
+            GD.Print($"[Generate] Before Clear: bones={GetBoneCount()}");
         
         Clear();
         
+        if (DebugMode)
+            GD.Print($"[Generate] After Clear: bones={GetBoneCount()}");
 
+        locomotionController = new ProceduralLocomotion
+        {
+            Name = "ProceduralLocomotion"
+        };
+        AddChild(locomotionController);
+        locomotionController.Owner = Owner;
+        locomotionController.InitialiseCurves();
+        
         int torsoBone = AddBone("Torso");
         SetBoneRest(torsoBone, Transform3D.Identity);
 
@@ -216,6 +251,8 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 );
             }
         }
+        
+        if (DebugMode) GD.Print($"[Generate] All bones created: bones={GetBoneCount()}");
     }
 
     private GeneratedLimb GenerateLimbBones(LimbDef limb, int torsoBone)
@@ -288,6 +325,13 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     }
     private void AddIK(int rootBoneIndex, int endBoneIndex, LimbDef limb)
     {
+        if (DebugMode)
+            GD.Print(
+                $"[AddIK] skeleton={GetPath()}, " +
+                $"limb={limb.LimbID}, count={GetBoneCount()}, " +
+                $"root={rootBoneIndex}, end={endBoneIndex}"
+            );
+        
         Vector3 targetPosition = GetBoneGlobalRest(endBoneIndex).Origin;
         Vector3 rootPosition = GetBoneGlobalRest(rootBoneIndex).Origin;
 
@@ -305,11 +349,6 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
         AddChild(targetNode);
         targetNode.Owner = Owner;
-
-        // Fabrik3D IKNode = new Fabrik3D
-        // {
-        //     Name = "FABRIK3D"
-        // };
 
         Ccdik3D IKNode = new Ccdik3D
         {
@@ -330,11 +369,12 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
         for (int i = 0; i < IKNode.GetJointCount(0); i++)
         {
-            if (limb.LockIKToAxis)
+            if (i != 0 && limb.LockIKToAxis)
             {
                 IKNode.SetJointRotationAxis(0, i, limb.IKLockAxis);
             }
 
+            // TODO: only works for (-45, 0, 0) attachment angle right now
             if (i != 0 && i != IKNode.GetJointCount(0) - 1) // middle segments only
             {
                 JointLimitationCone3D limitation = new JointLimitationCone3D();
@@ -342,10 +382,17 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 IKNode.SetJointLimitationRotationOffset(
                     0, 
                     i,
-                    new Quaternion(0, -0.3f, 0.125f, 0) // TODO: make this based on segment variables
+                    new Quaternion(0, -0.3f, 0.125f, 0) // TODO: make this based on segment variables or attachment rotation
                 );
             }
         }
+
+        if (limb.GroundFoot && limb.EndMesh != null)
+        {
+            AddFootOrientation(endBoneIndex, targetNode, limb);
+        }
+        
+        locomotionController.AddLimb(limb, targetNode, targetPosition);
     }
 
     private void AddTorsoMesh(int boneIndex)
@@ -444,5 +491,34 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
         meshInstance.Show();
+    }
+
+    private void AddFootOrientation(int ankleBoneIndex, Marker3D target, LimbDef limb)
+    {
+        var modifier = new CopyTransformModifier3D
+        {
+            Name = $"{limb.LimbID}_FootOrientation"
+        };
+        
+        AddChild(modifier);
+        modifier.Owner = Owner;
+
+        modifier.SetSettingCount(1);
+        modifier.SetApplyBoneName(0, GetBoneName(ankleBoneIndex));
+        
+        modifier.SetReferenceType(0, BoneConstraint3D.ReferenceType.Node);
+        modifier.SetReferenceNode(0, modifier.GetPathTo(target));
+        
+        modifier.SetCopyPosition(0, false);
+        modifier.SetCopyRotation(0, true);
+        modifier.SetCopyScale(0, false);
+        
+        modifier.SetRelative(0, false);
+        modifier.SetAdditive(0, false);
+        modifier.SetAmount(0, 1f);
+        
+        modifier.SetAxisXEnabled(0, true);
+        modifier.SetAxisYEnabled(0, true);
+        modifier.SetAxisZEnabled(0, true);
     }
 }

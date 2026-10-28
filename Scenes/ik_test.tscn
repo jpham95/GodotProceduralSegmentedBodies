@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bwod40lnyjatm"]
 
-[ext_resource type="Script" uid="uid://cbrkjaunq7pu7" path="res://Scripts/TestLimb.cs" id="1_vv0p8"]
+[ext_resource type="Script" uid="uid://cbrkjaunq7pu7" path="res://Scripts/ProceduralSegmentedBody/TestLimb.cs" id="1_vv0p8"]
 [ext_resource type="Resource" uid="uid://sni1j1gic2u3" path="res://Resources/BipedalBodyDefinition.tres" id="2_ara5n"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
