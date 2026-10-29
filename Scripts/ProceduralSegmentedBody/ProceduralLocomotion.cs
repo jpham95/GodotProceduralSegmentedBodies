@@ -121,14 +121,6 @@ public partial class ProceduralLocomotion : Node3D
             return;
         }
         
-        // DEBUG:
-        GD.Print($"locomotion instance: {GetPath()}");
-
-        foreach (Node child in GetChildren())
-        {
-            GD.Print($"Child: {child.Name}, type: {child.GetClass()}");
-        }
-        // DEBUG:
         _limbs.Clear();
 
         foreach (LocomotionLimbDef locomotionLimbDef in Limbs)
@@ -149,14 +141,6 @@ public partial class ProceduralLocomotion : Node3D
 
             RayCast3D stanceRay = GetNodeOrNull<RayCast3D>(locomotionLimbDef.StanceRayPath);
             RayCast3D landingRay = GetNodeOrNull<RayCast3D>(locomotionLimbDef.LandingRayPath);
-            
-            // DEBUG:
-            GD.Print($"Resolved stance node: {stanceRay?.GetPath()}");
-            GD.Print($"type: {stanceRay?.GetClass()}");
-            GD.Print($"Resolved landing node: {landingRay?.GetPath()}");
-            GD.Print($"type: {landingRay?.GetClass()}");
-            
-            // DEBUG:
             
             if (stanceRay == null)
             {
@@ -575,10 +559,7 @@ public partial class ProceduralLocomotion : Node3D
         
         AddChild(raycastNode);
         raycastNode.Owner = Owner;
-
-        // DEBUG:
-        GD.Print($"{raycastNode.GetPath()}: " + $"owner={raycastNode.Owner?.GetPath()}");
-        // DEBUG:
+        
         return raycastNode;
     }
 }
