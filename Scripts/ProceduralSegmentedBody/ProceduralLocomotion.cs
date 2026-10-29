@@ -16,14 +16,15 @@ public partial class ProceduralLocomotion : Node3D
     [Export] public float StepDistance = 0.35f;
     [Export] public float StepDuration = 0.25f;
     [Export] public float StepHeight = 0.2f;
-    [Export] public float PredictionTime = 0.1f;
-    [Export] public float MaximumPrediction = 0.25f;
+    [Export] public float LookAheadDistance = 0.25f;
+    // [Export] public float PredictionTime = 0.1f;
+    // [Export] public float MaximumPrediction = 0.25f;
     [Export] public float TurnThresholdDegrees = 30f;
     [Export] public Curve StepProgressCurve;
     [Export] public Curve StepLiftCurve;
     
     [ExportGroup("Ground Detection")] 
-    [Export] public uint GroundCollisionMask = 1;
+    [Export(PropertyHint.Layers3DPhysics)] public uint GroundCollisionMask = 1;
 
     [Export] public float ProbeHeight = 1f;
     [Export] public float ProbeDepth = 2f;
@@ -35,6 +36,8 @@ public partial class ProceduralLocomotion : Node3D
     {
         public LocomotionLimbDef Definition;
         public Marker3D Target;
+        public RayCast3D StanceRay;
+        public RayCast3D LandingRay;
 
         public bool Grounded;
         public bool Stepping;
@@ -48,6 +51,12 @@ public partial class ProceduralLocomotion : Node3D
 
         public Vector3 EndPosition;
         public Quaternion EndRotation;
+
+        public void ForceRaycastUpdates()
+        {
+            this.StanceRay.ForceRaycastUpdate();
+            this.LandingRay.ForceRaycastUpdate();
+        }
     }
     
     private List<AnimatedLimb> _limbs = new();
@@ -112,6 +121,14 @@ public partial class ProceduralLocomotion : Node3D
             return;
         }
         
+        // DEBUG:
+        GD.Print($"locomotion instance: {GetPath()}");
+
+        foreach (Node child in GetChildren())
+        {
+            GD.Print($"Child: {child.Name}, type: {child.GetClass()}");
+        }
+        // DEBUG:
         _limbs.Clear();
 
         foreach (LocomotionLimbDef locomotionLimbDef in Limbs)
@@ -129,6 +146,29 @@ public partial class ProceduralLocomotion : Node3D
                 GD.PrintErr($"Missing locomotion target: {locomotionLimbDef.TargetPath}");
                 continue;
             }
+
+            RayCast3D stanceRay = GetNodeOrNull<RayCast3D>(locomotionLimbDef.StanceRayPath);
+            RayCast3D landingRay = GetNodeOrNull<RayCast3D>(locomotionLimbDef.LandingRayPath);
+            
+            // DEBUG:
+            GD.Print($"Resolved stance node: {stanceRay?.GetPath()}");
+            GD.Print($"type: {stanceRay?.GetClass()}");
+            GD.Print($"Resolved landing node: {landingRay?.GetPath()}");
+            GD.Print($"type: {landingRay?.GetClass()}");
+            
+            // DEBUG:
+            
+            if (stanceRay == null)
+            {
+                GD.PrintErr($"Missing stance raycast at {locomotionLimbDef.StanceRayPath}");
+                continue;
+            }
+            
+            if (landingRay == null)
+            {
+                GD.PrintErr($"Missing landing raycast at {locomotionLimbDef.LandingRayPath}");
+                continue;
+            }
             
             _limbs.Add(new AnimatedLimb
             {
@@ -137,12 +177,14 @@ public partial class ProceduralLocomotion : Node3D
                 Position = target.GlobalPosition,
                 // https://docs.godotengine.org/en/stable/classes/class_basis.html#class-basis-method-orthonormalized
                 // prevent rounding errors by using Orthonormalized()
-                Rotation = target.GlobalBasis.Orthonormalized().GetRotationQuaternion()
+                Rotation = target.GlobalBasis.Orthonormalized().GetRotationQuaternion(),
                 // bools default to false
                 // progress defaults to 0
                 // start and end pos default to Vector3.Zero
                 // start and end rot default to new Quaternion(0, 0, 0, 0)
                 // zero quat is okay because it is set before use
+                StanceRay = stanceRay,
+                LandingRay = landingRay
             });
         }
 
@@ -155,12 +197,33 @@ public partial class ProceduralLocomotion : Node3D
         {
             return;
         }
+
+        ProceduralSegmentedBody body = GetParent<ProceduralSegmentedBody>();
+        if (body == null)
+        {
+            GD.PrintErr("ProceduralSegmentedBody parent missing.");
+            return;
+        }
+
+        RayCast3D stanceRay = CreateRaycastNode($"{limb.LimbID}_StanceRaycast");
+        RayCast3D landingRay = CreateRaycastNode($"{limb.LimbID}_LandingRaycast");
+
+        Vector3 preferred = body.ToGlobal(restPosition);
+
+        PositionRaycastNode(stanceRay, preferred);
         
+        Vector3 forward = -body.GlobalBasis.Z;
+        forward.Y = 0f;
+        forward = forward.Normalized();
+
+        PositionRaycastNode(landingRay, preferred + forward * LookAheadDistance);
         Limbs.Add(new LocomotionLimbDef
         {
             ResourceName = limb.LimbID,
             Definition = limb,
             TargetPath = GetPathTo(target),
+            StanceRayPath = GetPathTo(stanceRay),
+            LandingRayPath = GetPathTo(landingRay),
             RestPosition = restPosition,
             PhaseOffset = 0f
         });
@@ -192,26 +255,39 @@ public partial class ProceduralLocomotion : Node3D
 
         velocity.Y = 0f;
 
-        Vector3 prediction = velocity * PredictionTime;
+        Vector3 movementDirection = velocity.LengthSquared() > 0.0001f
+            ? velocity.Normalized()
+            : Vector3.Zero;
 
-        float predictionLimit = Mathf.Max(MaximumPrediction, 0f);
-        if (prediction.Length() > predictionLimit)
-        {
-            prediction = prediction.Normalized() * predictionLimit;
-        }
+        Vector3 lookaheadOffset = movementDirection * Mathf.Max(LookAheadDistance, 0f);
+        
+        // Vector3 prediction = velocity * PredictionTime;
+        //
+        // float predictionLimit = Mathf.Max(MaximumPrediction, 0f);
+        // if (prediction.Length() > predictionLimit)
+        // {
+        //     prediction = prediction.Normalized() * predictionLimit;
+        // }
 
         bool steppingHappeningRN = false;
 
         foreach (AnimatedLimb limb in _limbs)
         {
+            Vector3 preferred = _body.ToGlobal(limb.Definition.RestPosition);
+            
+            PositionRaycastNode(limb.StanceRay, preferred);
+            PositionRaycastNode(limb.LandingRay, preferred + lookaheadOffset);
+            
+            limb.ForceRaycastUpdates();
+            
             // initial placement
             if (!limb.Grounded)
             {
-                Vector3 preferred = _body.ToGlobal(limb.Definition.RestPosition);
+                // Vector3 preferred = _body.ToGlobal(limb.Definition.RestPosition);
 
                 if (GetFootPlacement(
                         limb,
-                        preferred,
+                        limb.StanceRay,
                         out Vector3 position,
                         out Quaternion rotation))
                 {
@@ -233,7 +309,7 @@ public partial class ProceduralLocomotion : Node3D
         // one foot at a time for now
         if (AnimateLocomotion && !steppingHappeningRN)
         {
-            StartStep(prediction);
+            StartStep();
         }
         
         // rewrite global transforms to keep limb positions
@@ -247,7 +323,7 @@ public partial class ProceduralLocomotion : Node3D
         }
     }
 
-    private void StartStep(Vector3 prediction)
+    private void StartStep()
     {
         for (int offset = 0; offset < _limbs.Count; offset++)
         {
@@ -263,7 +339,7 @@ public partial class ProceduralLocomotion : Node3D
 
             if (!GetFootPlacement(
                     limb,
-                    preferred,
+                    limb.StanceRay,
                     out Vector3 destination,
                     out Quaternion rotation))
             {
@@ -280,7 +356,7 @@ public partial class ProceduralLocomotion : Node3D
 
             if (GetFootPlacement(
                     limb,
-                    preferred + prediction,
+                    limb.LandingRay,
                     out Vector3 predictedPosition,
                     out Quaternion predictedRotation))
             {
@@ -332,32 +408,46 @@ public partial class ProceduralLocomotion : Node3D
 
     private bool GetFootPlacement(
         AnimatedLimb limb, 
-        Vector3 preferredPosition, 
+        // Vector3 preferredPosition,
+        RayCast3D raycastNode,
         out Vector3 anklePosition,
         out Quaternion rotation)
     {
         anklePosition = Vector3.Zero;
         rotation = Quaternion.Identity;
 
-        Vector3 from = preferredPosition + Vector3.Up * ProbeHeight;
-
-        Vector3 to = preferredPosition + Vector3.Down * ProbeDepth;
-
-        var query = PhysicsRayQueryParameters3D.Create(
-            from, to, GroundCollisionMask
-        );
-
-        query.CollideWithAreas = false;
-
-        var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
-
-        if (hit.Count == 0)
+        if (!raycastNode.IsColliding())
         {
             return false;
         }
 
-        Vector3 contact = hit["position"].AsVector3();
-        Vector3 normal = hit["normal"].AsVector3().Normalized();
+        Vector3 contact = raycastNode.GetCollisionPoint();
+        Vector3 normal = raycastNode.GetCollisionNormal();
+
+        if (normal.LengthSquared() < 0.0001f)
+        {
+            return false;
+        }
+        
+        // Vector3 from = preferredPosition + Vector3.Up * ProbeHeight;
+        //
+        // Vector3 to = preferredPosition + Vector3.Down * ProbeDepth;
+        //
+        // var query = PhysicsRayQueryParameters3D.Create(
+        //     from, to, GroundCollisionMask
+        // );
+        //
+        // query.CollideWithAreas = false;
+        //
+        // var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
+        //
+        // if (hit.Count == 0)
+        // {
+        //     return false;
+        // }
+        //
+        // Vector3 contact = hit["position"].AsVector3();
+        // Vector3 normal = hit["normal"].AsVector3().Normalized();
 
         // minimum dot product from max slope setting
         float minimumUpDot = Mathf.Cos(
@@ -460,5 +550,35 @@ public partial class ProceduralLocomotion : Node3D
         }
 
         return err.Length > 0 ? err : null;
+    }
+
+    private void PositionRaycastNode(RayCast3D raycastNode, Vector3 preferredPosition)
+    {
+        Vector3 from = preferredPosition + Vector3.Up * ProbeHeight;
+        Vector3 to = preferredPosition + Vector3.Down * ProbeDepth;
+
+        raycastNode.GlobalPosition = from;
+        raycastNode.TargetPosition = raycastNode.ToLocal(to);
+        raycastNode.CollisionMask = GroundCollisionMask;
+    }
+
+    private RayCast3D CreateRaycastNode(string name)
+    {
+        RayCast3D raycastNode = new RayCast3D
+        {
+            Name = name,
+            CollisionMask = GroundCollisionMask,
+            CollideWithAreas = false,
+            CollideWithBodies = true,
+            Enabled = false
+        };
+        
+        AddChild(raycastNode);
+        raycastNode.Owner = Owner;
+
+        // DEBUG:
+        GD.Print($"{raycastNode.GetPath()}: " + $"owner={raycastNode.Owner?.GetPath()}");
+        // DEBUG:
+        return raycastNode;
     }
 }

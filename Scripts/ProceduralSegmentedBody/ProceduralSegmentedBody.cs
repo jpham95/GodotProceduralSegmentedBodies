@@ -35,6 +35,23 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     [Export] public BodyDef BodyDefinition = null;
     
     private ProceduralLocomotion locomotionController;
+
+    private bool saveRequested = false;
+
+    public override void _Process(double delta)
+    {
+#if TOOLS
+        if (!Engine.IsEditorHint() || !saveRequested)
+        {
+            return;
+        }
+
+        saveRequested = false;
+        
+        SaveScene();
+#endif
+    }
+
     private void Clear()
     {
         foreach (Node child in GetChildren())
@@ -253,6 +270,10 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         }
         
         if (DebugMode) GD.Print($"[Generate] All bones created: bones={GetBoneCount()}");
+        if (Engine.IsEditorHint())
+        {
+            saveRequested = true;
+        }
     }
 
     private GeneratedLimb GenerateLimbBones(LimbDef limb, int torsoBone)
@@ -520,5 +541,22 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         modifier.SetAxisXEnabled(0, true);
         modifier.SetAxisYEnabled(0, true);
         modifier.SetAxisZEnabled(0, true);
+    }
+
+    private void SaveScene()
+    {
+#if TOOLS
+        if (!Engine.IsEditorHint())
+        {
+            return;
+        }
+
+        Error err = EditorInterface.Singleton.SaveScene();
+
+        if (err != Error.Ok)
+        {
+            GD.PrintErr($"Scene could not be saved after generation: {err}");
+        }
+#endif
     }
 }
