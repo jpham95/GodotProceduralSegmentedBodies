@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using Vector3 = Godot.Vector3;
@@ -28,6 +29,13 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     public Callable GenerateButton => Callable.From(() => Callable.From(Generate).CallDeferred());
     [ExportToolButton("Clear")] 
     public Callable ClearButton => Callable.From(() => Callable.From(Clear).CallDeferred());
+    
+    [ExportGroup("Height Adjustment")]
+    [Export] private float HeightFitTolerance = 0.02f;
+    [Export] private float MaximumHeightAdjustment = 2f;
+    [ExportToolButton("Auto Adjust Torso Height")]
+    public Callable HeightAdjustButton => Callable.From(BeginHeightFit);
+    
     [ExportCategory("Default Step Curves")]
     [Export] public Curve DefaultStepProgressCurve;
     [Export] public Curve DefaultStepLiftCurve;
@@ -37,23 +45,59 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     private ProceduralLocomotion locomotionController;
 
     private bool saveRequested = false;
-
+    
+    // Height fitting
+    private List<(int Bone, Marker3D target)> heightFitFeet = new();
+    private bool heightSampleReady = false;
+    private bool fittingHeight = false;
+    private int fitTorsoBone = -1;
+    private int fitSettleUpdates;
+    private int fitStalledAttempts;
+    private int fitAttempts;
+    
+    private float fitStartingHeight;
+    private float fitBestHeight;
+    private float fitBestError;
+    private float fitVerticalError;
+    private float fitReachError;
+    
+    private const int FitSettleUpdates = 12;
+    private const int FitMaximumAttempts = 40;
     public override void _Process(double delta)
     {
 #if TOOLS
-        if (!Engine.IsEditorHint() || !saveRequested)
+        if (!Engine.IsEditorHint())
         {
             return;
         }
 
-        saveRequested = false;
-        
-        SaveScene();
+        if (fittingHeight)
+        {
+            if (heightSampleReady)
+            {
+                ApplyHeightFit();
+            }
+
+            return;
+        }
+
+        if (saveRequested)
+        {
+            saveRequested = false;
+            SaveScene();
+        }
 #endif
     }
 
     private void Clear()
     {
+        DisconnectHeightFit();
+        fittingHeight = false;
+        heightSampleReady = false;
+        saveRequested = false;
+        
+        heightFitFeet.Clear();
+        
         foreach (Node child in GetChildren())
         {
             if (child is SkeletonModifier3D modifier)
@@ -253,7 +297,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         foreach (GeneratedLimb generatedLimb in generatedLimbs)
         {
             AddIK(
-                generatedLimb.SegmentBones[0],
+                generatedLimb.SegmentBones,
                 generatedLimb.EndBone,
                 generatedLimb.Definition
             );
@@ -272,6 +316,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         if (DebugMode) GD.Print($"[Generate] All bones created: bones={GetBoneCount()}");
         if (Engine.IsEditorHint())
         {
+            fitTorsoBone = torsoBone;
             saveRequested = true;
         }
     }
@@ -344,8 +389,10 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         return new GeneratedLimb(limb, segmentBones, endBone, soleBone);
     }
-    private void AddIK(int rootBoneIndex, int endBoneIndex, LimbDef limb)
+    private void AddIK(int[] segmentBones, int endBoneIndex, LimbDef limb)
     {
+        int rootBoneIndex = segmentBones[0];
+        
         if (DebugMode)
             GD.Print(
                 $"[AddIK] skeleton={GetPath()}, " +
@@ -371,6 +418,11 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         AddChild(targetNode);
         targetNode.Owner = Owner;
 
+        if (limb.GroundFoot)
+        {
+            heightFitFeet.Add((endBoneIndex, targetNode));
+        }
+
         Ccdik3D IKNode = new Ccdik3D
         {
             Name = $"{limb.LimbID}_CCDIK3D"
@@ -388,24 +440,70 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
         IKNode.SetTargetNode(0, IKNode.GetPathTo(targetNode));
         
-        for (int i = 0; i < IKNode.GetJointCount(0); i++)
+        for (int jointIndex = 0; jointIndex < IKNode.GetJointCount(0); jointIndex++)
         {
-            if (i != 0 && limb.LockIKToAxis)
+            int boneIndex = IKNode.GetJointBone(0, jointIndex);
+            int segmentIndex = System.Array.IndexOf(segmentBones, boneIndex);
+
+            if (segmentIndex < 0)
             {
-                IKNode.SetJointRotationAxis(0, i, limb.IKLockAxis);
+                continue;
             }
 
-            // TODO: only works for (-45, 0, 0) attachment angle right now
-            if (i != 0 && i != IKNode.GetJointCount(0) - 1) // middle segments only
+            SegmentDef segment = limb.Segments[segmentIndex];
+            
+            SkeletonModifier3D.RotationAxis axis = SkeletonModifier3D.RotationAxis.All;
+            bool limitJoint = false;
+            float coneAngleDegrees = 90f;
+            Quaternion coneOffset = Quaternion.Identity;
+
+            switch (segment.JointPreset)
             {
-                JointLimitationCone3D limitation = new JointLimitationCone3D();
-                IKNode.SetJointLimitation(0, i, limitation);
-                IKNode.SetJointLimitationRotationOffset(
-                    0, 
-                    i,
-                    new Quaternion(0, -0.3f, 0.125f, 0) // TODO: make this based on segment variables or attachment rotation
-                );
+                case SegmentDef.JointPresetEnum.Hip:
+                    break;
+                case SegmentDef.JointPresetEnum.Knee:
+                    axis = SkeletonModifier3D.RotationAxis.X;
+                    limitJoint = true;
+                    coneOffset = new Quaternion(0f, -0.3f, 0.125f, 0f).Normalized();
+                    break;
+                case SegmentDef.JointPresetEnum.Free:
+                    break;
+                case SegmentDef.JointPresetEnum.Custom:
+                    axis = segment.JointRotationAxis;
+                    limitJoint = segment.LimitJoint;
+                    coneAngleDegrees = segment.JointConeAngleDegrees;
+
+                    coneOffset = Basis.FromEuler(
+                        segment.JointLimitRotationDegrees * (Mathf.Pi / 180f)
+                    ).GetRotationQuaternion();
+                    break;
+                default:
+                    GD.PrintErr($"{segment.GetName()} has invalid JointPreset");
+                    continue;
             }
+            
+            IKNode.SetJointRotationAxis(
+                0,
+                jointIndex,
+                axis
+            );
+
+            
+            if (!limitJoint)
+            {
+                continue;
+            }
+            
+            IKNode.SetJointLimitation(0, jointIndex, new JointLimitationCone3D
+            {
+                Angle = Mathf.DegToRad(coneAngleDegrees)
+            });
+
+            IKNode.SetJointLimitationRotationOffset(
+                0,
+                jointIndex,
+                coneOffset
+            );
         }
 
         if (limb.GroundFoot && limb.EndMesh != null)
@@ -558,5 +656,190 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             GD.PrintErr($"Scene could not be saved after generation: {err}");
         }
 #endif
+    }
+
+    private void DisconnectHeightFit()
+    {
+        Callable heightMeasureCallback = Callable.From(MeasureHeightFit);
+
+        if (IsConnected(Skeleton3D.SignalName.SkeletonUpdated, heightMeasureCallback))
+        {
+            Disconnect(Skeleton3D.SignalName.SkeletonUpdated, heightMeasureCallback);
+        }
+    }
+    
+    private void MeasureHeightFit()
+    {
+        if (!fittingHeight || heightSampleReady)
+        {
+            return;
+        }
+        
+        fitSettleUpdates++;
+
+        if (fitSettleUpdates < FitSettleUpdates)
+        {
+            return;
+        }
+
+        fitVerticalError = float.NegativeInfinity;
+        fitReachError = 0f;
+
+        foreach (var foot in heightFitFeet)
+        {
+            Vector3 actual = GetBoneGlobalPose(foot.Bone).Origin;
+            Vector3 preferred = ToLocal(foot.target.GlobalPosition);
+
+            // find lowest foot point
+            fitVerticalError = Mathf.Max(
+                fitVerticalError,
+                preferred.Y - actual.Y
+            );
+
+            // full distance
+            fitReachError = Mathf.Max(
+                fitReachError,
+                actual.DistanceTo(preferred)
+            );
+        }
+
+        heightSampleReady = true;
+    }
+
+    private void ApplyHeightFit()
+    {
+        heightSampleReady = false;
+
+        if (!float.IsFinite(fitVerticalError) || !float.IsFinite(fitReachError))
+        {
+            FinishHeightFit(false);
+            return;
+        }
+
+        float currentHeight = GetBoneRest(fitTorsoBone).Origin.Y;
+
+        if (fitReachError < fitBestError)
+        {
+            bool improved = fitBestError - fitReachError > 0.0001f;
+
+            fitBestError = fitReachError;
+            fitBestHeight = currentHeight;
+
+            if (improved)
+            {
+                fitStalledAttempts = 0;
+            }
+            else
+            {
+                fitStalledAttempts++;
+            }
+        }
+        else
+        {
+            fitStalledAttempts++;
+        }
+
+        float tolerance = Mathf.Max(HeightFitTolerance, 0.001f);
+
+        if (DebugMode)
+        {
+            GD.Print(
+                $"[HeightFit] height={currentHeight:F3}, " +
+                $"veritcalError={fitVerticalError:F3}, " +
+                $"reachError={fitReachError:F3}"
+            );
+        }
+
+        if (fitReachError <= tolerance)
+        {
+            FinishHeightFit(true);
+            return;
+        }
+
+        if (fitAttempts >= FitMaximumAttempts ||
+            fitStalledAttempts >= 5)
+        {
+            FinishHeightFit(false);
+            return;
+        }
+
+        float correction = Mathf.Clamp(
+            fitVerticalError * 0.5f,
+            -0.1f,
+            0.1f
+        );
+
+        float maximumAdjustment = Mathf.Max(MaximumHeightAdjustment, 0f);
+
+        float nextHeight = Mathf.Clamp(
+            currentHeight + correction,
+            fitStartingHeight - maximumAdjustment,
+            fitStartingHeight + maximumAdjustment
+        );
+
+        if (Mathf.Abs(nextHeight - currentHeight) < 0.0001f)
+        {
+            FinishHeightFit(false);
+            return;
+        }
+
+        SetFittedTorsoHeight(nextHeight);
+
+        fitAttempts++;
+        fitSettleUpdates = 0;
+    }
+    private void BeginHeightFit()
+    {
+        if (!Engine.IsEditorHint() || fittingHeight)
+        {
+            return;
+        }
+
+        if (fitTorsoBone == -1)
+        {
+            GD.PrintErr("Generate body before adjusting height");
+            return;
+        }
+        
+        fitStartingHeight = GetBoneRest(fitTorsoBone).Origin.Y;
+        fitBestHeight = fitStartingHeight;
+        fitBestError = float.PositiveInfinity;
+
+        fitAttempts = 0;
+        fitStalledAttempts = 0;
+        fitSettleUpdates = 0;
+
+        heightSampleReady = false;
+        fittingHeight = true;
+
+        DisconnectHeightFit();
+        SkeletonUpdated += MeasureHeightFit;
+    }
+
+    private void SetFittedTorsoHeight(float height)
+    {
+        Transform3D rest = GetBoneRest(fitTorsoBone);
+        rest.Origin.Y = height;
+        
+        SetBoneRest(fitTorsoBone, rest);
+        ResetBonePose(fitTorsoBone);
+    }
+
+    private void FinishHeightFit(bool reachedTargets)
+    {
+        DisconnectHeightFit();
+
+        fittingHeight = false;
+        heightSampleReady = false;
+
+        if (!reachedTargets)
+        {
+            SetFittedTorsoHeight(fitBestHeight);
+
+            GD.Print(
+                "Height fitting could not reach every foot target.\nJoint limits or segment angles may need adjusting.");
+        }
+
+        saveRequested = true;
     }
 }

@@ -32,6 +32,7 @@ public partial class ProceduralLocomotion : Node3D
     
     [ExportCategory("Generated Limbs")]
     [Export] public Godot.Collections.Array<LocomotionLimbDef> Limbs = new();
+    
     private class AnimatedLimb
     {
         public LocomotionLimbDef Definition;
