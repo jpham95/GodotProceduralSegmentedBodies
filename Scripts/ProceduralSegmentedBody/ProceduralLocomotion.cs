@@ -207,19 +207,29 @@ public partial class ProceduralLocomotion : Node3D
 
         velocity.Y = 0f;
 
-        Vector3 movementDirection = velocity.LengthSquared() > 0.0001f
+        bool isMoving = velocity.LengthSquared() > 0.0001f;
+        
+        Vector3 movementDirection = isMoving
             ? velocity.Normalized()
             : Vector3.Zero;
 
-        Vector3 lookaheadOffset = movementDirection * Mathf.Max(settings.StepAheadDistance, 0f);
+        Vector3 bodyForward = _body.GlobalBasis.Z;
+        bodyForward.Y = 0f;
+        bodyForward = bodyForward.Normalized();
+
+        float backwardAmount = Mathf.Clamp(
+            -movementDirection.Dot(bodyForward),
+            0f,
+            1f
+        );
+
+        float stepMultiplier = Mathf.Lerp(
+            1f,
+            settings.BackwardStepMultiplier,
+            backwardAmount
+        );
         
-        // Vector3 prediction = velocity * PredictionTime;
-        //
-        // float predictionLimit = Mathf.Max(MaximumPrediction, 0f);
-        // if (prediction.Length() > predictionLimit)
-        // {
-        //     prediction = prediction.Normalized() * predictionLimit;
-        // }
+        Vector3 lookaheadOffset = movementDirection * Mathf.Max(settings.StepAheadDistance, 0f) * stepMultiplier;
 
         bool steppingHappeningRN = false;
 
@@ -259,7 +269,10 @@ public partial class ProceduralLocomotion : Node3D
         }
 
         // one foot at a time for now
-        if (settings.AnimateLocomotion && !steppingHappeningRN)
+        // only step when moving
+        if (isMoving && 
+            settings.AnimateLocomotion && 
+            !steppingHappeningRN)
         {
             StartStep();
         }
@@ -286,8 +299,6 @@ public partial class ProceduralLocomotion : Node3D
             {
                 continue;
             }
-
-            Vector3 preferred = _body.ToGlobal(limb.Definition.RestPosition);
 
             if (!GetFootPlacement(
                     limb,
@@ -316,6 +327,15 @@ public partial class ProceduralLocomotion : Node3D
                 rotation = predictedRotation;
             }
 
+            float landingDistance = limb.Position.DistanceTo(destination);
+            float landingAngle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
+
+            if (landingDistance < settings.StepTriggerDistance &&
+                landingAngle < settings.TurnThresholdDegrees)
+            {
+                continue;
+            }
+            
             // successful step found - set params
             limb.StartPosition = limb.Position;
             limb.StartRotation = limb.Rotation;
