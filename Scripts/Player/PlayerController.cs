@@ -18,6 +18,7 @@ public partial class PlayerController : CharacterBody3D
 	private InputManager _InputManager;
 	public override void _Ready()
 	{
+		Input.MouseMode = Input.MouseModeEnum.Captured;
 		Camera = GetNodeOrNull<Camera3D>(CameraPath);
 		if (Camera == null)
 		{
@@ -32,7 +33,14 @@ public partial class PlayerController : CharacterBody3D
 
 	public override void _Input(InputEvent inputEvent)
 	{
-		if (inputEvent is InputEventMouseMotion)
+		if (inputEvent.IsActionPressed("ui_cancel"))
+		{
+			Input.MouseMode = Input.MouseModeEnum.Visible;
+			return;
+		}
+		
+		if (inputEvent is InputEventMouseMotion &&
+		    Input.MouseMode == Input.MouseModeEnum.Captured)
 		{
 			Transform2D viewportTransform = GetTree().Root.GetFinalTransform();
 			InputEventMouseMotion mouseEvent = (InputEventMouseMotion)inputEvent.XformedBy(viewportTransform);
@@ -115,6 +123,6 @@ public partial class PlayerController : CharacterBody3D
 
 	private void RotateCamera(Vector2 mouseMotion)
 	{
-		
+		RotateY(-mouseMotion.X);
 	}
 }
