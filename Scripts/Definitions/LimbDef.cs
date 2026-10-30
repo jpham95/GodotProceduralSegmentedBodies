@@ -5,17 +5,19 @@ using System;
 public partial class LimbDef : Resource
 {
     [Export] public string LimbID = "";
-    [Export] public bool LockIKToAxis = false;
-    [Export] public SkeletonModifier3D.RotationAxis IKLockAxis = SkeletonModifier3D.RotationAxis.X;
+    [Export] public Godot.Collections.Array<SegmentDef> Segments = new();
     [Export] public Vector3 AttachmentPosition = Vector3.Zero;
     [Export] public Vector3 AttachmentRotationDegrees = Vector3.Zero;
-    [Export] public Godot.Collections.Array<SegmentDef> Segments = new();
+    [ExportGroup("End Mesh")]
     [Export] public Mesh EndMesh;
     [Export] public Vector3 EndMeshOffset = Vector3.Zero;
+    [Export] public Vector3 EndMeshRotationDegrees = Vector3.Zero;
+    [ExportGroup("IK")]
+    [Export] public bool LockIKToAxis = false;
+    [Export] public SkeletonModifier3D.RotationAxis IKLockAxis = SkeletonModifier3D.RotationAxis.X;
     [Export] public bool GroundFoot = true;
     [Export] public float GroundClearance = 0.01f;
     [Export] public bool AlignFootToGround = true;
-    [Export] public Vector3 EndMeshRotationDegrees = Vector3.Zero;
     public float EndMeshHeight => EndMesh.GetAabb().Size.Y;
     public Vector3 LimbDirection => this.Segments.Count > 0 ? this.Segments[0].LimbDirection : Vector3.Down;   
     public float AnkleToSoleDistance

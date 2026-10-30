@@ -4,9 +4,8 @@
 [ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="2_gkyp0"]
 [ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="3_y0i3b"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_8e6yc"]
-
 [sub_resource type="BoxMesh" id="BoxMesh_4k87g"]
+size = Vector3(0.35, 0.4, 0.75)
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
 radius = 0.1
@@ -32,39 +31,36 @@ JointPreset = 2
 LimitJoint = true
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
-[sub_resource type="Resource" id="Resource_wwjl5"]
-script = ExtResource("2_gkyp0")
-Mesh = SubResource("BoxMesh_8goml")
-JointPreset = 2
-LimitJoint = true
-metadata/_custom_type_script = "uid://dj8l7qj8xaces"
-
 [sub_resource type="Resource" id="Resource_bfdir"]
 script = ExtResource("1_wwjl5")
 LimbID = "Leg1"
-LockIKToAxis = true
+Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1")])
 AttachmentPosition = Vector3(-0.5, 0, 0)
 AttachmentRotationDegrees = Vector3(-45, 0, 0)
-Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1"), SubResource("Resource_wwjl5")])
 EndMesh = SubResource("BoxMesh_2ji3j")
 EndMeshOffset = Vector3(0, 0, 0.1)
+LockIKToAxis = true
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
 [sub_resource type="Resource" id="Resource_qvwpr"]
 script = ExtResource("1_wwjl5")
 LimbID = "Leg2"
-LockIKToAxis = true
+Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1")])
 AttachmentPosition = Vector3(0.5, 0, 0)
 AttachmentRotationDegrees = Vector3(-45, 0, 0)
-Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1"), SubResource("Resource_wwjl5")])
 EndMesh = SubResource("BoxMesh_2ji3j")
 EndMeshOffset = Vector3(0, 0, 0.1)
+LockIKToAxis = true
 metadata/_custom_type_script = "uid://vw061olhvyob"
+
+[sub_resource type="BoxMesh" id="BoxMesh_2iy2p"]
+size = Vector3(1, 1, 0.5)
 
 [resource]
 script = ExtResource("3_y0i3b")
-BodyMesh = SubResource("BoxMesh_8e6yc")
-JointMesh = SubResource("SphereMesh_bfesj")
 HeadMesh = SubResource("BoxMesh_4k87g")
+TorsoMesh = SubResource("BoxMesh_2iy2p")
+JointMesh = SubResource("SphereMesh_bfesj")
 Limbs = Array[ExtResource("1_wwjl5")]([SubResource("Resource_bfdir"), SubResource("Resource_qvwpr")])
+HeadAttachmentOffset = Vector3(0, 0, 0.4)
 metadata/_custom_type_script = "uid://bgc8d1lhe00ad"

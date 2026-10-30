@@ -24,17 +24,20 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         }
     }
     
-    [Export] private bool DebugMode = false;
+    [Export] private bool _debugMode = false;
     [ExportToolButton("Generate / Regenerate From Definition")] 
     public Callable GenerateButton => Callable.From(() => Callable.From(Generate).CallDeferred());
     [ExportToolButton("Clear")] 
     public Callable ClearButton => Callable.From(() => Callable.From(Clear).CallDeferred());
     
+    [Export] public LocomotionSettings LocomotionSettings;
+    
     [ExportGroup("Height Adjustment")]
-    [Export] private float HeightFitTolerance = 0.02f;
-    [Export] private float MaximumHeightAdjustment = 2f;
+    [Export] private float _heightFitTolerance = 0.02f;
+    [Export] private float _maximumHeightAdjustment = 2f;
     [ExportToolButton("Auto Adjust Torso Height")]
     public Callable HeightAdjustButton => Callable.From(BeginHeightFit);
+
     
     [ExportCategory("Default Step Curves")]
     [Export] public Curve DefaultStepProgressCurve;
@@ -42,11 +45,11 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     [ExportCategory("Body Definition")]
     [Export] public BodyDef BodyDefinition = null;
     
-    private ProceduralLocomotion locomotionController;
+    private ProceduralLocomotion _locomotionController;
 
     private bool saveRequested = false;
     
-    // Height fitting
+    // Auto height fitting
     private List<(int Bone, Marker3D target)> heightFitFeet = new();
     private bool heightSampleReady = false;
     private bool fittingHeight = false;
@@ -122,7 +125,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             child.QueueFree();
         }
         ClearBones();
-        locomotionController = null;
+        _locomotionController = null;
     }
     public string ValidateResources()
     {
@@ -131,7 +134,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             return "Body definition missing";
         }
 
-        if (BodyDefinition.BodyMesh == null)
+        if (BodyDefinition.TorsoMesh == null)
         {
             return "Body mesh is missing";
         }
@@ -198,6 +201,11 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             }
         }
 
+        if (LocomotionSettings == null)
+        {
+            return "Locomotion settings resource is missing.";
+        }
+
         return null;
     }
     private void Generate()
@@ -208,24 +216,39 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             GD.PrintErr(err);
             return;
         }
-        if (DebugMode)
+        if (_debugMode)
             GD.Print($"[Generate] Before Clear: bones={GetBoneCount()}");
         
         Clear();
         
-        if (DebugMode)
+        if (_debugMode)
             GD.Print($"[Generate] After Clear: bones={GetBoneCount()}");
 
-        locomotionController = new ProceduralLocomotion
+        _locomotionController = new ProceduralLocomotion
         {
-            Name = "ProceduralLocomotion"
+            Name = "ProceduralLocomotion",
+            settings = LocomotionSettings
         };
-        AddChild(locomotionController);
-        locomotionController.Owner = Owner;
-        locomotionController.InitialiseCurves();
+        AddChild(_locomotionController);
+        _locomotionController.Owner = Owner;
         
         int torsoBone = AddBone("Torso");
         SetBoneRest(torsoBone, Transform3D.Identity);
+
+        int headBone = -1;
+
+        if (BodyDefinition.HeadMesh != null)
+        {
+            headBone = AddBone("Head");
+            SetBoneParent(headBone, torsoBone);
+
+            Vector3 headPosition = Vector3.Up * (BodyDefinition.TorsoSize.Y / 2f) + BodyDefinition.HeadAttachmentOffset;
+            
+            SetBoneRest(
+                headBone,
+                new Transform3D(Basis.Identity, headPosition)
+            );
+        }
 
         List<GeneratedLimb> generatedLimbs = new();
 
@@ -263,6 +286,10 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         ResetBonePoses();
         
         AddTorsoMesh(torsoBone);
+        if (headBone >= 0)
+        {
+            AddHeadMesh(headBone);
+        }
 
         foreach (GeneratedLimb generatedLimb in generatedLimbs)
         {
@@ -302,7 +329,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 generatedLimb.Definition
             );
 
-            if (DebugMode)
+            if (_debugMode)
             {
                 GD.Print(
                     $"{generatedLimb.Definition.LimbID}: " +
@@ -313,7 +340,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             }
         }
         
-        if (DebugMode) GD.Print($"[Generate] All bones created: bones={GetBoneCount()}");
+        if (_debugMode) GD.Print($"[Generate] All bones created: bones={GetBoneCount()}");
         if (Engine.IsEditorHint())
         {
             fitTorsoBone = torsoBone;
@@ -393,7 +420,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     {
         int rootBoneIndex = segmentBones[0];
         
-        if (DebugMode)
+        if (_debugMode)
             GD.Print(
                 $"[AddIK] skeleton={GetPath()}, " +
                 $"limb={limb.LimbID}, count={GetBoneCount()}, " +
@@ -511,7 +538,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             AddFootOrientation(endBoneIndex, targetNode, limb);
         }
         
-        locomotionController.AddLimb(limb, targetNode, targetPosition);
+        _locomotionController.AddLimb(limb, targetNode, targetPosition);
     }
 
     private void AddTorsoMesh(int boneIndex)
@@ -525,7 +552,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         AddChild(attachment);
         attachment.Owner = Owner;
 
-        Mesh mesh = BodyDefinition.BodyMesh;
+        Mesh mesh = BodyDefinition.TorsoMesh;
         
         var meshInstance = new MeshInstance3D
         {
@@ -610,6 +637,36 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
         meshInstance.Show();
+    }
+
+    private void AddHeadMesh(int boneIndex)
+    {
+        var headAttachment = new BoneAttachment3D
+        {
+            Name = "Head",
+            BoneName = GetBoneName(boneIndex)
+        };
+        
+        AddChild(headAttachment);
+        headAttachment.Owner = Owner;
+
+        MeshInstance3D meshInstance = new MeshInstance3D
+        {
+            Name = "HeadMesh",
+            Mesh = BodyDefinition.HeadMesh,
+            RotationDegrees = BodyDefinition.HeadRotationDegrees
+        };
+
+        Aabb bounds = new Transform3D(meshInstance.Basis, Vector3.Zero) * BodyDefinition.HeadMesh.GetAabb();
+
+        meshInstance.Position = new Vector3(
+            -bounds.GetCenter().X,
+            -bounds.Position.Y,
+            -bounds.GetCenter().Z
+        );
+        
+        headAttachment.AddChild(meshInstance);
+        meshInstance.Owner = Owner;
     }
 
     private void AddFootOrientation(int ankleBoneIndex, Marker3D target, LimbDef limb)
@@ -739,9 +796,9 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             fitStalledAttempts++;
         }
 
-        float tolerance = Mathf.Max(HeightFitTolerance, 0.001f);
+        float tolerance = Mathf.Max(_heightFitTolerance, 0.001f);
 
-        if (DebugMode)
+        if (_debugMode)
         {
             GD.Print(
                 $"[HeightFit] height={currentHeight:F3}, " +
@@ -769,7 +826,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             0.1f
         );
 
-        float maximumAdjustment = Mathf.Max(MaximumHeightAdjustment, 0f);
+        float maximumAdjustment = Mathf.Max(_maximumHeightAdjustment, 0f);
 
         float nextHeight = Mathf.Clamp(
             currentHeight + correction,

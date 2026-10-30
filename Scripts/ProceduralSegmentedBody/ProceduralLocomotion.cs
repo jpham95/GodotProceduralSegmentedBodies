@@ -8,27 +8,10 @@ public partial class ProceduralLocomotion : Node3D
     [ExportToolButton("Set Current Target Positions as Rest Position")]
     private Callable SetTargetPositionsAsRestPositions => Callable.From(UpdateRestPositions);
 
-    [ExportToolButton("Undo Targer Position Changes")]
+    [ExportToolButton("Undo Target Position Changes")]
     private Callable UndoTargetPositionChanges => Callable.From(UndoRestPositionChanges);
-    
-    [ExportGroup("Locomotion")] 
-    [Export] public bool AnimateLocomotion = true;
-    [Export] public float StepDistance = 0.35f;
-    [Export] public float StepDuration = 0.25f;
-    [Export] public float StepHeight = 0.2f;
-    [Export] public float LookAheadDistance = 0.25f;
-    // [Export] public float PredictionTime = 0.1f;
-    // [Export] public float MaximumPrediction = 0.25f;
-    [Export] public float TurnThresholdDegrees = 30f;
-    [Export] public Curve StepProgressCurve;
-    [Export] public Curve StepLiftCurve;
-    
-    [ExportGroup("Ground Detection")] 
-    [Export(PropertyHint.Layers3DPhysics)] public uint GroundCollisionMask = 1;
 
-    [Export] public float ProbeHeight = 1f;
-    [Export] public float ProbeDepth = 2f;
-    [Export] public float MaximumSlopeDegrees = 50f;
+    public LocomotionSettings settings;
     
     [ExportCategory("Generated Limbs")]
     [Export] public Godot.Collections.Array<LocomotionLimbDef> Limbs = new();
@@ -76,10 +59,10 @@ public partial class ProceduralLocomotion : Node3D
             SetPhysicsProcess(false);
             return;
         }
-        Callable.From(InitialiseLimbs).CallDeferred();
+        Callable.From(Initialise).CallDeferred();
     }
 
-    public void InitialiseCurves()
+    private void Initialise()
     {
         _body = GetParent() as ProceduralSegmentedBody;
         
@@ -89,29 +72,13 @@ public partial class ProceduralLocomotion : Node3D
             SetPhysicsProcess(false);
             return;
         }
-        
-        if (StepProgressCurve == null && _body.DefaultStepProgressCurve != null)
-        {
-            StepProgressCurve = (Curve)_body.DefaultStepProgressCurve.Duplicate();
-        }
-        if (StepLiftCurve == null && _body.DefaultStepLiftCurve != null)
-        {
-            StepLiftCurve = (Curve)_body.DefaultStepLiftCurve.Duplicate();
-        }
+
+        settings = _body.LocomotionSettings;
+        InitialiseLimbs();
     }
     
     private void InitialiseLimbs()
     {
-        _body = GetParent() as ProceduralSegmentedBody;
-        
-        if (_body == null)
-        {
-            GD.PrintErr("ProceduralSegmentedBody parent missing");
-            SetPhysicsProcess(false);
-            return;
-        }
-        
-        InitialiseCurves();
 
         string curveErr = ValidateStepCurves();
 
@@ -201,7 +168,7 @@ public partial class ProceduralLocomotion : Node3D
         forward.Y = 0f;
         forward = forward.Normalized();
 
-        PositionRaycastNode(landingRay, preferred + forward * LookAheadDistance);
+        PositionRaycastNode(landingRay, preferred + forward * settings.StepAheadDistance);
         Limbs.Add(new LocomotionLimbDef
         {
             ResourceName = limb.LimbID,
@@ -244,7 +211,7 @@ public partial class ProceduralLocomotion : Node3D
             ? velocity.Normalized()
             : Vector3.Zero;
 
-        Vector3 lookaheadOffset = movementDirection * Mathf.Max(LookAheadDistance, 0f);
+        Vector3 lookaheadOffset = movementDirection * Mathf.Max(settings.StepAheadDistance, 0f);
         
         // Vector3 prediction = velocity * PredictionTime;
         //
@@ -292,7 +259,7 @@ public partial class ProceduralLocomotion : Node3D
         }
 
         // one foot at a time for now
-        if (AnimateLocomotion && !steppingHappeningRN)
+        if (settings.AnimateLocomotion && !steppingHappeningRN)
         {
             StartStep();
         }
@@ -334,7 +301,7 @@ public partial class ProceduralLocomotion : Node3D
             float distance = limb.Position.DistanceTo(destination);
             float angle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
 
-            if (distance < StepDistance && angle < TurnThresholdDegrees)
+            if (distance < settings.StepTriggerDistance && angle < settings.TurnThresholdDegrees)
             {
                 continue;
             }
@@ -365,20 +332,20 @@ public partial class ProceduralLocomotion : Node3D
     private void AdvanceStep(AnimatedLimb limb, float deltaTime)
     {
         limb.Progress = Mathf.Min(
-            limb.Progress + deltaTime / Mathf.Max(StepDuration, 0.01f),
+            limb.Progress + deltaTime / Mathf.Max(settings.StepDuration, 0.01f),
             1f
         );
 
         float t = limb.Progress;
 
-        float smoothedT = Mathf.Clamp(StepProgressCurve.Sample(t), 0f, 1f);
+        float smoothedT = Mathf.Clamp(settings.StepProgressCurve.Sample(t), 0f, 1f);
 
         limb.Position = limb.StartPosition.Lerp(
             limb.EndPosition, smoothedT
         );
 
-        float lift = Mathf.Clamp(StepLiftCurve.Sample(t), 0f, 1f);
-        limb.Position += Vector3.Up * lift * StepHeight;
+        float lift = Mathf.Clamp(settings.StepLiftCurve.Sample(t), 0f, 1f);
+        limb.Position += Vector3.Up * lift * settings.StepHeight;
 
         // lerp foot rotation to match landing rotation
         limb.Rotation = limb.StartRotation.Slerp(limb.EndRotation, smoothedT);
@@ -436,7 +403,7 @@ public partial class ProceduralLocomotion : Node3D
 
         // minimum dot product from max slope setting
         float minimumUpDot = Mathf.Cos(
-            Mathf.DegToRad(MaximumSlopeDegrees)
+            Mathf.DegToRad(settings.MaximumSlopeDegrees)
         );
 
         // if normal dot product with up vector exceeds min dot product
@@ -517,19 +484,19 @@ public partial class ProceduralLocomotion : Node3D
     private string ValidateStepCurves()
     {
         string err = "";
-        if (StepProgressCurve == null)
+        if (settings.StepProgressCurve == null)
         {
             err += "StepProgressCurve not found.\n";
         } 
-        else if (StepProgressCurve.GetPointCount() < 2)
+        else if (settings.StepProgressCurve.GetPointCount() < 2)
         {
             err += "StepProgressCurve requires at least 2 points.\n";
         }
-        if (StepLiftCurve == null)
+        if (settings.StepLiftCurve == null)
         {
             err += "StepLiftCurve not found.\n";
         }
-        else if (StepLiftCurve.GetPointCount() < 2)
+        else if (settings.StepLiftCurve.GetPointCount() < 2)
         {
             err += "StepLiftCurve requires at least 2 points.";
         }
@@ -539,12 +506,12 @@ public partial class ProceduralLocomotion : Node3D
 
     private void PositionRaycastNode(RayCast3D raycastNode, Vector3 preferredPosition)
     {
-        Vector3 from = preferredPosition + Vector3.Up * ProbeHeight;
-        Vector3 to = preferredPosition + Vector3.Down * ProbeDepth;
+        Vector3 from = preferredPosition + Vector3.Up * settings.ProbeHeight;
+        Vector3 to = preferredPosition + Vector3.Down * settings.ProbeDepth;
 
         raycastNode.GlobalPosition = from;
         raycastNode.TargetPosition = raycastNode.ToLocal(to);
-        raycastNode.CollisionMask = GroundCollisionMask;
+        raycastNode.CollisionMask = settings.GroundCollisionMask;
     }
 
     private RayCast3D CreateRaycastNode(string name)
@@ -552,7 +519,7 @@ public partial class ProceduralLocomotion : Node3D
         RayCast3D raycastNode = new RayCast3D
         {
             Name = name,
-            CollisionMask = GroundCollisionMask,
+            CollisionMask = settings.GroundCollisionMask,
             CollideWithAreas = false,
             CollideWithBodies = true,
             Enabled = false
