@@ -270,11 +270,10 @@ public partial class ProceduralLocomotion : Node3D
 
         // one foot at a time for now
         // only step when moving
-        if (isMoving && 
-            settings.AnimateLocomotion && 
+        if (settings.AnimateLocomotion && 
             !steppingHappeningRN)
         {
-            StartStep();
+            StartStep(movementDirection);
         }
         
         // rewrite global transforms to keep limb positions
@@ -288,8 +287,10 @@ public partial class ProceduralLocomotion : Node3D
         }
     }
 
-    private void StartStep()
+    private void StartStep(Vector3 movementDirection)
     {
+        bool isMoving = movementDirection.LengthSquared() > 0.0001f;
+        
         for (int offset = 0; offset < _limbs.Count; offset++)
         {
             int index = (_nextLimb + offset) % _limbs.Count;
@@ -309,10 +310,24 @@ public partial class ProceduralLocomotion : Node3D
                 continue;
             }
 
-            float distance = limb.Position.DistanceTo(destination);
+            // float distance = limb.Position.DistanceTo(destination);
+            // float angle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
+            //
+            // if (distance < settings.StepTriggerDistance && angle < settings.TurnThresholdDegrees)
+            // {
+            //     continue;
+            // }
+            Vector3 displacement = destination - limb.Position;
+            displacement.Y = 0f;
+
+            float lag = displacement.Dot(movementDirection);
             float angle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
 
-            if (distance < settings.StepTriggerDistance && angle < settings.TurnThresholdDegrees)
+            bool needsMovementStep = isMoving && lag >= settings.StepTriggerDistance;
+
+            bool needsTurningStep = angle >= settings.TurnThresholdDegrees;
+
+            if (!needsMovementStep && !needsTurningStep)
             {
                 continue;
             }
@@ -326,7 +341,7 @@ public partial class ProceduralLocomotion : Node3D
                 destination = predictedPosition;
                 rotation = predictedRotation;
             }
-
+            
             float landingDistance = limb.Position.DistanceTo(destination);
             float landingAngle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
 
