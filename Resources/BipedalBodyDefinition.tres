@@ -1,32 +1,27 @@
 [gd_resource type="Resource" script_class="BodyDef" format=3 uid="uid://sni1j1gic2u3"]
 
+[ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/test_head.res" id="1_qvwpr"]
 [ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/Definitions/LimbDef.cs" id="1_wwjl5"]
 [ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="2_gkyp0"]
+[ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/test_foot.res" id="3_cwrbu"]
 [ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="3_y0i3b"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_4k87g"]
-size = Vector3(0.35, 0.4, 0.75)
+[ext_resource type="ArrayMesh" uid="uid://ck0nphgbxael3" path="res://Meshes/test_segment.res" id="5_67sif"]
+[ext_resource type="ArrayMesh" uid="uid://mmvchb5ox2xh" path="res://Meshes/test_body.res" id="6_ga4af"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
 radius = 0.1
 height = 0.2
 
-[sub_resource type="BoxMesh" id="BoxMesh_2ji3j"]
-size = Vector3(0.2, 0.1, 0.5)
-
-[sub_resource type="BoxMesh" id="BoxMesh_8goml"]
-size = Vector3(0.1, 1, 0.1)
-
 [sub_resource type="Resource" id="Resource_b2h2w"]
 script = ExtResource("2_gkyp0")
-Mesh = SubResource("BoxMesh_8goml")
+Mesh = ExtResource("5_67sif")
 JointPreset = 1
 JointRotationAxis = 3
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_45tr1"]
 script = ExtResource("2_gkyp0")
-Mesh = SubResource("BoxMesh_8goml")
+Mesh = ExtResource("5_67sif")
 JointPreset = 2
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
@@ -36,7 +31,7 @@ LimbID = "Leg1"
 Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1")])
 AttachmentPosition = Vector3(-0.5, 0, 0)
 AttachmentRotationDegrees = Vector3(-45, 0, 0)
-EndMesh = SubResource("BoxMesh_2ji3j")
+EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
 LockIKToAxis = true
 metadata/_custom_type_script = "uid://vw061olhvyob"
@@ -47,19 +42,17 @@ LimbID = "Leg2"
 Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1")])
 AttachmentPosition = Vector3(0.5, 0, 0)
 AttachmentRotationDegrees = Vector3(-45, 0, 0)
-EndMesh = SubResource("BoxMesh_2ji3j")
+EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
 LockIKToAxis = true
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
-[sub_resource type="BoxMesh" id="BoxMesh_2iy2p"]
-size = Vector3(1, 1, 0.5)
-
 [resource]
 script = ExtResource("3_y0i3b")
-HeadMesh = SubResource("BoxMesh_4k87g")
-TorsoMesh = SubResource("BoxMesh_2iy2p")
+HeadMesh = ExtResource("1_qvwpr")
+TorsoMesh = ExtResource("6_ga4af")
 JointMesh = SubResource("SphereMesh_bfesj")
 Limbs = Array[ExtResource("1_wwjl5")]([SubResource("Resource_bfdir"), SubResource("Resource_qvwpr")])
 HeadAttachmentOffset = Vector3(0, 0, 0.4)
+HeadRotationDegrees = Vector3(0, 180, 0)
 metadata/_custom_type_script = "uid://bgc8d1lhe00ad"
