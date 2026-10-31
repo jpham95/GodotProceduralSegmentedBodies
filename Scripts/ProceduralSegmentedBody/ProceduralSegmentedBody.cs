@@ -24,6 +24,14 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             SoleBone = soleBone;
         }
     }
+
+    private struct JointLimitSettings
+    {
+        public SkeletonModifier3D.RotationAxis Axis;
+        public bool Limited;
+        public float ConeAngleDegrees;
+        public Quaternion ConeOffset;
+    }
     
     [Export] private bool _debugMode = false;
     private bool _showPreview = false;
@@ -239,7 +247,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         }
 
         Error err = EditorInterface.Singleton.SaveScene();
-
+        ShowPreview = false;
         if (err != Error.Ok)
         {
             GD.PrintErr($"Scene could not be saved after generation: {err}");
@@ -456,6 +464,45 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         return new GeneratedLimb(limb, segmentBones, endBone, soleBone);
     }
+
+    private JointLimitSettings GetJointLimitSettings(SegmentDef segment)
+    {
+        JointLimitSettings settings = new()
+        {
+            Axis = SkeletonModifier3D.RotationAxis.All,
+            Limited = false,
+            ConeAngleDegrees = 90f,
+            ConeOffset = Quaternion.Identity
+        };
+        
+        switch (segment.JointPreset)
+        {
+            case SegmentDef.JointPresetEnum.Hip:
+                break;
+            case SegmentDef.JointPresetEnum.Knee:
+                settings.Axis = SkeletonModifier3D.RotationAxis.X;
+                settings.Limited = true;
+                settings.ConeOffset = new Quaternion(0f, -0.3f, 0.125f, 0f).Normalized();
+                break;
+            case SegmentDef.JointPresetEnum.Free:
+                break;
+            case SegmentDef.JointPresetEnum.Custom:
+                settings.Axis = segment.JointRotationAxis;
+                settings.Limited = segment.LimitJoint;
+                settings.ConeAngleDegrees = segment.JointConeAngleDegrees;
+
+                settings.ConeOffset = Basis.FromEuler(
+                    Util.Vector3DegToRad(segment.JointLimitRotationDegrees)
+                ).GetRotationQuaternion();
+                break;
+            default:
+                GD.PrintErr($"{segment.GetName()} has invalid JointPreset");
+                break;
+        }
+
+        return settings;
+    }
+    
     private void AddIK(int[] segmentBones, int endBoneIndex, LimbDef limb)
     {
         int rootBoneIndex = segmentBones[0];
@@ -516,60 +563,31 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             {
                 continue;
             }
-
-            SegmentDef segment = limb.Segments[segmentIndex];
             
-            SkeletonModifier3D.RotationAxis axis = SkeletonModifier3D.RotationAxis.All;
-            bool limitJoint = false;
-            float coneAngleDegrees = 90f;
-            Quaternion coneOffset = Quaternion.Identity;
+            SegmentDef segment = limb.Segments[segmentIndex];
 
-            switch (segment.JointPreset)
-            {
-                case SegmentDef.JointPresetEnum.Hip:
-                    break;
-                case SegmentDef.JointPresetEnum.Knee:
-                    axis = SkeletonModifier3D.RotationAxis.X;
-                    limitJoint = true;
-                    coneOffset = new Quaternion(0f, -0.3f, 0.125f, 0f).Normalized();
-                    break;
-                case SegmentDef.JointPresetEnum.Free:
-                    break;
-                case SegmentDef.JointPresetEnum.Custom:
-                    axis = segment.JointRotationAxis;
-                    limitJoint = segment.LimitJoint;
-                    coneAngleDegrees = segment.JointConeAngleDegrees;
-
-                    coneOffset = Basis.FromEuler(
-                        Util.Vector3DegToRad(segment.JointLimitRotationDegrees)
-                    ).GetRotationQuaternion();
-                    break;
-                default:
-                    GD.PrintErr($"{segment.GetName()} has invalid JointPreset");
-                    continue;
-            }
+            JointLimitSettings settings = GetJointLimitSettings(segment);
             
             IKNode.SetJointRotationAxis(
                 0,
                 jointIndex,
-                axis
+                settings.Axis
             );
 
-            
-            if (!limitJoint)
+            if (!settings.Limited)
             {
                 continue;
             }
             
             IKNode.SetJointLimitation(0, jointIndex, new JointLimitationCone3D
             {
-                Angle = Mathf.DegToRad(coneAngleDegrees)
+                Angle = Mathf.DegToRad(settings.ConeAngleDegrees)
             });
 
             IKNode.SetJointLimitationRotationOffset(
                 0,
                 jointIndex,
-                coneOffset
+                settings.ConeOffset
             );
         }
 
@@ -927,19 +945,137 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 #endregion
 
     // TODO: preview for IK markers, joint limitations?, feet, joints
-    public Vector3[] GetPreview()
+    public Vector3[] GetPreview(out List<Vector3> jointPositions)
     {
+        jointPositions = new();
         List<Vector3> previewLines = new();
         
         if (BodyDefinition?.TorsoMesh == null)
         {
             return [];
         }
-
+        
+        // helpers
         void AddLine(Vector3 start, Vector3 end)
         {
             previewLines.Add(start);
             previewLines.Add(end);
+        }
+
+        void AddBox(Aabb bounds, Transform3D transform)
+        {
+            Vector3 min = bounds.Position;
+            Vector3 max = bounds.Position + bounds.Size;
+
+            Vector3[] corners =
+            {
+                new(min.X, min.Y, min.Z),
+                new(max.X, min.Y, min.Z),
+                new(max.X, min.Y, max.Z),
+                new(min.X, min.Y, max.Z),
+
+                new(min.X, max.Y, min.Z),
+                new(max.X, max.Y, min.Z),
+                new(max.X, max.Y, max.Z),
+                new(min.X, max.Y, max.Z),
+            };
+
+            for (int i = 0; i < corners.Length; i++)
+            {
+                corners[i] = transform * corners[i];
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                int next = (i + 1) % 4;
+                
+                AddLine(corners[i], corners[next]);
+                AddLine(corners[i + 4], corners[next + 4]);
+                AddLine(corners[i], corners[i + 4]);
+            }
+        }
+
+        void AddLimitationPreview(Transform3D jointTransform, SegmentDef segment)
+        {
+            JointLimitSettings settings = GetJointLimitSettings(segment);
+
+            float radius = segment.Length * 0.3f;
+
+            Vector3 localAxis = settings.Axis switch
+            {
+                SkeletonModifier3D.RotationAxis.X => Vector3.Right,
+                SkeletonModifier3D.RotationAxis.Y => Vector3.Up,
+                SkeletonModifier3D.RotationAxis.Z => Vector3.Back,
+                SkeletonModifier3D.RotationAxis.Custom => Vector3.Right,
+                _ => Vector3.Zero,
+            };
+
+            if (localAxis != Vector3.Zero)
+            {
+                Vector3 axis = jointTransform.Basis * localAxis;
+                
+                AddLine(
+                    jointTransform.Origin - axis * radius,
+                    jointTransform.Origin + axis * radius
+                );
+            }
+
+            if (!settings.Limited)
+            {
+                return;
+            }
+
+            float fullAngle = Mathf.Clamp(settings.ConeAngleDegrees, 0f, 360f);
+
+            if (fullAngle == 360f)
+            {
+                return;
+            }
+
+            Quaternion directionRotation = new Quaternion(
+                Vector3.Up,
+                segment.LimbDirection.Normalized()
+            );
+
+            Basis coneBasis = jointTransform.Basis * new Basis(directionRotation) * new Basis(settings.ConeOffset);
+
+            Transform3D coneTransform = new Transform3D(
+                coneBasis,
+                jointTransform.Origin
+            );
+
+            // https://github.com/godotengine/godot/blob/4.6/scene/resources/3d/joint_limitation_cone_3d.cpp
+            
+            float halfAngle = Mathf.DegToRad(fullAngle) * 0.5f;
+            float ringRadius = Mathf.Sin(halfAngle) * radius;
+            float ringHeight = Mathf.Cos(halfAngle) * radius;
+
+            const int ringSegments = 32;
+
+            for (int i = 0; i < ringSegments; i++)
+            {
+                float angleA = Mathf.Tau * i / ringSegments;
+                float angleB = Mathf.Tau * (i + 1) / ringSegments;
+
+                Vector3 pointA = new Vector3(
+                    Mathf.Cos(angleA) * ringRadius,
+                    ringHeight,
+                    Mathf.Sin(angleA) * ringRadius
+                );
+                
+                Vector3 pointB = new Vector3(
+                    Mathf.Cos(angleB) * ringRadius,
+                    ringHeight,
+                    Mathf.Sin(angleB) * ringRadius
+                );
+                
+                AddLine(coneTransform * pointA, coneTransform * pointB);
+
+                if (i % (ringSegments / 8) == 0)
+                {
+                    AddLine(jointTransform.Origin, coneTransform * pointA);
+                }
+            }
         }
         
         // centered torso mesh
@@ -1042,6 +1178,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
             Transform3D boneTransform = Transform3D.Identity;
             Vector3 anklePosition = Vector3.Zero;
+            Vector3 rootPosition = Vector3.Zero;
 
             for (int i = 0; i < limb.Segments.Count; i++)
             {
@@ -1066,19 +1203,38 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 }
 
                 boneTransform *= new Transform3D(rotation, position);
+                
+                AddLimitationPreview(boneTransform, segment);
 
+                if (i == 0)
+                {
+                    rootPosition = boneTransform.Origin;
+                }
+                
+                jointPositions.Add(boneTransform.Origin);
+                
                 Vector3 segmentEnd = boneTransform * (segment.LimbDirection * segment.Length);
                 
                 AddLine(boneTransform.Origin, segmentEnd);
                 anklePosition = segmentEnd;
             }
-
+            
+            jointPositions.Add(anklePosition);
+            
             Vector3 solePosition = anklePosition;
 
             if (limb.EndMesh != null)
             {
                 solePosition += Vector3.Down * limb.AnkleToSoleDistance;
                 AddLine(anklePosition, solePosition);
+
+                Basis footRotation = Basis.FromEuler(
+                    Util.Vector3DegToRad(limb.EndMeshRotationDegrees)
+                );
+
+                Transform3D footTransform = new Transform3D(footRotation, anklePosition + limb.EndMeshOffset);
+                
+                AddBox(limb.EndMesh.GetAabb(), footTransform);
             }
 
             if (limb.GroundFoot)
@@ -1087,14 +1243,18 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             }
         }
 
-        if (float.IsFinite(torsoHeight))
-        {
-            Vector3 groundedOffset = Vector3.Up * torsoHeight;
+        Vector3 groundedOffset = float.IsFinite(torsoHeight)
+            ? Vector3.Up * torsoHeight
+            : Vector3.Zero;
 
-            for (int i = 0; i < previewLines.Count; i++)
-            {
-                previewLines[i] += groundedOffset;
-            }
+        for (int i = 0; i < previewLines.Count; i++)
+        {
+            previewLines[i] += groundedOffset;
+        }
+
+        for (int i = 0; i < jointPositions.Count; i++)
+        {
+            jointPositions[i] += groundedOffset;
         }
 
         return previewLines.ToArray();

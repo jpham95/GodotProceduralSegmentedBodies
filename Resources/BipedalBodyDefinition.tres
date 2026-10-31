@@ -28,7 +28,6 @@ metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 script = ExtResource("2_gkyp0")
 Mesh = SubResource("BoxMesh_8goml")
 JointPreset = 2
-LimitJoint = true
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_bfdir"]
