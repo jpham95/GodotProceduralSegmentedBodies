@@ -24,6 +24,10 @@ window/stretch/aspect="expand"
 
 project/assembly_name="PCG Segmented Bodies"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/SegmentedBodyGizmoPreview/plugin.cfg")
+
 [input]
 
 MoveLeft={

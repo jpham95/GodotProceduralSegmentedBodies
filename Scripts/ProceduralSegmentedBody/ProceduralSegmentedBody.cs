@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Vector3 = Godot.Vector3;
 
@@ -25,7 +26,22 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     }
     
     [Export] private bool _debugMode = false;
-    [ExportToolButton("Generate / Regenerate From Definition")] 
+    private bool _showPreview = false;
+    [Export] public bool ShowPreview
+    {
+        get => _showPreview;
+        set
+        {
+            _showPreview = value;
+
+            if (Engine.IsEditorHint() && IsInsideTree())
+            {
+                UpdateGizmos();
+            }
+        }
+    }
+
+    [ExportToolButton("Generate / Regenerate From Definition")]
     public Callable GenerateButton => Callable.From(() => Callable.From(Generate).CallDeferred());
     [ExportToolButton("Clear")] 
     public Callable ClearButton => Callable.From(() => Callable.From(Clear).CallDeferred());
@@ -49,7 +65,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
     private bool saveRequested = false;
     
-    // Auto height fitting
+    // Auto height fitting variables
     private List<(int Bone, Marker3D target)> heightFitFeet = new();
     private bool heightSampleReady = false;
     private bool fittingHeight = false;
@@ -72,6 +88,11 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         if (!Engine.IsEditorHint())
         {
             return;
+        }
+
+        if (ShowPreview)
+        {
+            UpdateGizmos();
         }
 
         if (fittingHeight)
@@ -127,7 +148,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         ClearBones();
         _locomotionController = null;
     }
-    public string ValidateResources()
+    public string ValidateResources() // TODO: rewrite using LINQ
     {
         if (BodyDefinition == null)
         {
@@ -208,6 +229,25 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         return null;
     }
+    
+    private void SaveScene()
+    {
+#if TOOLS
+        if (!Engine.IsEditorHint())
+        {
+            return;
+        }
+
+        Error err = EditorInterface.Singleton.SaveScene();
+
+        if (err != Error.Ok)
+        {
+            GD.PrintErr($"Scene could not be saved after generation: {err}");
+        }
+#endif
+    }
+    
+#region Generation
     private void Generate()
     {
         string err = ValidateResources();
@@ -697,24 +737,9 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         modifier.SetAxisYEnabled(0, true);
         modifier.SetAxisZEnabled(0, true);
     }
-
-    private void SaveScene()
-    {
-#if TOOLS
-        if (!Engine.IsEditorHint())
-        {
-            return;
-        }
-
-        Error err = EditorInterface.Singleton.SaveScene();
-
-        if (err != Error.Ok)
-        {
-            GD.PrintErr($"Scene could not be saved after generation: {err}");
-        }
-#endif
-    }
-
+#endregion
+    
+#region Height Fitting
     private void DisconnectHeightFit()
     {
         Callable heightMeasureCallback = Callable.From(MeasureHeightFit);
@@ -898,5 +923,180 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         }
 
         saveRequested = true;
+    }
+#endregion
+
+    // TODO: preview for IK markers, joint limitations?, feet, joints
+    public Vector3[] GetPreview()
+    {
+        List<Vector3> previewLines = new();
+        
+        if (BodyDefinition?.TorsoMesh == null)
+        {
+            return [];
+        }
+
+        void AddLine(Vector3 start, Vector3 end)
+        {
+            previewLines.Add(start);
+            previewLines.Add(end);
+        }
+        
+        // centered torso mesh
+        Vector3 halfTorsoSize = BodyDefinition.TorsoSize / 2f;
+
+        Vector3[] extentVertices =
+        {
+            // bottom face
+            new(-halfTorsoSize.X, -halfTorsoSize.Y, -halfTorsoSize.Z),
+            new(halfTorsoSize.X, -halfTorsoSize.Y, -halfTorsoSize.Z),
+            new(halfTorsoSize.X, -halfTorsoSize.Y, halfTorsoSize.Z),
+            new(-halfTorsoSize.X, -halfTorsoSize.Y, halfTorsoSize.Z),
+            
+            // top face
+            new(-halfTorsoSize.X, halfTorsoSize.Y, halfTorsoSize.Z),
+            new(-halfTorsoSize.X, halfTorsoSize.Y, -halfTorsoSize.Z),
+            new(halfTorsoSize.X, halfTorsoSize.Y, -halfTorsoSize.Z),
+            new(halfTorsoSize.X, halfTorsoSize.Y, halfTorsoSize.Z),
+        };
+
+        for (int i = 0; i < 4; i++)
+        {
+            int next = (i + 1) % 4;
+
+            AddLine(extentVertices[i], extentVertices[next]);
+            AddLine(extentVertices[i + 4], extentVertices[next + 4]);
+            AddLine(extentVertices[i], extentVertices[next + 4]);
+        }
+
+        float torsoHeight = float.PositiveInfinity;
+
+        // head
+        if (BodyDefinition.HeadMesh != null)
+        {
+            Aabb headBounds = BodyDefinition.HeadMesh.GetAabb();
+
+            Basis headRotation = Basis.FromEuler(BodyDefinition.HeadRotationDegrees * (Mathf.Pi / 180f));
+            
+            Aabb rotatedBounds = new Transform3D(headRotation, Vector3.Zero) * headBounds;
+
+            Vector3 meshOffset = new Vector3(
+                -rotatedBounds.GetCenter().X,
+                -rotatedBounds.Position.Y,
+                -rotatedBounds.GetCenter().Z
+            );
+
+            Vector3 headPosition = Vector3.Up * (BodyDefinition.TorsoSize.Y / 2f) + BodyDefinition.HeadAttachmentOffset;
+
+            Transform3D headTransform = new Transform3D(headRotation, headPosition + meshOffset);
+
+            Vector3 min = headBounds.Position;
+            Vector3 max = headBounds.Position + headBounds.Size;
+
+            Vector3[] headCorners =
+            {
+                new(min.X, min.Y, min.Z),
+                new(max.X, min.Y, min.Z),
+                new(max.X, min.Y, max.Z),
+                new(min.X, min.Y, max.Z),
+
+                new(min.X, max.Y, max.Z),
+                new(min.X, max.Y, min.Z),
+                new(max.X, max.Y, min.Z),
+                new(max.X, max.Y, max.Z),
+            };
+
+            for (int i = 0; i < headCorners.Length; i++)
+            {
+                headCorners[i] = headTransform * headCorners[i];
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                int next = (i + 1) % 4;
+                
+                AddLine(headCorners[i], headCorners[next]);
+                AddLine(headCorners[i + 4], headCorners[next + 4]);
+                AddLine(headCorners[i], headCorners[next + 4]);
+            }
+        }
+        
+        // limbs
+        foreach (LimbDef limb in BodyDefinition.Limbs)
+        {
+            if (limb == null || limb.Segments.Count == 0)
+            {
+                continue;
+            }
+
+            bool validLimb = !limb.Segments.Any(segment => 
+                segment == null || 
+                segment.Mesh == null || 
+                !float.IsFinite(segment.Length) || 
+                segment.Length <= 0f);
+
+            if (!validLimb)
+            {
+                continue;
+            }
+
+            Transform3D boneTransform = Transform3D.Identity;
+            Vector3 anklePosition = Vector3.Zero;
+
+            for (int i = 0; i < limb.Segments.Count; i++)
+            {
+                SegmentDef segment = limb.Segments[i];
+
+                Basis rotation = Basis.FromEuler(segment.RestRotationDegrees * (Mathf.Pi / 180f));
+
+                Vector3 position;
+
+                if (i == 0)
+                {
+                    position = limb.LimbDirection * halfTorsoSize + limb.AttachmentPosition;
+
+                    Basis attachmentRotation = Basis.FromEuler(limb.AttachmentRotationDegrees * (Mathf.Pi / 180f));
+
+                    rotation = attachmentRotation * rotation;
+                }
+                else
+                {
+                    SegmentDef previous = limb.Segments[i - 1];
+                    position = previous.LimbDirection * previous.Length;
+                }
+
+                boneTransform *= new Transform3D(rotation, position);
+
+                Vector3 segmentEnd = boneTransform * (segment.LimbDirection * segment.Length);
+                
+                AddLine(boneTransform.Origin, segmentEnd);
+                anklePosition = segmentEnd;
+            }
+
+            Vector3 solePosition = anklePosition;
+
+            if (limb.EndMesh != null)
+            {
+                solePosition += Vector3.Down * limb.AnkleToSoleDistance;
+                AddLine(anklePosition, solePosition);
+            }
+
+            if (limb.GroundFoot)
+            {
+                torsoHeight = Mathf.Min(torsoHeight, limb.GroundClearance - solePosition.Y);
+            }
+        }
+
+        if (float.IsFinite(torsoHeight))
+        {
+            Vector3 groundedOffset = Vector3.Up * torsoHeight;
+
+            for (int i = 0; i < previewLines.Count; i++)
+            {
+                previewLines[i] += groundedOffset;
+            }
+        }
+
+        return previewLines.ToArray();
     }
 }
