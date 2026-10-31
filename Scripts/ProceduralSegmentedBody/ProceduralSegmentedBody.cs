@@ -402,7 +402,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             segmentBones[i] = bone;
             SetBoneParent(bone, parentBone);
 
-            Basis rotation = Basis.FromEuler(segment.RestRotationDegrees * (Mathf.Pi / 180f));
+            Basis rotation = Basis.FromEuler(Util.Vector3DegToRad(segment.RestRotationDegrees));
 
             Vector3 position;
 
@@ -411,7 +411,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 Vector3 torsoHalfSize = BodyDefinition.TorsoSize / 2f;
                 position = limb.LimbDirection * torsoHalfSize + limb.AttachmentPosition;
 
-                Basis attachmentRotation = Basis.FromEuler(limb.AttachmentRotationDegrees * (Mathf.Pi / 180f));
+                Basis attachmentRotation = Basis.FromEuler(Util.Vector3DegToRad(limb.AttachmentRotationDegrees));
 
                 rotation = attachmentRotation * rotation;
             }
@@ -541,7 +541,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                     coneAngleDegrees = segment.JointConeAngleDegrees;
 
                     coneOffset = Basis.FromEuler(
-                        segment.JointLimitRotationDegrees * (Mathf.Pi / 180f)
+                        Util.Vector3DegToRad(segment.JointLimitRotationDegrees)
                     ).GetRotationQuaternion();
                     break;
                 default:
@@ -976,7 +976,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         {
             Aabb headBounds = BodyDefinition.HeadMesh.GetAabb();
 
-            Basis headRotation = Basis.FromEuler(BodyDefinition.HeadRotationDegrees * (Mathf.Pi / 180f));
+            Basis headRotation = Basis.FromEuler(Util.Vector3DegToRad(BodyDefinition.HeadRotationDegrees));
             
             Aabb rotatedBounds = new Transform3D(headRotation, Vector3.Zero) * headBounds;
 
@@ -1047,7 +1047,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             {
                 SegmentDef segment = limb.Segments[i];
 
-                Basis rotation = Basis.FromEuler(segment.RestRotationDegrees * (Mathf.Pi / 180f));
+                Basis rotation = Basis.FromEuler(Util.Vector3DegToRad(segment.RestRotationDegrees));
 
                 Vector3 position;
 
@@ -1055,7 +1055,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 {
                     position = limb.LimbDirection * halfTorsoSize + limb.AttachmentPosition;
 
-                    Basis attachmentRotation = Basis.FromEuler(limb.AttachmentRotationDegrees * (Mathf.Pi / 180f));
+                    Basis attachmentRotation = Basis.FromEuler(Util.Vector3DegToRad(limb.AttachmentRotationDegrees));
 
                     rotation = attachmentRotation * rotation;
                 }

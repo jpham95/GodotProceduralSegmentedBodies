@@ -29,7 +29,7 @@ public partial class LimbDef : Resource
                 return 0f;
             }
 
-            Basis rotation = Basis.FromEuler(EndMeshRotationDegrees * (Mathf.Pi / 180f));
+            Basis rotation = Basis.FromEuler(Util.Vector3DegToRad(EndMeshRotationDegrees));
 
             Transform3D meshTransform = new Transform3D(rotation, EndMeshOffset);
 
