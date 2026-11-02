@@ -246,8 +246,8 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             return;
         }
 
-        Error err = Error.Ok;
-        // Error err = EditorInterface.Singleton.SaveScene();
+        // Error err = Error.Ok;
+        Error err = EditorInterface.Singleton.SaveScene();
         ShowPreview = false;
         if (err != Error.Ok)
         {
