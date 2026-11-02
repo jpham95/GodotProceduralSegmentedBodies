@@ -468,7 +468,7 @@ public partial class ProceduralLocomotion : Node3D
 
         LimbDef definition = limb.Definition.Definition;
 
-        anklePosition = contact + normal * (definition.AnkleToSoleDistance + definition.GroundClearance);
+        anklePosition = contact + normal * (definition.AnkleToContactDistance + definition.GroundClearance);
         
         return true;
     }

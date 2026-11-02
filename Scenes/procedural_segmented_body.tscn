@@ -1,20 +1,20 @@
-[gd_scene format=3 uid="uid://demnv03jshfkv"]
+[gd_scene format=4 uid="uid://demnv03jshfkv"]
 
 [ext_resource type="Script" uid="uid://b2o6rdr1om1jh" path="res://Scripts/ProceduralSegmentedBody/ProceduralSegmentedBody.cs" id="1_qlu5l"]
 [ext_resource type="Script" uid="uid://dfsudtfcgmk" path="res://Scripts/Player/PlayerController.cs" id="1_xvi7r"]
 [ext_resource type="Script" uid="uid://3d4edbqwiotl" path="res://Scripts/Player/InputManager.cs" id="2_ux00h"]
 [ext_resource type="Resource" uid="uid://sni1j1gic2u3" path="res://Resources/BipedalBodyDefinition.tres" id="2_v5rd0"]
 [ext_resource type="Curve" uid="uid://dxdrj17oov3m6" path="res://Resources/DefaultStepProgressCurve.tres" id="4_2iy2p"]
-[ext_resource type="Resource" uid="uid://ov7wjhwhhbdt" path="res://Resources/DefaultLocomotionSettings.tres" id="4_py48f"]
 [ext_resource type="Curve" uid="uid://b6bkj6o7yceif" path="res://Resources/DefaultStepLiftCurve.tres" id="5_otscm"]
-[ext_resource type="Script" uid="uid://ddyyyc51jutuv" path="res://Scripts/ProceduralSegmentedBody/ProceduralLocomotion.cs" id="8_otscm"]
-[ext_resource type="Script" uid="uid://bpr8edfsfj12e" path="res://Scripts/Definitions/LocomotionLimbDef.cs" id="9_3qodq"]
-[ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/test_foot.res" id="10_c37wc"]
-[ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="10_lc6hd"]
-[ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/Definitions/LimbDef.cs" id="11_ebf8t"]
-[ext_resource type="ArrayMesh" uid="uid://ck0nphgbxael3" path="res://Meshes/test_segment.res" id="12_c1cxm"]
-[ext_resource type="ArrayMesh" uid="uid://mmvchb5ox2xh" path="res://Meshes/test_body.res" id="14_d0pek"]
-[ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/test_head.res" id="15_37di1"]
+[ext_resource type="Script" uid="uid://bbn7lqonutd8l" path="res://Scripts/Definitions/LocomotionSettings.cs" id="6_c37wc"]
+[ext_resource type="Script" uid="uid://ddyyyc51jutuv" path="res://Scripts/ProceduralSegmentedBody/ProceduralLocomotion.cs" id="8_c37wc"]
+[ext_resource type="Script" uid="uid://bpr8edfsfj12e" path="res://Scripts/Definitions/LocomotionLimbDef.cs" id="9_c1cxm"]
+[ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/test_foot.res" id="10_d0pek"]
+[ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="11_37di1"]
+[ext_resource type="ArrayMesh" uid="uid://ck0nphgbxael3" path="res://Meshes/test_segment.res" id="12_0ofkx"]
+[ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/Definitions/LimbDef.cs" id="13_a06y2"]
+[ext_resource type="ArrayMesh" uid="uid://mmvchb5ox2xh" path="res://Meshes/test_body.res" id="14_t1p1i"]
+[ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/test_head.res" id="15_ap43y"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_yih1u"]
 size = Vector3(100, 0.2, 100)
@@ -31,66 +31,178 @@ size = Vector3(2, 2, 2)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yih1u"]
 height = 4.0
 
+[sub_resource type="Resource" id="Resource_c1cxm"]
+script = ExtResource("6_c37wc")
+StepAheadDistance = 0.7
+StepHeight = 0.5
+StepProgressCurve = ExtResource("4_2iy2p")
+StepLiftCurve = ExtResource("5_otscm")
+metadata/_custom_type_script = "uid://bbn7lqonutd8l"
+
 [sub_resource type="Resource" id="Resource_b2h2w"]
-script = ExtResource("10_lc6hd")
-Mesh = ExtResource("12_c1cxm")
+script = ExtResource("11_37di1")
+Mesh = ExtResource("12_0ofkx")
 JointPreset = 1
 JointRotationAxis = 3
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_45tr1"]
-script = ExtResource("10_lc6hd")
-Mesh = ExtResource("12_c1cxm")
+script = ExtResource("11_37di1")
+Mesh = ExtResource("12_0ofkx")
 JointPreset = 2
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_bfdir"]
-script = ExtResource("11_ebf8t")
+script = ExtResource("13_a06y2")
 LimbID = "Leg1"
-Segments = Array[ExtResource("10_lc6hd")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1")])
-AttachmentPosition = Vector3(-0.5, 0, 0)
-AttachmentRotationDegrees = Vector3(-45, 0, 0)
-EndMesh = ExtResource("10_c37wc")
+Segments = Array[ExtResource("11_37di1")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1")])
+AttachmentPosition = Vector3(-0.4, 0, 0)
+Preset = 0
+EndMesh = ExtResource("10_d0pek")
 EndMeshOffset = Vector3(0, 0, 0.1)
-LockIKToAxis = true
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
 [sub_resource type="Resource" id="Resource_c37wc"]
 resource_name = "Leg1"
-script = ExtResource("9_3qodq")
+script = ExtResource("9_c1cxm")
 Definition = SubResource("Resource_bfdir")
 StanceRayPath = NodePath("Leg1_StanceRaycast")
 LandingRayPath = NodePath("Leg1_LandingRaycast")
 TargetPath = NodePath("../Leg1_TargetNode")
-RestPosition = Vector3(-0.5, 0.16135535, 0)
+RestPosition = Vector3(-0.4, 0.16135535, 0)
 
 [sub_resource type="Resource" id="Resource_qvwpr"]
-script = ExtResource("11_ebf8t")
+script = ExtResource("13_a06y2")
 LimbID = "Leg2"
-Segments = Array[ExtResource("10_lc6hd")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1")])
-AttachmentPosition = Vector3(0.5, 0, 0)
-AttachmentRotationDegrees = Vector3(-45, 0, 0)
-EndMesh = ExtResource("10_c37wc")
+Segments = Array[ExtResource("11_37di1")]([SubResource("Resource_b2h2w"), SubResource("Resource_45tr1")])
+AttachmentPosition = Vector3(0.4, 0, 0)
+Preset = 0
+EndMesh = ExtResource("10_d0pek")
 EndMeshOffset = Vector3(0, 0, 0.1)
-LockIKToAxis = true
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
-[sub_resource type="Resource" id="Resource_c1cxm"]
+[sub_resource type="Resource" id="Resource_d0pek"]
 resource_name = "Leg2"
-script = ExtResource("9_3qodq")
+script = ExtResource("9_c1cxm")
 Definition = SubResource("Resource_qvwpr")
 StanceRayPath = NodePath("Leg2_StanceRaycast")
 LandingRayPath = NodePath("Leg2_LandingRaycast")
 TargetPath = NodePath("../Leg2_TargetNode")
-RestPosition = Vector3(0.5, 0.16135535, 0)
+RestPosition = Vector3(0.4, 0.16135535, 0)
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
 radius = 0.1
 height = 0.2
 
-[sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_d0pek"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_87vi5"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_67sif"]
+_surfaces = [{
+"aabb": AABB(-0.20886788, -0.40830088, -0.20886788, 0.41773576, 0.81660175, 0.41773576),
+"format": 34896613377,
+"index_count": 240,
+"index_data": PackedByteArray("FgABABcAFwABAAIAAQADAAIAFwACAAAAAQAYAAMAFQACAAMAGAAVAAMAFAAAAAIAFQAUAAIAGQAYAAEAFgAZAAEAGAAKABUAEgAUABUACgASABUAGgAKABgAGQAaABgACgAbABIAEgATABQAGwATABIAEwAQABQAFAAQAAAAEwAOABAAGgAcAAoAHAAbAAoAGwARABMAEQAOABMAHAAdABsAHQARABsAHgAQAA4AEQAeAA4ACQAAABAAHgAJABAACQAXAAAAHwAeABEAHQAfABEAIAAJAB4AHwAgAB4AIQAXAAkAIAAhAAkAIQAWABcAIgAgAB8AIwAhACAAIgAjACAAIwAkACEAJAAWACEADQAjACIACwAkACMADQALACMADwANACIAJQAiAB8ADwAiACUAJQAfAB0ADAANAA8ADAAPACUACAALAA0ADAAIAA0AJgAlAB0ADAAlACYAJgAdABwABwAIAAwABwAMACYACAAGAAsACwAGACQAJwAmABwABwAmACcAJwAcABoABwAFAAgABQAHACcABQAGAAgAKAAnABoABQAnACgAKAAaABkABQAEAAYABAAFACgABgAEACkABAAoACkAKQAoABkABgApACQAKQAZABYAJAApABYA"),
+"lods": [0.1048905, PackedByteArray("AAABAAIAAQADAAIABAABAAAABAAFAAEABQADAAEABQAEAAYABgAEAAAABQAHAAMABQAGAAgABwAFAAgABgAAAAkABwAKAAMACAAGAAsACwAGAAkABwAIAAwABwAMAAoACAALAA0ADAAIAA0ACwAJAA4ADQALAA4ADAANAA8ADgAJABAACQAAABAADQAOABEADwANABEADAAPABIADwARABIADAASAAoAEQAOABMAEwAOABAAEgARABMAEwAQABQAEgATABQAFAAQAAAAFAAAAAIAEgAUABUAFQAUAAIACgASABUAFQACAAMAAwAKABUA")],
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 42,
+"vertex_data": PackedByteArray("Ljpf6NDFAABjBe7B/38AAOEq/+//fwAALjpf6C46AAAuOp8X0MUAAOEq/w//fwAA/3//Dx3VAAAuOp8XLjoAAP9/AAD/fwAA/3/uwZv6AAD/f+7BYwUAANDFnxfQxQAA/3//D+EqAAAd1f8P/38AANDFX+jQxQAA0MWfFy46AAD/f//vHdUAAJv67sH/fwAA0MVf6C46AAAd1f/v/38AAP9/////fwAA/3//7+EqAADoIv9/Ft0AAOUmLcEZ2QAA5SYtweUmAAAAAP9//38AAOgi/3/oIgAAGdktweUmAAD/f/9/AAAAABbd/3/oIgAAGdktwRnZAAD///9//38AABbd/38W3QAA/3//f///AACb+hA+/38AABnZ0T4Z2QAA/38QPpv6AAAZ2dE+5SYAAP9/ED5jBQAA5SbRPuUmAABjBRA+/38AAOUm0T4Z2QAA")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ga4af"]
+resource_name = "segment_Cube_004"
+_surfaces = [{
+"aabb": AABB(-0.20886788, -0.40830088, -0.20886788, 0.41773576, 0.81660175, 0.41773576),
+"attribute_data": PackedByteArray("bNv//0jS/+9s2//v2rb//9q2/+9I0v/vbNv/32zb/+/atv/v2rb/32zb/99I0v/PbNv/z9q2/9/atv/PSNL/z2zb/79s2//P2rb/z9q2/79s2/+/idL/r/fd/6/atv+/ULT/r4nS/69s2/+f993/r1C0/6/atv+fbNv/n0jS/49s2/+P2rb/n9q2/49I0v+PbNv/f2zb/4/atv+P2rb/f0iS/79QpP+vkaT/v0iS/6+RpP+/ULT/r9q2/79QpP+vUKT/r9q2/59QtP+vkaT/n0iS/6+RpP+fUKT/r0iS/59s2/+/9u3/r7Xt/7/33f+vte3/v////6////+/9u3/r/bt/6////+f////r7Xt/5/33f+vte3/n/bt/69s2/+fI8n//0jS/+9I0v//I8n/70jS//9I0v/fI8n/70jS/99I0v/vI8n/3yPJ/99I0v/PSNL/3yPJ/89I0v/fWNL/vyPJ/89Y0v+/SNL/zyPJ/78jyf+/idL/r1jS/78jyf+vWNL/v1jS/58jyf+vWNL/n4nS/68jyf+fI8n/n0jS/49Y0v+fI8n/j1jS/59I0v9/I8n/j0jS/39I0v+PI8n/f/+//4/uv/+f7r//nyPJ/48jyf+f/7//j/+//48jyf9/I8n/j/+//3//v/9//7//j76//6/uv/+/7r//vyPJ/68jyf+/vr//r76//68jyf+fI8n/r+6//5/uv/+fvr//r/+//8//v//f/7//3yPJ/88jyf/f/7//z/+//88jyf+/I8n/z+6//7/uv/+//7//z/+//+//v////7///yPJ/+8jyf///7//7/+//+8jyf/fI8n/7/+//9//v//f/7//7w=="),
+"format": 34896613399,
+"index_count": 240,
+"index_data": PackedByteArray("SABJAEoASABLAEkATAACAAAATAABAAIABQAGAAcABQBNAAYATgBPAFAATgBRAE8AUgBTAFQAUgBVAFMAVgAMAAoAVgALAAwADwAQABEADwBXABAAWABZAFoAWABbAFkAXABdAF4AXABfAF0AYAAWABQAYAAVABYAGQAaABsAGQBhABoAYgBjAGQAYgBlAGMAZgBnAGgAZgBpAGcAagAgAB4AagAfACAAIwAkACUAIwBrACQAbABtAG4AbABvAG0AKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0AQABBAEIAQABDAEEARABFAEYARABHAEUAIQBwAHEAIQAiAHAAcgBzAHQAcgB1AHMAdgB3AHgAdgB5AHcAJgB6AHsAJgAnAHoAFwB8AH0AFwAYAHwAfgB/AIAAfgCBAH8AggCDAIQAggCFAIMAHACGAIcAHAAdAIYADQCIAIkADQAOAIgAigCLAIwAigCNAIsAjgCPAJAAjgCRAI8AEgCSAJMAEgATAJIAAwCUAJUAAwAEAJQAlgCXAJgAlgCZAJcAmgCbAJwAmgCdAJsACACeAJ8ACAAJAJ4A"),
+"lods": [0.1048905, PackedByteArray("AAABAAIAAwABAAAAAwAEAAEABQAGAAcACAAGAAUACAAJAAYACgALAAwADQALAAoADQAOAAsADwAQABEAEgAQAA8AEgATABAAFAAVABYAFwAVABQAFwAYABUAGQAaABsAHAAaABkAHAAdABoAHgAfACAAIQAfAB4AIQAiAB8AIwAkACUAJgAkACMAJgAnACQAKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0AQABBAEIAQABDAEEARABFAEYARABHAEUA")],
+"material": SubResource("StandardMaterial3D_87vi5"),
+"primitive": 3,
+"uv_scale": Vector4(1.7500002, 2, 0, 0),
+"vertex_count": 160,
+"vertex_data": PackedByteArray("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")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_67sif")
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_j08ty"]
+_surfaces = [{
+"aabb": AABB(-0.20886788, -0.40830088, -0.20886788, 0.41773576, 0.81660175, 0.41773576),
+"format": 34896613377,
+"index_count": 240,
+"index_data": PackedByteArray("FgABABcAFwABAAIAAQADAAIAFwACAAAAAQAYAAMAFQACAAMAGAAVAAMAFAAAAAIAFQAUAAIAGQAYAAEAFgAZAAEAGAAKABUAEgAUABUACgASABUAGgAKABgAGQAaABgACgAbABIAEgATABQAGwATABIAEwAQABQAFAAQAAAAEwAOABAAGgAcAAoAHAAbAAoAGwARABMAEQAOABMAHAAdABsAHQARABsAHgAQAA4AEQAeAA4ACQAAABAAHgAJABAACQAXAAAAHwAeABEAHQAfABEAIAAJAB4AHwAgAB4AIQAXAAkAIAAhAAkAIQAWABcAIgAgAB8AIwAhACAAIgAjACAAIwAkACEAJAAWACEADQAjACIACwAkACMADQALACMADwANACIAJQAiAB8ADwAiACUAJQAfAB0ADAANAA8ADAAPACUACAALAA0ADAAIAA0AJgAlAB0ADAAlACYAJgAdABwABwAIAAwABwAMACYACAAGAAsACwAGACQAJwAmABwABwAmACcAJwAcABoABwAFAAgABQAHACcABQAGAAgAKAAnABoABQAnACgAKAAaABkABQAEAAYABAAFACgABgAEACkABAAoACkAKQAoABkABgApACQAKQAZABYAJAApABYA"),
+"lods": [0.1048905, PackedByteArray("AAABAAIAAQADAAIABAABAAAABAAFAAEABQADAAEABQAEAAYABgAEAAAABQAHAAMABQAGAAgABwAFAAgABgAAAAkABwAKAAMACAAGAAsACwAGAAkABwAIAAwABwAMAAoACAALAA0ADAAIAA0ACwAJAA4ADQALAA4ADAANAA8ADgAJABAACQAAABAADQAOABEADwANABEADAAPABIADwARABIADAASAAoAEQAOABMAEwAOABAAEgARABMAEwAQABQAEgATABQAFAAQAAAAFAAAAAIAEgAUABUAFQAUAAIACgASABUAFQACAAMAAwAKABUA")],
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 42,
+"vertex_data": PackedByteArray("Ljpf6NDFAABjBe7B/38AAOEq/+//fwAALjpf6C46AAAuOp8X0MUAAOEq/w//fwAA/3//Dx3VAAAuOp8XLjoAAP9/AAD/fwAA/3/uwZv6AAD/f+7BYwUAANDFnxfQxQAA/3//D+EqAAAd1f8P/38AANDFX+jQxQAA0MWfFy46AAD/f//vHdUAAJv67sH/fwAA0MVf6C46AAAd1f/v/38AAP9/////fwAA/3//7+EqAADoIv9/Ft0AAOUmLcEZ2QAA5SYtweUmAAAAAP9//38AAOgi/3/oIgAAGdktweUmAAD/f/9/AAAAABbd/3/oIgAAGdktwRnZAAD///9//38AABbd/38W3QAA/3//f///AACb+hA+/38AABnZ0T4Z2QAA/38QPpv6AAAZ2dE+5SYAAP9/ED5jBQAA5SbRPuUmAABjBRA+/38AAOUm0T4Z2QAA")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_vblhj"]
+resource_name = "segment_Cube_004"
+_surfaces = [{
+"aabb": AABB(-0.20886788, -0.40830088, -0.20886788, 0.41773576, 0.81660175, 0.41773576),
+"attribute_data": PackedByteArray("bNv//0jS/+9s2//v2rb//9q2/+9I0v/vbNv/32zb/+/atv/v2rb/32zb/99I0v/PbNv/z9q2/9/atv/PSNL/z2zb/79s2//P2rb/z9q2/79s2/+/idL/r/fd/6/atv+/ULT/r4nS/69s2/+f993/r1C0/6/atv+fbNv/n0jS/49s2/+P2rb/n9q2/49I0v+PbNv/f2zb/4/atv+P2rb/f0iS/79QpP+vkaT/v0iS/6+RpP+/ULT/r9q2/79QpP+vUKT/r9q2/59QtP+vkaT/n0iS/6+RpP+fUKT/r0iS/59s2/+/9u3/r7Xt/7/33f+vte3/v////6////+/9u3/r/bt/6////+f////r7Xt/5/33f+vte3/n/bt/69s2/+fI8n//0jS/+9I0v//I8n/70jS//9I0v/fI8n/70jS/99I0v/vI8n/3yPJ/99I0v/PSNL/3yPJ/89I0v/fWNL/vyPJ/89Y0v+/SNL/zyPJ/78jyf+/idL/r1jS/78jyf+vWNL/v1jS/58jyf+vWNL/n4nS/68jyf+fI8n/n0jS/49Y0v+fI8n/j1jS/59I0v9/I8n/j0jS/39I0v+PI8n/f/+//4/uv/+f7r//nyPJ/48jyf+f/7//j/+//48jyf9/I8n/j/+//3//v/9//7//j76//6/uv/+/7r//vyPJ/68jyf+/vr//r76//68jyf+fI8n/r+6//5/uv/+fvr//r/+//8//v//f/7//3yPJ/88jyf/f/7//z/+//88jyf+/I8n/z+6//7/uv/+//7//z/+//+//v////7///yPJ/+8jyf///7//7/+//+8jyf/fI8n/7/+//9//v//f/7//7w=="),
+"format": 34896613399,
+"index_count": 240,
+"index_data": PackedByteArray("SABJAEoASABLAEkATAACAAAATAABAAIABQAGAAcABQBNAAYATgBPAFAATgBRAE8AUgBTAFQAUgBVAFMAVgAMAAoAVgALAAwADwAQABEADwBXABAAWABZAFoAWABbAFkAXABdAF4AXABfAF0AYAAWABQAYAAVABYAGQAaABsAGQBhABoAYgBjAGQAYgBlAGMAZgBnAGgAZgBpAGcAagAgAB4AagAfACAAIwAkACUAIwBrACQAbABtAG4AbABvAG0AKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0AQABBAEIAQABDAEEARABFAEYARABHAEUAIQBwAHEAIQAiAHAAcgBzAHQAcgB1AHMAdgB3AHgAdgB5AHcAJgB6AHsAJgAnAHoAFwB8AH0AFwAYAHwAfgB/AIAAfgCBAH8AggCDAIQAggCFAIMAHACGAIcAHAAdAIYADQCIAIkADQAOAIgAigCLAIwAigCNAIsAjgCPAJAAjgCRAI8AEgCSAJMAEgATAJIAAwCUAJUAAwAEAJQAlgCXAJgAlgCZAJcAmgCbAJwAmgCdAJsACACeAJ8ACAAJAJ4A"),
+"lods": [0.1048905, PackedByteArray("AAABAAIAAwABAAAAAwAEAAEABQAGAAcACAAGAAUACAAJAAYACgALAAwADQALAAoADQAOAAsADwAQABEAEgAQAA8AEgATABAAFAAVABYAFwAVABQAFwAYABUAGQAaABsAHAAaABkAHAAdABoAHgAfACAAIQAfAB4AIQAiAB8AIwAkACUAJgAkACMAJgAnACQAKAApACoAKAArACkALAAtAC4ALAAvAC0AMAAxADIAMAAzADEANAA1ADYANAA3ADUAOAA5ADoAOAA7ADkAPAA9AD4APAA/AD0AQABBAEIAQABDAEEARABFAEYARABHAEUA")],
+"material": SubResource("StandardMaterial3D_87vi5"),
+"primitive": 3,
+"uv_scale": Vector4(1.7500002, 2, 0, 0),
+"vertex_count": 160,
+"vertex_data": PackedByteArray("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")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_j08ty")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8hy4i"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_qvwpr"]
+_surfaces = [{
+"aabb": AABB(-0.23249169, -0.15135534, -0.48574674, 0.4649834, 0.28386706, 0.9714935),
+"format": 34896613377,
+"index_count": 240,
+"index_data": PackedByteArray("AAABAAIAAgABABgAAQAVABgAAgAYABAAAQAUABUAFwAYABUAFAAXABUAHAAQABgAFwAcABgAHQAUAAEAAAAdAAEAFAATABcAFgAcABcAEwAWABcAEQATABQAHQARABQAEwASABYAFgAeABwAEgAeABYAHgAZABwAHAAZABAAHgAaABkAEQAPABMADwASABMAEgALAB4ACwAaAB4ADwAOABIADgALABIAGwAZABoACwAbABoADQAQABkAGwANABkADQACABAAHwAbAAsADgAfAAsADAANABsAHwAMABsABQACAA0ADAAFAA0ABQAAAAIAIAAMAB8ABwAFAAwAIAAHAAwABwAEAAUABAAAAAUAIQAHACAAIgAEAAcAIQAiAAcAIwAhACAACQAgAB8AIwAgAAkACQAfAA4AJAAhACMAJAAjAAkAJQAiACEAJAAlACEACgAJAA4AJAAJAAoACgAOAA8AJgAlACQAJgAkAAoAJQAnACIAIgAnAAQACAAKAA8AJgAKAAgACAAPABEAJgAoACUAKAAmAAgAKAAnACUAKQAIABEAKAAIACkAKQARAB0AKAAGACcABgAoACkAJwAGAAMABgApAAMAAwApAB0AJwADAAQAAwAdAAAABAADAAAA"),
+"lods": [0.34852424, PackedByteArray("AAABAAIAAwABAAAABAADAAAABAAAAAUABQAAAAIABgADAAQABwAEAAUABgAEAAcABgAIAAMAAwAIAAEABgAHAAkABgAKAAgABgAJAAoACQAHAAsABwAFAAwABwAMAAsADAAFAA0ABQACAA0ACgAJAA4ACQALAA4ACgAOAA8ACAAKAA8ADQACABAACAAPABEACAARAAEADwAOABIADgALABIAEQAPABMADwASABMAAQARABQAEQATABQAAQAUABUAEwASABYAEgALABYAFAATABcAFAAXABUAEwAWABcAAQAVABgAAgABABgAFwAYABUAAgAYABAAFwAZABgAGQAQABgAFgAZABcADQAQABkAFgAaABkACwAaABYAGwANABkAGwAZABoACwAbABoADAANABsACwAMABsA")],
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 42,
+"vertex_data": PackedByteArray("YjXoQRbdAABjBR6X/38AAKg3y5UZ2QAAqDdvExnZAAD/f0ETm/oAAP9/6EH//wAAa0OmBdDFAABWyG8TGdkAACEWbxPlJgAA3elvE+UmAAD/f0ETYwUAAJv6Hpf/fwAAnMroQRbdAAD/fx6Xm/oAAJDv6EHoIgAA/3/oQQAAAABrQ2bW0MUAAG4Q6EHoIgAA3enLleUmAAD/fx6XYwUAACEWy5XlJgAA8TBm1i46AAANz2bWLjoAAP9/0uPhKgAA4SrS4/9/AAD/f9LjHdUAAJO8ZtbQxQAAVsjLlRnZAAD/f////38AAAAA6EH/fwAAHdXS4/9/AAD//+hB/38AAJv6QRP/fwAAHdXTA/9/AACTvKYF0MUAAA3PpgUuOgAA/3/TA+EqAAD/fwAA/38AAPEwpgUuOgAA/3/TAx3VAADhKtMD/38AAGMFQRP/fwAA")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_cwrbu"]
+resource_name = "foot_Cube_005"
+_surfaces = [{
+"aabb": AABB(-0.23249169, -0.15135534, -0.48574674, 0.4649834, 0.28386706, 0.9714935),
+"attribute_data": PackedByteArray("Orv//8/L/+9Ty///Crn//565/9/dv//fz8v/7+fL/99Ty///bNv/72zb///Py//vbNv/3+fL/9/dv//f58v/z+fL/9/dv//P58v/32zb/89s2//f58v/z+fL/89s2/+/bNv/z+vL/7/dv//P68v/v+fL/8/dv/+/3b//v/fL/6/ry/+/grn/v/fL/6+Cuf+f3b//n+vL/5/ry/+/98v/r2zb/79s2/+f68v/n92//5/Py/+P68v/n3q//4/ry/+fbNv/j2zb/5/Py/+Pz8v/j2zb/39s2/+PU8v/f3q//49Ty/9/z8v/jzq7/39s2/+/te3/n7Xt/79s2/+f////r////7+17f+f////n9q2/3+Guf+Pgrn/nwq5/39Ikv+fgrn/v565/8/atv//nrn/3wq5//+Cuf+fer//j92//5+Guf+Phrn/jzq7/396v/+PCrn/f565/9/dv//P3b//3565/8+euf/P3b//v92//8+Cuf+/Orv//3q//+9s2//vz8v/73q//+/dv//f3b//v92//68I3P+v98v/rwjc/6/dv/+v3b//n0iS/78fpP+vkaT/v0iS/6+RpP+/YbL/r9q2/78fpP+vH6T/r9q2/59hsv+vkaT/n0iS/6+RpP+fH6T/r8Xt/68I3P+vte3/v8Xt/6/F7f+v////rwjc/6/F7f+v2rb/n9q2/4/atv+Phrn/j9q2/78suf+vgrn/v2Gy/6/dv/+vLLn/ryy5/6/dv/+vYbL/r4K5/58suf+v2rb/n9q2/9+euf/P2rb/z9q2/8/atv+/hrn/79q2/+96v//vhrn/74a5/+96v//v2rb/7565/9+Guf/v2rb/3w=="),
+"format": 34896613399,
+"index_count": 240,
+"index_data": PackedByteArray("XQABAAIAXQBeAAEACABfAAoACABgAF8ACwAMAAkACwANAAwAYQAHAAYAYQBiAAcADgAPABAADgARAA8AEgATABQAEgAVABMAFgAXABgAFgAZABcAGgAbABwAGgAdABsAYwAfACAAYwBkAB8AJgBlACgAJgAnAGUAZgApAGcAZgAqACkAaAAlACIAaABpACUAKwAsAC0AKwAuACwALwAwADEALwAyADAAMwA0ADUAMwA2ADQANwA4ADkANwA6ADgAagBrAGwAagBtAGsAbgBvAHAAbgBxAG8AcgBzAHQAcgB1AHMAdgB3AHgAdgBHAHcAOwB5AD0AOwB6AHkAewA/AEAAewB8AD8AfQBCAH4AfQBBAEIAfwA8AIAAfwA+ADwAgQBEAEUAgQCCAEQATQBOAE8ATQBQAE4AUQBSAFMAUQBUAFIAgwBGAIQAgwBDAEYAhQCGAIcAhQCIAIYAIQCJAB4AIQCKAIkAiwAkAIwAiwAjACQAjQCOAI8AjQCQAI4AkQCSAEsAkQCTAJIAVQBWAFcAVQBYAFYAWQBaAFsAWQBcAFoAlABIAEkAlACVAEgASgCWAEwASgCXAJYAAwCYAAAAAwCZAJgAmgAFAJsAmgAEAAUAnACdAJ4AnACfAJ0A"),
+"lods": [0.34852424, PackedByteArray("AAABAAIAAwABAAAAAwAEAAEABAAFAAEABgAFAAcACAAJAAoACAALAAkACwAMAAkACwANAAwADgAPABAADgARAA8AEgATABQAEgAVABMAFgAXABgAFgAZABcAGgAbABwAGgAdABsAHgAfACAAIQAiAB4AIQAjACIAIwAkACIAIgAkACUAJgAnACgAJwApACgAJwAqACkAKwAsAC0AKwAuACwALwAwADEALwAyADAAMwA0ADUAMwA2ADQANwA4ADkANwA6ADgAOwA8AD0AOwA+ADwAPQA8AD8APQA/AEAAQQBCAD8AQwBEAEUAQwBGAEQARwBFAEgARwBIAEkASgBJAEsASgBLAEwATQBOAE8ATQBQAE4AUQBSAFMAUQBUAFIAVQBWAFcAVQBYAFYAWQBaAFsAWQBcAFoA")],
+"material": SubResource("StandardMaterial3D_8hy4i"),
+"primitive": 3,
+"uv_scale": Vector4(1.7500002, 2, 0, 0),
+"vertex_count": 160,
+"vertex_data": PackedByteArray("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")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_qvwpr")
 
 [sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_37di1"]
+
+[sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_0ofkx"]
+
+[sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_a06y2"]
+angle = 3.1415927
+
+[sub_resource type="JointLimitationCone3D" id="JointLimitationCone3D_t1p1i"]
+angle = 3.1415927
 
 [node name="Root" type="Node3D" unique_id=806204303]
 
@@ -146,9 +258,9 @@ shape = SubResource("CapsuleShape3D_yih1u")
 [node name="ProceduralSegmentedBody" type="Skeleton3D" parent="PlayerController" unique_id=590985275]
 bones/0/name = "Torso"
 bones/0/parent = -1
-bones/0/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9660095, 0)
+bones/0/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4443636, 0)
 bones/0/enabled = true
-bones/0/position = Vector3(0, 1.9660095, 0)
+bones/0/position = Vector3(0, 2.4443636, 0)
 bones/0/rotation = Quaternion(0, 0, 0, 1)
 bones/0/scale = Vector3(1, 1, 1)
 bones/1/name = "Head"
@@ -160,11 +272,11 @@ bones/1/rotation = Quaternion(0, 0, 0, 1)
 bones/1/scale = Vector3(1, 1, 1)
 bones/2/name = "Leg1_segment_0"
 bones/2/parent = 0
-bones/2/rest = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, -0.5, -0.64980483, 0)
+bones/2/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, -0.64980483, 0)
 bones/2/enabled = true
-bones/2/position = Vector3(-0.5, -0.64980483, 0)
-bones/2/rotation = Quaternion(-0.38268346, 0, 0, 0.92387956)
-bones/2/scale = Vector3(1, 0.99999994, 0.99999994)
+bones/2/position = Vector3(-0.4, -0.64980483, 0)
+bones/2/rotation = Quaternion(0, 0, 0, 1)
+bones/2/scale = Vector3(1, 1, 1)
 bones/3/name = "Leg1_segment_1"
 bones/3/parent = 2
 bones/3/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81660175, 0)
@@ -174,12 +286,12 @@ bones/3/rotation = Quaternion(0, 0, 0, 1)
 bones/3/scale = Vector3(1, 1, 1)
 bones/4/name = "Leg1_end"
 bones/4/parent = 3
-bones/4/rest = Transform3D(1, 0, 0, 0, 0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, -0.81660175, 0)
+bones/4/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81660175, 0)
 bones/4/enabled = true
 bones/4/position = Vector3(0, -0.81660175, 0)
-bones/4/rotation = Quaternion(0.38268346, 0, 0, 0.92387956)
+bones/4/rotation = Quaternion(0, 0, 0, 1)
 bones/4/scale = Vector3(1, 1, 1)
-bones/5/name = "Leg1_sole"
+bones/5/name = "Leg1_contact"
 bones/5/parent = 4
 bones/5/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15135534, 0)
 bones/5/enabled = true
@@ -188,11 +300,11 @@ bones/5/rotation = Quaternion(0, 0, 0, 1)
 bones/5/scale = Vector3(1, 1, 1)
 bones/6/name = "Leg2_segment_0"
 bones/6/parent = 0
-bones/6/rest = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0.5, -0.64980483, 0)
+bones/6/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.64980483, 0)
 bones/6/enabled = true
-bones/6/position = Vector3(0.5, -0.64980483, 0)
-bones/6/rotation = Quaternion(-0.38268346, 0, 0, 0.92387956)
-bones/6/scale = Vector3(1, 0.99999994, 0.99999994)
+bones/6/position = Vector3(0.4, -0.64980483, 0)
+bones/6/rotation = Quaternion(0, 0, 0, 1)
+bones/6/scale = Vector3(1, 1, 1)
 bones/7/name = "Leg2_segment_1"
 bones/7/parent = 6
 bones/7/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81660175, 0)
@@ -202,137 +314,242 @@ bones/7/rotation = Quaternion(0, 0, 0, 1)
 bones/7/scale = Vector3(1, 1, 1)
 bones/8/name = "Leg2_end"
 bones/8/parent = 7
-bones/8/rest = Transform3D(1, 0, 0, 0, 0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, -0.81660175, 0)
+bones/8/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81660175, 0)
 bones/8/enabled = true
 bones/8/position = Vector3(0, -0.81660175, 0)
-bones/8/rotation = Quaternion(0.38268346, 0, 0, 0.92387956)
+bones/8/rotation = Quaternion(0, 0, 0, 1)
 bones/8/scale = Vector3(1, 1, 1)
-bones/9/name = "Leg2_sole"
+bones/9/name = "Leg2_contact"
 bones/9/parent = 8
 bones/9/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15135534, 0)
 bones/9/enabled = true
 bones/9/position = Vector3(0, -0.15135534, 0)
 bones/9/rotation = Quaternion(0, 0, 0, 1)
 bones/9/scale = Vector3(1, 1, 1)
+bones/10/name = "Arm1_segment_0"
+bones/10/parent = 0
+bones/10/rest = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, -1, 0.5, 0)
+bones/10/enabled = true
+bones/10/position = Vector3(-1, 0.5, 0)
+bones/10/rotation = Quaternion(0, 0, -0.70710677, 0.70710677)
+bones/10/scale = Vector3(1, 1, 1)
+bones/11/name = "Arm1_segment_1"
+bones/11/parent = 10
+bones/11/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81660175, 0)
+bones/11/enabled = true
+bones/11/position = Vector3(0, -0.81660175, 0)
+bones/11/rotation = Quaternion(0, 0, 0, 1)
+bones/11/scale = Vector3(1, 1, 1)
+bones/12/name = "Arm1_end"
+bones/12/parent = 11
+bones/12/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81660175, 0)
+bones/12/enabled = true
+bones/12/position = Vector3(0, -0.81660175, 0)
+bones/12/rotation = Quaternion(0, 0, 0, 1)
+bones/12/scale = Vector3(1, 1, 1)
+bones/13/name = "Arm2_segment_0"
+bones/13/parent = 0
+bones/13/rest = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 1, 0.5, 0)
+bones/13/enabled = true
+bones/13/position = Vector3(1, 0.5, 0)
+bones/13/rotation = Quaternion(0, 0, 0.70710677, 0.70710677)
+bones/13/scale = Vector3(1, 1, 1)
+bones/14/name = "Arm2_segment_1"
+bones/14/parent = 13
+bones/14/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81660175, 0)
+bones/14/enabled = true
+bones/14/position = Vector3(0, -0.81660175, 0)
+bones/14/rotation = Quaternion(0, 0, 0, 1)
+bones/14/scale = Vector3(1, 1, 1)
+bones/15/name = "Arm2_end"
+bones/15/parent = 14
+bones/15/rest = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81660175, 0)
+bones/15/enabled = true
+bones/15/position = Vector3(0, -0.81660175, 0)
+bones/15/rotation = Quaternion(0, 0, 0, 1)
+bones/15/scale = Vector3(1, 1, 1)
 script = ExtResource("1_qlu5l")
 _debugMode = true
-LocomotionSettings = ExtResource("4_py48f")
+LocomotionSettings = SubResource("Resource_c1cxm")
 DefaultStepProgressCurve = ExtResource("4_2iy2p")
 DefaultStepLiftCurve = ExtResource("5_otscm")
 BodyDefinition = ExtResource("2_v5rd0")
 metadata/_custom_type_script = "uid://b2o6rdr1om1jh"
 
-[node name="ProceduralLocomotion" type="Node3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=518393361]
-script = ExtResource("8_otscm")
-Limbs = Array[ExtResource("9_3qodq")]([SubResource("Resource_c37wc"), SubResource("Resource_c1cxm")])
+[node name="ProceduralLocomotion" type="Node3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=596783128]
+script = ExtResource("8_c37wc")
+Limbs = Array[ExtResource("9_c1cxm")]([SubResource("Resource_c37wc"), SubResource("Resource_d0pek")])
 
-[node name="Leg1_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=313951143]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.1613554, 0)
+[node name="Leg1_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=2101723215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 1.1613554, 0)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="Leg1_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=806353734]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.1613554, -0.25)
+[node name="Leg1_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=312568235]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 1.1613554, -0.7)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="Leg2_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=447139886]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.1613554, 0)
+[node name="Leg2_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1899621502]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.1613554, 0)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="Leg2_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1628680242]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.1613554, -0.25)
+[node name="Leg2_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=614486636]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.1613554, -0.7)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="Torso" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=606873778]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9660095, 0)
+[node name="Torso" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=440306084]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4443636, 0)
 bone_name = "Torso"
 bone_idx = 0
 
-[node name="TorsoMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Torso" unique_id=543963526]
-mesh = ExtResource("14_d0pek")
+[node name="TorsoMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Torso" unique_id=1759858775]
+mesh = ExtResource("14_t1p1i")
 
-[node name="Head" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1810447628]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6158142, 0.4)
+[node name="Head" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1511128945]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0941684, 0.4)
 bone_name = "Head"
 bone_idx = 1
 
-[node name="HeadMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Head" unique_id=200922279]
+[node name="HeadMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Head" unique_id=2128990196]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.6286161, 0)
-mesh = ExtResource("15_37di1")
+mesh = ExtResource("15_ap43y")
 
-[node name="Leg1_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=683210411]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710665, 0, -0.70710665, 0.70710677, -0.5, 1.3162047, 0)
+[node name="Leg1_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=235861674]
+transform = Transform3D(1, 0, 0, 0, 0.9999978, 0.0020994137, 0, -0.0020994137, 0.9999978, -0.4, 1.7945588, 0)
 bone_name = "Leg1_segment_0"
 bone_idx = 2
 
-[node name="Leg1_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_segment_0" unique_id=1866430006]
+[node name="Leg1_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_segment_0" unique_id=930331634]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_segment_0" unique_id=1878956893]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_segment_0" unique_id=500273334]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40830088, 0)
-mesh = ExtResource("12_c1cxm")
+mesh = ExtResource("12_0ofkx")
 
-[node name="Leg1_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=991395435]
-transform = Transform3D(1, 0, 0, 0, 0.70710665, -0.70710677, 0, 0.70710677, 0.70710665, -0.5, 0.73878, 0.5774245)
+[node name="Leg1_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1986856306]
+transform = Transform3D(1, 0, 0, 0, 0.9999978, 0.0020994137, 0, -0.0020994137, 0.9999978, -0.4, 0.9779588, 0.0017143849)
 bone_name = "Leg1_segment_1"
 bone_idx = 3
 
-[node name="Leg1_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_segment_1" unique_id=2034327786]
-mesh = SubResource("SphereMesh_bfesj")
-
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_segment_1" unique_id=868582658]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_segment_1" unique_id=2140669094]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40830088, 0)
-mesh = ExtResource("12_c1cxm")
+mesh = ExtResource("12_0ofkx")
 
-[node name="Leg1_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1895836409]
-transform = Transform3D(1, 0, 0, 0, 0.9999999, -1.4901161e-07, 0, 1.4901161e-07, 0.9999999, -0.5, 0.1613555, -1.1920929e-07)
+[node name="Leg1_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=50293459]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.16135883, 0.0034287698)
 bone_name = "Leg1_end"
 bone_idx = 4
 
-[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_end" unique_id=644197248]
+[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg1_end" unique_id=1667188616]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
-mesh = ExtResource("10_c37wc")
+mesh = ExtResource("10_d0pek")
 
-[node name="Leg2_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1685834397]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710665, 0, -0.70710665, 0.70710677, 0.5, 1.3162047, 0)
+[node name="Leg2_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=347599520]
+transform = Transform3D(1, 0, 0, 0, 0.9999978, 0.0020994137, 0, -0.0020994137, 0.9999978, 0.4, 1.7945588, 0)
 bone_name = "Leg2_segment_0"
 bone_idx = 6
 
-[node name="Leg2_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_segment_0" unique_id=575799152]
+[node name="Leg2_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_segment_0" unique_id=1399401653]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_segment_0" unique_id=246358635]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_segment_0" unique_id=1921520463]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40830088, 0)
-mesh = ExtResource("12_c1cxm")
+mesh = ExtResource("12_0ofkx")
 
-[node name="Leg2_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1183860435]
-transform = Transform3D(1, 0, 0, 0, 0.70710665, -0.70710677, 0, 0.70710677, 0.70710665, 0.5, 0.73878, 0.5774245)
+[node name="Leg2_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=114009643]
+transform = Transform3D(1, 0, 0, 0, 0.9999978, 0.0020994137, 0, -0.0020994137, 0.9999978, 0.4, 0.9779588, 0.0017143849)
 bone_name = "Leg2_segment_1"
 bone_idx = 7
 
-[node name="Leg2_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_segment_1" unique_id=1619767577]
+[node name="Leg2_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_segment_1" unique_id=1282286466]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_segment_1" unique_id=683953418]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_segment_1" unique_id=1266560476]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40830088, 0)
-mesh = ExtResource("12_c1cxm")
+mesh = ExtResource("12_0ofkx")
 
-[node name="Leg2_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2067157358]
-transform = Transform3D(1, 0, 0, 0, 0.9999999, -1.4901161e-07, 0, 1.4901161e-07, 0.9999999, 0.5, 0.1613555, -1.1920929e-07)
+[node name="Leg2_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=38015827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.16135883, 0.0034287698)
 bone_name = "Leg2_end"
 bone_idx = 8
 
-[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_end" unique_id=1223792836]
+[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Leg2_end" unique_id=1878852765]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
-mesh = ExtResource("10_c37wc")
+mesh = ExtResource("10_d0pek")
 
-[node name="Leg1_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=554068405]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.16135535, 0)
+[node name="Arm1_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1512729044]
+transform = Transform3D(0.10733056, 0.9942234, 1.2585912e-06, -0.9942234, 0.10733056, 6.7738256e-08, -6.7738256e-08, -1.2585912e-06, 1, -1, 2.9443636, 0)
+bone_name = "Arm1_segment_0"
+bone_idx = 10
 
-[node name="Leg1_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1546599982]
+[node name="Arm1_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm1_segment_0" unique_id=513570716]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm1_segment_0" unique_id=1594373613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40830088, 0)
+mesh = SubResource("ArrayMesh_ga4af")
+
+[node name="Arm1_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=472153158]
+transform = Transform3D(-0.10611146, 0.9943543, -1.2443394e-06, -0.9943543, -0.10611146, 6.6203825e-08, -6.620854e-08, 1.2443393e-06, 1, -1.8118846, 2.8567173, 1.0277678e-06)
+bone_name = "Arm1_segment_1"
+bone_idx = 11
+
+[node name="Arm1_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm1_segment_1" unique_id=620860666]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm1_segment_1" unique_id=713131209]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40830088, 0)
+mesh = SubResource("ArrayMesh_vblhj")
+
+[node name="Arm1_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=809149039]
+transform = Transform3D(-0.10611146, 0.9943543, -1.2443394e-06, -0.9943543, -0.10611146, 6.6203825e-08, -6.620854e-08, 1.2443393e-06, 1, -2.623876, 2.9433682, 1.1638122e-08)
+bone_name = "Arm1_end"
+bone_idx = 12
+
+[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm1_end" unique_id=948825254]
+transform = Transform3D(-1, 8.742278e-08, 0, 3.821371e-15, 4.371139e-08, -1, -8.742278e-08, -1, -4.371139e-08, 0, 0, 0)
+mesh = ExtResource("10_d0pek")
+
+[node name="Arm2_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1427735390]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 1, 2.9443636, 0)
+bone_name = "Arm2_segment_0"
+bone_idx = 13
+
+[node name="Arm2_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm2_segment_0" unique_id=279441994]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm2_segment_0" unique_id=902283283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40830088, 0)
+mesh = SubResource("ArrayMesh_ga4af")
+
+[node name="Arm2_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=462435888]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 1.8166018, 2.9443636, 0)
+bone_name = "Arm2_segment_1"
+bone_idx = 14
+
+[node name="Arm2_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm2_segment_1" unique_id=1816332213]
+mesh = SubResource("SphereMesh_bfesj")
+
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm2_segment_1" unique_id=251353859]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40830088, 0)
+mesh = SubResource("ArrayMesh_vblhj")
+
+[node name="Arm2_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=395466745]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 2.6332035, 2.9443636, 0)
+bone_name = "Arm2_end"
+bone_idx = 15
+
+[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Arm2_end" unique_id=99201160]
+transform = Transform3D(-1, 8.742278e-08, 0, 3.821371e-15, 4.371139e-08, -1, -8.742278e-08, -1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("ArrayMesh_cwrbu")
+
+[node name="Leg1_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1021044414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.16135535, 0)
+
+[node name="Leg1_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=61987959]
 setting_count = 1
 settings/0/target_node = NodePath("../Leg1_TargetNode")
 settings/0/root_bone_name = "Leg1_segment_0"
@@ -344,13 +561,13 @@ settings/0/joint_count = 3
 settings/0/joints/0/rotation_axis = 3
 settings/0/joints/0/limitation = null
 settings/0/joints/1/rotation_axis = 0
-settings/0/joints/1/limitation = SubResource("JointLimitationCone3D_d0pek")
+settings/0/joints/1/limitation = SubResource("JointLimitationCone3D_37di1")
 settings/0/joints/1/limitation/right_axis = 0
 settings/0/joints/1/limitation/rotation_offset = Quaternion(0, -0.9230769, 0.38461536, 0)
 settings/0/joints/2/rotation_axis = 3
 settings/0/joints/2/limitation = null
 
-[node name="Leg1_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1581080131]
+[node name="Leg1_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1137041952]
 setting_count = 1
 settings/0/amount = 1.0
 settings/0/apply_bone_name = "Leg1_end"
@@ -362,10 +579,10 @@ settings/0/axes = 7
 settings/0/invert = 0
 settings/0/additive = false
 
-[node name="Leg2_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=553332664]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.16135535, 0)
+[node name="Leg2_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1177478821]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.16135535, 0)
 
-[node name="Leg2_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1961496431]
+[node name="Leg2_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1785918616]
 setting_count = 1
 settings/0/target_node = NodePath("../Leg2_TargetNode")
 settings/0/root_bone_name = "Leg2_segment_0"
@@ -377,13 +594,13 @@ settings/0/joint_count = 3
 settings/0/joints/0/rotation_axis = 3
 settings/0/joints/0/limitation = null
 settings/0/joints/1/rotation_axis = 0
-settings/0/joints/1/limitation = SubResource("JointLimitationCone3D_37di1")
+settings/0/joints/1/limitation = SubResource("JointLimitationCone3D_0ofkx")
 settings/0/joints/1/limitation/right_axis = 0
 settings/0/joints/1/limitation/rotation_offset = Quaternion(0, -0.9230769, 0.38461536, 0)
 settings/0/joints/2/rotation_axis = 3
 settings/0/joints/2/limitation = null
 
-[node name="Leg2_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=352303221]
+[node name="Leg2_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1424138781]
 setting_count = 1
 settings/0/amount = 1.0
 settings/0/apply_bone_name = "Leg2_end"
@@ -394,3 +611,45 @@ settings/0/copy = 2
 settings/0/axes = 7
 settings/0/invert = 0
 settings/0/additive = false
+
+[node name="Arm1_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=493465587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6332035, 2.9443636, 0)
+
+[node name="Arm1_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=727419064]
+setting_count = 1
+settings/0/target_node = NodePath("../Arm1_TargetNode")
+settings/0/root_bone_name = "Arm1_segment_0"
+settings/0/root_bone = 10
+settings/0/end_bone_name = "Arm1_end"
+settings/0/end_bone = 12
+settings/0/extend_end_bone = false
+settings/0/joint_count = 3
+settings/0/joints/0/rotation_axis = 3
+settings/0/joints/0/limitation = null
+settings/0/joints/1/rotation_axis = 3
+settings/0/joints/1/limitation = SubResource("JointLimitationCone3D_a06y2")
+settings/0/joints/1/limitation/right_axis = 0
+settings/0/joints/1/limitation/rotation_offset = Quaternion(0.70710677, 0, 0, 0.70710677)
+settings/0/joints/2/rotation_axis = 3
+settings/0/joints/2/limitation = null
+
+[node name="Arm2_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1383880696]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6332035, 2.9443636, 0)
+
+[node name="Arm2_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1190879686]
+setting_count = 1
+settings/0/target_node = NodePath("../Arm2_TargetNode")
+settings/0/root_bone_name = "Arm2_segment_0"
+settings/0/root_bone = 13
+settings/0/end_bone_name = "Arm2_end"
+settings/0/end_bone = 15
+settings/0/extend_end_bone = false
+settings/0/joint_count = 3
+settings/0/joints/0/rotation_axis = 3
+settings/0/joints/0/limitation = null
+settings/0/joints/1/rotation_axis = 3
+settings/0/joints/1/limitation = SubResource("JointLimitationCone3D_t1p1i")
+settings/0/joints/1/limitation/right_axis = 0
+settings/0/joints/1/limitation/rotation_offset = Quaternion(0.70710677, 0, 0, 0.70710677)
+settings/0/joints/2/rotation_axis = 3
+settings/0/joints/2/limitation = null

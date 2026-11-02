@@ -14,14 +14,14 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         public LimbDef Definition;
         public int[] SegmentBones;
         public int EndBone;
-        public int SoleBone;
+        public int ContactBone;
 
-        public GeneratedLimb(LimbDef definition, int[] segmentBones, int endBone, int soleBone)
+        public GeneratedLimb(LimbDef definition, int[] segmentBones, int endBone, int contactBone)
         {
             Definition = definition;
             SegmentBones = segmentBones;
             EndBone = endBone;
-            SoleBone = soleBone;
+            ContactBone = contactBone;
         }
     }
 
@@ -221,11 +221,11 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
             if (limb.EndMesh != null)
             {
-                float distance = limb.AnkleToSoleDistance;
+                float distance = limb.AnkleToContactDistance;
 
                 if (!float.IsFinite(distance) || distance <= 0.001f)
                 {
-                    return "The foot mesh sole must sit below the ankle with non-zero gap.";
+                    return "The foot mesh contact must sit below the ankle with non-zero gap.";
                 }
             }
         }
@@ -246,7 +246,8 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             return;
         }
 
-        Error err = EditorInterface.Singleton.SaveScene();
+        Error err = Error.Ok;
+        // Error err = EditorInterface.Singleton.SaveScene();
         ShowPreview = false;
         if (err != Error.Ok)
         {
@@ -317,9 +318,9 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 continue;
             }
 
-            float soleHeight = GetBoneGlobalRest(generatedLimb.SoleBone).Origin.Y;
+            float contactHeight = GetBoneGlobalRest(generatedLimb.ContactBone).Origin.Y;
 
-            float requiredHeight = limb.GroundClearance - soleHeight;
+            float requiredHeight = limb.GroundClearance - contactHeight;
 
             torsoHeight = Mathf.Min(torsoHeight, requiredHeight);
         }
@@ -349,7 +350,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 
                 AddSegmentMesh(
                     generatedLimb.SegmentBones[i], 
-                    segment.LimbDirection * segment.Length, 
+                    segment.LengthDirection * segment.Length, 
                     segment
                 );
             }
@@ -382,8 +383,8 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 GD.Print(
                     $"{generatedLimb.Definition.LimbID}: " +
                     $"root={generatedLimb.SegmentBones[0]}, " +
-                    $"ankle={generatedLimb.EndBone}, " +
-                    $"sole={generatedLimb.SoleBone}"
+                    $"end={generatedLimb.EndBone}, " +
+                    $"contact={generatedLimb.ContactBone}"
                 );
             }
         }
@@ -417,7 +418,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             if (i == 0) // first segment attaches at hip
             {
                 Vector3 torsoHalfSize = BodyDefinition.TorsoSize / 2f;
-                position = limb.LimbDirection * torsoHalfSize + limb.AttachmentPosition;
+                position = limb.AttachmentDirection * torsoHalfSize + limb.AttachmentPosition;
 
                 Basis attachmentRotation = Basis.FromEuler(Util.Vector3DegToRad(limb.AttachmentRotationDegrees));
 
@@ -426,7 +427,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             else
             {
                 SegmentDef previousSegment = limb.Segments[i - 1];
-                position = previousSegment.LimbDirection * previousSegment.Length;
+                position = previousSegment.LengthDirection * previousSegment.Length;
             }
             
             SetBoneRest(bone, new Transform3D(rotation, position));
@@ -440,29 +441,32 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         SetBoneRest(endBone, new Transform3D(
             Basis.Identity, 
-            lastSegment.LimbDirection * lastSegment.Length
+            lastSegment.LengthDirection * lastSegment.Length
         ));
 
-        Transform3D ankleRest = GetBoneRest(endBone);
-        ankleRest.Basis = GetBoneGlobalRest(parentBone).Basis.Inverse();
-        SetBoneRest(endBone, ankleRest);
-
-        int soleBone = endBone;
-        
-        if (limb.EndMesh != null)
+        if (limb.GroundFoot)
         {
-            Vector3 soleOffset = Vector3.Down * limb.AnkleToSoleDistance;
+            Transform3D endRest = GetBoneRest(endBone);
+            endRest.Basis = GetBoneGlobalRest(parentBone).Basis.Inverse();
+            SetBoneRest(endBone, endRest);
+        }
 
-            soleBone = AddBone($"{limb.LimbID}_sole");
-            SetBoneParent(soleBone, endBone);
+        int contactBone = endBone;
+        
+        if (limb.GroundFoot && limb.EndMesh != null)
+        {
+            Vector3 contactOffset = Vector3.Down * limb.AnkleToContactDistance;
+
+            contactBone = AddBone($"{limb.LimbID}_contact");
+            SetBoneParent(contactBone, endBone);
             
-            SetBoneRest(soleBone, new Transform3D(
+            SetBoneRest(contactBone, new Transform3D(
                 Basis.Identity,
-                soleOffset
+                contactOffset
             ));
         }
 
-        return new GeneratedLimb(limb, segmentBones, endBone, soleBone);
+        return new GeneratedLimb(limb, segmentBones, endBone, contactBone);
     }
 
     private JointLimitSettings GetJointLimitSettings(SegmentDef segment)
@@ -519,7 +523,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         if (limb.GroundFoot)
         {
-            targetPosition.Y = limb.AnkleToSoleDistance + limb.GroundClearance;
+            targetPosition.Y = limb.AnkleToContactDistance + limb.GroundClearance;
             targetPosition.Z = rootPosition.Z;
         }
         
@@ -591,7 +595,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             );
         }
 
-        if (limb.GroundFoot && limb.EndMesh != null)
+        if (limb.AlignFootToGround && limb.EndMesh != null)
         {
             AddFootOrientation(endBoneIndex, targetNode, limb);
         }
@@ -1034,7 +1038,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
             Quaternion directionRotation = new Quaternion(
                 Vector3.Up,
-                segment.LimbDirection.Normalized()
+                segment.LengthDirection.Normalized()
             );
 
             Basis coneBasis = jointTransform.Basis * new Basis(directionRotation) * new Basis(settings.ConeOffset);
@@ -1190,7 +1194,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
                 if (i == 0)
                 {
-                    position = limb.LimbDirection * halfTorsoSize + limb.AttachmentPosition;
+                    position = limb.AttachmentDirection * halfTorsoSize + limb.AttachmentPosition;
 
                     Basis attachmentRotation = Basis.FromEuler(Util.Vector3DegToRad(limb.AttachmentRotationDegrees));
 
@@ -1199,7 +1203,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 else
                 {
                     SegmentDef previous = limb.Segments[i - 1];
-                    position = previous.LimbDirection * previous.Length;
+                    position = previous.LengthDirection * previous.Length;
                 }
 
                 boneTransform *= new Transform3D(rotation, position);
@@ -1213,7 +1217,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 
                 jointPositions.Add(boneTransform.Origin);
                 
-                Vector3 segmentEnd = boneTransform * (segment.LimbDirection * segment.Length);
+                Vector3 segmentEnd = boneTransform * (segment.LengthDirection * segment.Length);
                 
                 AddLine(boneTransform.Origin, segmentEnd);
                 anklePosition = segmentEnd;
@@ -1221,25 +1225,29 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             
             jointPositions.Add(anklePosition);
             
-            Vector3 solePosition = anklePosition;
+            Vector3 contactPosition = anklePosition;
 
             if (limb.EndMesh != null)
             {
-                solePosition += Vector3.Down * limb.AnkleToSoleDistance;
-                AddLine(anklePosition, solePosition);
+                contactPosition += Vector3.Down * limb.AnkleToContactDistance;
+                AddLine(anklePosition, contactPosition);
 
                 Basis footRotation = Basis.FromEuler(
                     Util.Vector3DegToRad(limb.EndMeshRotationDegrees)
                 );
 
-                Transform3D footTransform = new Transform3D(footRotation, anklePosition + limb.EndMeshOffset);
+                Basis endBasis = limb.GroundFoot
+                    ? Basis.Identity
+                    : boneTransform.Basis;
+                
+                Transform3D footTransform = new Transform3D(endBasis * footRotation, anklePosition + endBasis * limb.EndMeshOffset);
                 
                 AddBox(limb.EndMesh.GetAabb(), footTransform);
             }
 
             if (limb.GroundFoot)
             {
-                torsoHeight = Mathf.Min(torsoHeight, limb.GroundClearance - solePosition.Y);
+                torsoHeight = Mathf.Min(torsoHeight, limb.GroundClearance - contactPosition.Y);
             }
         }
 

@@ -33,7 +33,7 @@ public partial class SegmentDef : Resource
         }
     }
 
-    public Vector3 LimbDirection
+    public Vector3 LengthDirection
     {
         get
         {
