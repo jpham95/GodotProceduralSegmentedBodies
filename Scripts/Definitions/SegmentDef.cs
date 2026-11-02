@@ -58,14 +58,13 @@ public partial class SegmentDef : Resource
         Knee,
         Custom
     }
-    [ExportGroup("Mesh")]
     [Export] public Mesh Mesh = null;
     [Export] public MeshLengthAxis LengthAxis = MeshLengthAxis.Y;
+    [Export] public Vector3 RestPositionRotationDegrees = Vector3.Zero;
+    [ExportCategory("Mesh Adjustments")]
     [Export] public Vector3 MeshOffset = Vector3.Zero;
     [Export] public Vector3 MeshRotationDegrees = Vector3.Zero;
-    [Export] public Vector3 Scale = Vector3.One; 
-    [Export] public Vector3 RestRotationDegrees = Vector3.Zero;
-    
+    [Export] public Vector3 Scale = Vector3.One;
     [ExportGroup("Joint Limitations")]
     [Export] public JointPresetEnum JointPreset = JointPresetEnum.Free;
     [ExportSubgroup("Custom Settings")]
@@ -73,5 +72,5 @@ public partial class SegmentDef : Resource
     [Export] public SkeletonModifier3D.RotationAxis JointRotationAxis = SkeletonModifier3D.RotationAxis.X;
     [Export(PropertyHint.Range, "0,360,1")] public float JointConeAngleDegrees = 90f;
     [Export] public Vector3 JointLimitRotationDegrees = Vector3.Zero;
-    // [Export] public Quaternion LimitationRotationOffset = new Quaternion(0, 0, 0, 0);
+    
 }

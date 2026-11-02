@@ -13,16 +13,21 @@ height = 0.2
 [sub_resource type="BoxMesh" id="BoxMesh_ga4af"]
 size = Vector3(0.2, 1, 0.2)
 
-[sub_resource type="Resource" id="Resource_y0i3b"]
+[sub_resource type="Resource" id="Resource_lc6hd"]
 script = ExtResource("2_gkyp0")
 Mesh = SubResource("BoxMesh_ga4af")
-RestRotationDegrees = Vector3(0, 0, 120)
+RestPositionRotationDegrees = Vector3(0, 0, 120)
+JointPreset = 3
+LimitJoint = true
+JointRotationAxis = 3
+JointConeAngleDegrees = 100.0
+JointLimitRotationDegrees = Vector3(40, 0, -30)
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_eyh1v"]
 script = ExtResource("2_gkyp0")
 Mesh = SubResource("BoxMesh_ga4af")
-RestRotationDegrees = Vector3(0, 0, -100)
+RestPositionRotationDegrees = Vector3(0, 0, -100)
 JointPreset = 3
 LimitJoint = true
 JointRotationAxis = 2
@@ -32,7 +37,7 @@ metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 [sub_resource type="Resource" id="Resource_qvwpr"]
 script = ExtResource("2_gkyp0")
 Mesh = SubResource("BoxMesh_ga4af")
-RestRotationDegrees = Vector3(0, 0, -20)
+RestPositionRotationDegrees = Vector3(0, 0, -20)
 JointPreset = 3
 LimitJoint = true
 JointRotationAxis = 2
@@ -43,9 +48,10 @@ metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 [sub_resource type="Resource" id="Resource_cwrbu"]
 script = ExtResource("1_wwjl5")
 LimbID = "FrontLeftLeg"
-Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_y0i3b"), SubResource("Resource_eyh1v"), SubResource("Resource_qvwpr")])
+Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_lc6hd"), SubResource("Resource_eyh1v"), SubResource("Resource_qvwpr")])
 AttachmentPosition = Vector3(0.5, 0, 0.75)
 Preset = 0
+UseMagnetTargets = true
 EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
@@ -53,13 +59,18 @@ metadata/_custom_type_script = "uid://vw061olhvyob"
 [sub_resource type="Resource" id="Resource_ga4af"]
 script = ExtResource("2_gkyp0")
 Mesh = SubResource("BoxMesh_ga4af")
-RestRotationDegrees = Vector3(0, 0, -120)
+RestPositionRotationDegrees = Vector3(0, 0, -120)
+JointPreset = 3
+LimitJoint = true
+JointRotationAxis = 3
+JointConeAngleDegrees = 100.0
+JointLimitRotationDegrees = Vector3(40, 0, 30)
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_ahllg"]
 script = ExtResource("2_gkyp0")
 Mesh = SubResource("BoxMesh_ga4af")
-RestRotationDegrees = Vector3(0, 0, 100)
+RestPositionRotationDegrees = Vector3(0, 0, 100)
 JointPreset = 3
 LimitJoint = true
 JointRotationAxis = 2
@@ -69,7 +80,7 @@ metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 [sub_resource type="Resource" id="Resource_j08ty"]
 script = ExtResource("2_gkyp0")
 Mesh = SubResource("BoxMesh_ga4af")
-RestRotationDegrees = Vector3(0, 0, 20)
+RestPositionRotationDegrees = Vector3(0, 0, 20)
 JointPreset = 3
 LimitJoint = true
 JointRotationAxis = 2
@@ -83,9 +94,21 @@ LimbID = "FrontRightLeg"
 Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_ga4af"), SubResource("Resource_ahllg"), SubResource("Resource_j08ty")])
 AttachmentPosition = Vector3(-0.5, 0, 0.75)
 Preset = 0
+UseMagnetTargets = true
 EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
+
+[sub_resource type="Resource" id="Resource_y0i3b"]
+script = ExtResource("2_gkyp0")
+Mesh = SubResource("BoxMesh_ga4af")
+RestPositionRotationDegrees = Vector3(0, 0, 120)
+JointPreset = 3
+LimitJoint = true
+JointRotationAxis = 3
+JointConeAngleDegrees = 100.0
+JointLimitRotationDegrees = Vector3(-40, 0, -30)
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_67sif"]
 script = ExtResource("1_wwjl5")
@@ -93,16 +116,29 @@ LimbID = "BackLeftLeg"
 Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_y0i3b"), SubResource("Resource_eyh1v"), SubResource("Resource_qvwpr")])
 AttachmentPosition = Vector3(0.5, 0, -0.75)
 Preset = 0
+UseMagnetTargets = true
 EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
+[sub_resource type="Resource" id="Resource_d0pek"]
+script = ExtResource("2_gkyp0")
+Mesh = SubResource("BoxMesh_ga4af")
+RestPositionRotationDegrees = Vector3(0, 0, -120)
+JointPreset = 3
+LimitJoint = true
+JointRotationAxis = 3
+JointConeAngleDegrees = 100.0
+JointLimitRotationDegrees = Vector3(-40, 0, 30)
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
+
 [sub_resource type="Resource" id="Resource_2j7rs"]
 script = ExtResource("1_wwjl5")
 LimbID = "BackRightLeg"
-Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_ga4af"), SubResource("Resource_ahllg"), SubResource("Resource_j08ty")])
+Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_d0pek"), SubResource("Resource_ahllg"), SubResource("Resource_j08ty")])
 AttachmentPosition = Vector3(-0.5, 0, -0.75)
 Preset = 0
+UseMagnetTargets = true
 EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"

@@ -22,12 +22,12 @@ public partial class LimbDef : Resource
     [Export] public Vector3 AttachmentPosition = Vector3.Zero;
     [Export] public Vector3 AttachmentRotationDegrees = Vector3.Zero;
     [Export] public LimbPreset Preset = LimbPreset.Custom;
+    [ExportGroup("Magnet Targets")] 
+    [Export] public bool UseMagnetTargets = false;
     [ExportGroup("Arm Settings")]
     [Export] public ArmSide ArmAttachSide = ArmSide.Left;
-
     [ExportGroup("Custom Limb Settings")] 
     [Export] private Vector3 CustomLimbDirection = Vector3.Down;
-
     [Export] public bool CustomGroundFoot = true;
     [ExportGroup("End Mesh Settings")]
     [Export] public Mesh EndMesh;

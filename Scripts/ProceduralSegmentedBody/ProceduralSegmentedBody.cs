@@ -257,7 +257,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     }
     
 #region Generation
-    private void Generate()
+    private async void Generate()
     {
         string err = ValidateResources();
         if (err != null)
@@ -267,9 +267,17 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         }
         if (_debugMode)
             GD.Print($"[Generate] Before Clear: bones={GetBoneCount()}");
-        
+
+        SceneTree tree = GetTree();
         Clear();
-        
+
+        await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+
+        if (!IsInstanceValid(this) || !IsInsideTree())
+        {
+            return;
+        }
+
         if (_debugMode)
             GD.Print($"[Generate] After Clear: bones={GetBoneCount()}");
 
@@ -281,6 +289,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         AddChild(_locomotionController);
         _locomotionController.Owner = Owner;
         
+        // Bones
         int torsoBone = AddBone("Torso");
         SetBoneRest(torsoBone, Transform3D.Identity);
 
@@ -334,7 +343,10 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         ResetBonePoses();
         
-        AddTorsoMesh(torsoBone);
+        await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        
+        // Meshes
+        BoneAttachment3D torsoAttachment = AddTorsoMesh(torsoBone);
         if (headBone >= 0)
         {
             AddHeadMesh(headBone);
@@ -369,13 +381,17 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 AddSegmentMesh(generatedLimb.EndBone, Vector3.Zero);
             }
         }
-
+        
+        await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+        
+        // IK
         foreach (GeneratedLimb generatedLimb in generatedLimbs)
         {
             AddIK(
                 generatedLimb.SegmentBones,
                 generatedLimb.EndBone,
-                generatedLimb.Definition
+                generatedLimb.Definition,
+                torsoAttachment
             );
 
             if (_debugMode)
@@ -411,7 +427,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             segmentBones[i] = bone;
             SetBoneParent(bone, parentBone);
 
-            Basis rotation = Basis.FromEuler(Util.Vector3DegToRad(segment.RestRotationDegrees));
+            Basis rotation = Basis.FromEuler(Util.Vector3DegToRad(segment.RestPositionRotationDegrees));
 
             Vector3 position;
 
@@ -507,7 +523,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         return settings;
     }
     
-    private void AddIK(int[] segmentBones, int endBoneIndex, LimbDef limb)
+    private void AddIK(int[] segmentBones, int endBoneIndex, LimbDef limb, BoneAttachment3D torsoAttachment)
     {
         int rootBoneIndex = segmentBones[0];
         
@@ -546,53 +562,89 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             Name = $"{limb.LimbID}_CCDIK3D"
         };
         
+        void ConfigureIK(int setting, int endBone, Marker3D target)
+        {
+            IKNode.SetRootBoneName(setting, GetBoneName(rootBoneIndex));
+            IKNode.SetEndBoneName(setting, GetBoneName(endBone));
+            IKNode.SetExtendEndBone(setting, false);
+            IKNode.SetTargetNode(setting, IKNode.GetPathTo(target));
+        }
+        
         AddChild(IKNode);
         
         IKNode.Owner = Owner;
+
+        bool useMagnet = limb.UseMagnetTargets && segmentBones.Length > 2;
+        int endpointSetting = useMagnet ? 1 : 0;
         
-        IKNode.SetSettingCount(1);
-        IKNode.SetRootBoneName(0, GetBoneName(rootBoneIndex));
-        IKNode.SetEndBoneName(0, GetBoneName(endBoneIndex));
-        
-        IKNode.SetExtendEndBone(0, false);
-        
-        IKNode.SetTargetNode(0, IKNode.GetPathTo(targetNode));
-        
-        for (int jointIndex = 0; jointIndex < IKNode.GetJointCount(0); jointIndex++)
+        IKNode.SetSettingCount(useMagnet ? 2 : 1);
+
+        if (useMagnet)
         {
-            int boneIndex = IKNode.GetJointBone(0, jointIndex);
-            int segmentIndex = System.Array.IndexOf(segmentBones, boneIndex);
+            int magnetBone = segmentBones[segmentBones.Length / 2 + 1];
 
-            if (segmentIndex < 0)
+            Vector3 magnetRestPosition = GetBoneGlobalRest(magnetBone).Origin;
+            int torsoBone = GetBoneParent(rootBoneIndex);
+            Transform3D torsoRest = GetBoneGlobalRest(torsoBone);
+
+            Marker3D magnet = new Marker3D
             {
-                continue;
+                Name = $"{limb.LimbID}_MagnetNode",
+                Position = torsoRest.AffineInverse() * magnetRestPosition
+            };
+
+            torsoAttachment.AddChild(magnet);
+            magnet.Owner = Owner;
+
+            ConfigureIK(0, magnetBone, magnet);
+        }
+
+        ConfigureIK(endpointSetting, endBoneIndex, targetNode);
+        // IKNode.SetSettingCount(1);
+        // IKNode.SetRootBoneName(0, GetBoneName(rootBoneIndex));
+        // IKNode.SetEndBoneName(0, GetBoneName(endBoneIndex));
+        //
+        // IKNode.SetExtendEndBone(0, false);
+        //
+        // IKNode.SetTargetNode(0, IKNode.GetPathTo(targetNode));
+        for (int setting = 0; setting < IKNode.GetSettingCount(); setting++)
+        {
+            for (int jointIndex = 0; jointIndex < IKNode.GetJointCount(setting); jointIndex++)
+            {
+                int boneIndex = IKNode.GetJointBone(setting, jointIndex);
+                int segmentIndex = System.Array.IndexOf(segmentBones, boneIndex);
+
+                if (segmentIndex < 0)
+                {
+                    continue;
+                }
+
+                SegmentDef segment = limb.Segments[segmentIndex];
+
+                JointLimitSettings settings = GetJointLimitSettings(segment);
+
+                IKNode.SetJointRotationAxis(
+                    setting,
+                    jointIndex,
+                    settings.Axis
+                );
+
+                if (!settings.Limited)
+                {
+                    continue;
+                }
+
+                IKNode.SetJointLimitation(setting, jointIndex, new JointLimitationCone3D
+                {
+                    Angle = Mathf.DegToRad(settings.ConeAngleDegrees)
+                });
+
+                IKNode.SetJointLimitationRotationOffset(
+                    setting,
+                    jointIndex,
+                    settings.ConeOffset
+                );
             }
-            
-            SegmentDef segment = limb.Segments[segmentIndex];
-
-            JointLimitSettings settings = GetJointLimitSettings(segment);
-            
-            IKNode.SetJointRotationAxis(
-                0,
-                jointIndex,
-                settings.Axis
-            );
-
-            if (!settings.Limited)
-            {
-                continue;
-            }
-            
-            IKNode.SetJointLimitation(0, jointIndex, new JointLimitationCone3D
-            {
-                Angle = Mathf.DegToRad(settings.ConeAngleDegrees)
-            });
-
-            IKNode.SetJointLimitationRotationOffset(
-                0,
-                jointIndex,
-                settings.ConeOffset
-            );
         }
 
         if (limb.AlignFootToGround && limb.EndMesh != null)
@@ -603,7 +655,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         _locomotionController.AddLimb(limb, targetNode, targetPosition);
     }
 
-    private void AddTorsoMesh(int boneIndex)
+    private BoneAttachment3D AddTorsoMesh(int boneIndex)
     {
         var attachment = new BoneAttachment3D
         {
@@ -626,6 +678,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
         meshInstance.Show();
+        return attachment;
     }
     private void AddSegmentMesh(int boneIndex, Vector3 segmentOffset, SegmentDef segmentDef = null)
     {
@@ -1188,7 +1241,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             {
                 SegmentDef segment = limb.Segments[i];
 
-                Basis rotation = Basis.FromEuler(Util.Vector3DegToRad(segment.RestRotationDegrees));
+                Basis rotation = Basis.FromEuler(Util.Vector3DegToRad(segment.RestPositionRotationDegrees));
 
                 Vector3 position;
 

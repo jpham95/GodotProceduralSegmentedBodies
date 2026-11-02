@@ -7,9 +7,10 @@
 [resource]
 script = ExtResource("3_wrug6")
 StepTriggerDistance = 0.25
-StepAheadDistance = 0.7
+StepAheadDistance = 0.5
+StepDuration = 0.15
 StepHeight = 1.0
-TurnThresholdDegrees = 15.0
+TurnThresholdDegrees = 5.0
 StepProgressCurve = ExtResource("2_8da2r")
 StepLiftCurve = ExtResource("1_ladha")
 metadata/_custom_type_script = "uid://bbn7lqonutd8l"
