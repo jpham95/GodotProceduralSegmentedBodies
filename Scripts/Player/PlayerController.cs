@@ -58,6 +58,10 @@ public partial class PlayerController : CharacterBody3D
 		
 		SetDesiredVelocity(MoveSpeed);
 		ApplyHorizontalVelocity((float)delta);
+		if (!IsOnFloor())
+		{
+			Velocity += GetGravity() * (float)delta;
+		}
 		MoveAndSlide();
 	}
 
@@ -86,7 +90,7 @@ public partial class PlayerController : CharacterBody3D
 			targetHorizontalVelocity,
 			float.Clamp(MoveDeceleration * deltaTime, 0f, 1f)
 		);
-		SetVelocity(new Vector3(currentHorizontalVelocity.X, 0f, currentHorizontalVelocity.Z));
+		SetVelocity(new Vector3(currentHorizontalVelocity.X, currentVelocity.Y, currentHorizontalVelocity.Z));
 	}
 
 	private Vector3 ComputeCameraRelativeDirection(Vector2 inputDirection)
