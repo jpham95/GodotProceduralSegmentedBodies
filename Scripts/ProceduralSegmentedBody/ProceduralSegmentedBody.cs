@@ -587,10 +587,34 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             heightFitFeet.Add((endBoneIndex, targetNode));
         }
 
-        Ccdik3D IKNode = new Ccdik3D
+        IterateIK3D IKNode;
+        switch (BodyDefinition.IKType)
         {
-            Name = $"{limb.LimbID}_CCDIK3D"
-        };
+            case BodyDef.IKTypeEnum.CCDIK:
+                IKNode = new Ccdik3D
+                {
+                    Name = $"{limb.LimbID}_CCDIK3D"
+                };
+                break;
+            case BodyDef.IKTypeEnum.FABRIK:
+                IKNode = new Fabrik3D
+                {
+                    Name = $"{limb.LimbID}_FABRIK3D"
+                };
+                break;
+            case BodyDef.IKTypeEnum.JacobianIK:
+                IKNode = new JacobianIK3D
+                {
+                    Name = $"{limb.LimbID}_JacobianIK3D"
+                };
+                break;
+            default:
+                IKNode = new Ccdik3D
+                {
+                    Name = $"{limb.LimbID}_CCDIK3D"
+                };
+                break;
+        }
         
         void ConfigureIK(int setting, int endBone, Marker3D target)
         {
@@ -718,7 +742,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
         var joint = new MeshInstance3D
         {
-            Name = $"{GetBoneName(boneIndex)}_Joint",
+            Name = $"{GetBoneName(boneIndex)}_JointMesh",
             Mesh = this.BodyDefinition.JointMesh ?? new SphereMesh{ Radius = 0.12f, Height = 0.24f }
         };
 
@@ -738,7 +762,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         
         
-        MeshInstance3D meshInstance = new MeshInstance3D { Name = "SegmentMesh" };
+        MeshInstance3D meshInstance = new MeshInstance3D { Name = $"{GetBoneName(boneIndex)}_SegmentMesh" };
         meshInstance.Mesh = segmentDef.Mesh;
         meshInstance.RotationDegrees = segmentDef.MeshRotationDegrees;
         meshInstance.Scale = segmentDef.Scale;

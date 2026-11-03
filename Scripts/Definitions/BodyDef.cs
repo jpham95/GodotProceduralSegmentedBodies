@@ -4,11 +4,19 @@ using System;
 [Tool, GlobalClass]
 public partial class BodyDef : Resource
 {
+    public enum IKTypeEnum
+    {
+        CCDIK,
+        FABRIK,
+        JacobianIK
+    }
     [ExportGroup("Meshes")]
     [Export] public Mesh HeadMesh = null;
     [Export] public Mesh TorsoMesh = null;
     [Export] public Mesh JointMesh = null;
     [Export] public Godot.Collections.Array<LimbDef> Limbs = new();
+    [ExportGroup("IK Settings")] 
+    [Export] public IKTypeEnum IKType = IKTypeEnum.CCDIK;
     [ExportGroup("Head Settings")] 
     [Export] public Vector3 HeadAttachmentOffset = Vector3.Zero;
     [Export] public Vector3 HeadRotationDegrees = Vector3.Zero;

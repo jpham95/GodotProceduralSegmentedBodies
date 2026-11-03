@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="2_gkyp0"]
 [ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/test_foot.res" id="3_cwrbu"]
 [ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="3_y0i3b"]
+[ext_resource type="Resource" uid="uid://cxj3tg7uhd3d3" path="res://Resources/LocomotionSettings/DefaultQuadrupedalLocomotionSettings.tres" id="5_5nt3t"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
 radius = 0.1
@@ -50,7 +51,6 @@ Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_lc6hd"), SubReso
 AttachmentPosition = Vector3(0.5, 0, 0.75)
 AttachmentRotationDegrees = Vector3(0, 0, 120)
 Preset = 0
-UseMagnetTargets = true
 EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
@@ -92,7 +92,6 @@ Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_ga4af"), SubReso
 AttachmentPosition = Vector3(-0.5, 0, 0.75)
 AttachmentRotationDegrees = Vector3(0, 0, -120)
 Preset = 0
-UseMagnetTargets = true
 StepGroup = 2
 EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
@@ -115,7 +114,6 @@ Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_y0i3b"), SubReso
 AttachmentPosition = Vector3(0.5, 0, -0.75)
 AttachmentRotationDegrees = Vector3(0, 0, 120)
 Preset = 0
-UseMagnetTargets = true
 StepGroup = 2
 EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
@@ -138,7 +136,6 @@ Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_d0pek"), SubReso
 AttachmentPosition = Vector3(-0.5, 0, -0.75)
 AttachmentRotationDegrees = Vector3(0, 0, -120)
 Preset = 0
-UseMagnetTargets = true
 EndMesh = ExtResource("3_cwrbu")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
@@ -152,6 +149,8 @@ HeadMesh = ExtResource("1_qvwpr")
 TorsoMesh = SubResource("BoxMesh_qvwpr")
 JointMesh = SubResource("SphereMesh_bfesj")
 Limbs = Array[ExtResource("1_wwjl5")]([SubResource("Resource_cwrbu"), SubResource("Resource_vblhj"), SubResource("Resource_67sif"), SubResource("Resource_2j7rs")])
+IKType = 2
 HeadAttachmentOffset = Vector3(0, 0, 1)
 HeadRotationDegrees = Vector3(0, 180, 0)
+LocomotionSettings = ExtResource("5_5nt3t")
 metadata/_custom_type_script = "uid://bgc8d1lhe00ad"
