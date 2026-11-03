@@ -49,6 +49,7 @@ public partial class ProceduralLocomotion : Node3D
     private Vector3 _previousBodyPosition;
     private bool _initialised = false;
     private int _nextLimb;
+    private uint _nextStepGroup = 1;
     private float _previousBodyYaw;
     
     public override void _Ready()
@@ -281,7 +282,14 @@ public partial class ProceduralLocomotion : Node3D
         if (settings.AnimateLocomotion && 
             !steppingHappeningRN)
         {
-            StartStep(movementDirection, isTurning);
+            if (settings.UseStepGroups)
+            {
+                StartGroupStep(movementDirection, isTurning);
+            }
+            else
+            {
+                StartStep(movementDirection, isTurning);
+            }
         }
         
         // rewrite global transforms to keep limb positions
@@ -297,78 +305,121 @@ public partial class ProceduralLocomotion : Node3D
 
     private void StartStep(Vector3 movementDirection, bool isTurning)
     {
-        bool isMoving = movementDirection.LengthSquared() > 0.0001f;
-        
         for (int offset = 0; offset < _limbs.Count; offset++)
         {
             int index = (_nextLimb + offset) % _limbs.Count;
-            AnimatedLimb limb = _limbs[index];
-
-            if (!limb.Grounded)
+            if (TryStartLimbStep(_limbs[index], movementDirection, isTurning))
             {
-                continue;
+                _nextLimb = (index + 1) % _limbs.Count;
+                return;
             }
-
-            if (!GetFootPlacement(
-                    limb,
-                    limb.StanceRay,
-                    out Vector3 destination,
-                    out Quaternion rotation))
-            {
-                continue;
-            }
-            
-            Vector3 displacement = destination - limb.Position;
-            displacement.Y = 0f;
-
-            float lag = displacement.Dot(movementDirection);
-            float angle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
-
-            Vector3 stanceError = destination - limb.Position;
-            stanceError.Y = 0f;
-
-            bool needsMovementStep = isMoving && lag >= settings.StepTriggerDistance;
-
-            bool needsTurningStep = angle >= settings.TurnThresholdDegrees ||
-                                    (isTurning && stanceError.Length() >= settings.StepTriggerDistance);
-
-            if (!needsMovementStep && !needsTurningStep)
-            {
-                continue;
-            }
-
-            if (GetFootPlacement(
-                    limb,
-                    limb.LandingRay,
-                    out Vector3 predictedPosition,
-                    out Quaternion predictedRotation))
-            {
-                destination = predictedPosition;
-                rotation = predictedRotation;
-            }
-            
-            float landingDistance = limb.Position.DistanceTo(destination);
-            float landingAngle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
-
-            if (landingDistance < settings.StepTriggerDistance &&
-                landingAngle < settings.TurnThresholdDegrees)
-            {
-                continue;
-            }
-            
-            // successful step found - set params
-            limb.StartPosition = limb.Position;
-            limb.StartRotation = limb.Rotation;
-            limb.EndPosition = destination;
-            limb.EndRotation = rotation;
-            limb.Progress = 0f;
-            limb.Stepping = true;
-
-            _nextLimb = (index + 1) % _limbs.Count;
-            break;
         }
     }
 
+    private void StartGroupStep(Vector3 movementDirection, bool isTurning)
+    {
+        uint groupCount = settings.StepGroupCount;
+
+        // try each group at most once per tick
+        for (uint attempt = 0; attempt < groupCount; attempt++)
+        {
+            if (_nextStepGroup > groupCount)
+            {
+                _nextStepGroup = 1;
+            }
+
+            uint group = _nextStepGroup;
+            _nextStepGroup = group == groupCount ? 1 : group + 1;
+
+            bool anyStarted = false;
+
+            foreach (AnimatedLimb limb in _limbs)
+            {
+                if (limb.Definition.Definition.StepGroup != group)
+                {
+                    continue;
+                }
+
+                if (TryStartLimbStep(limb, movementDirection, isTurning))
+                {
+                    anyStarted = true;
+                }
+            }
+
+            if (anyStarted)
+            {
+                return;
+            }
+        }
+    }
+
+    private bool TryStartLimbStep(AnimatedLimb limb, Vector3 movementDirection, bool isTurning)
+    {
+        bool isMoving = movementDirection.LengthSquared() > 0.0001f;
+        
+        if (!limb.Grounded)
+        {
+            return false;
+        }
+
+        if (!GetFootPlacement(
+                limb,
+                limb.StanceRay,
+                out Vector3 destination,
+                out Quaternion rotation))
+        {
+            return false;
+        }
+        
+        Vector3 displacement = destination - limb.Position;
+        displacement.Y = 0f;
+
+        float lag = displacement.Dot(movementDirection);
+        float angle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
+
+        Vector3 stanceError = destination - limb.Position;
+        stanceError.Y = 0f;
+
+        bool needsMovementStep = isMoving && lag >= settings.StepTriggerDistance;
+
+        bool needsTurningStep = angle >= settings.TurnThresholdDegrees ||
+                                (isTurning && stanceError.Length() >= settings.StepTriggerDistance);
+
+        if (!needsMovementStep && !needsTurningStep)
+        {
+            return false;
+        }
+
+        if (GetFootPlacement(
+                limb,
+                limb.LandingRay,
+                out Vector3 predictedPosition,
+                out Quaternion predictedRotation))
+        {
+            destination = predictedPosition;
+            rotation = predictedRotation;
+        }
+        
+        float landingDistance = limb.Position.DistanceTo(destination);
+        float landingAngle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
+
+        if (landingDistance < settings.StepTriggerDistance &&
+            landingAngle < settings.TurnThresholdDegrees)
+        {
+            return false;
+        }
+        
+        // successful step found - set params
+        limb.StartPosition = limb.Position;
+        limb.StartRotation = limb.Rotation;
+        limb.EndPosition = destination;
+        limb.EndRotation = rotation;
+        limb.Progress = 0f;
+        limb.Stepping = true;
+
+        return true;
+    }
+    
     private void AdvanceStep(AnimatedLimb limb, float deltaTime)
     {
         limb.Progress = Mathf.Min(
@@ -420,26 +471,6 @@ public partial class ProceduralLocomotion : Node3D
         {
             return false;
         }
-        
-        // Vector3 from = preferredPosition + Vector3.Up * ProbeHeight;
-        //
-        // Vector3 to = preferredPosition + Vector3.Down * ProbeDepth;
-        //
-        // var query = PhysicsRayQueryParameters3D.Create(
-        //     from, to, GroundCollisionMask
-        // );
-        //
-        // query.CollideWithAreas = false;
-        //
-        // var hit = GetWorld3D().DirectSpaceState.IntersectRay(query);
-        //
-        // if (hit.Count == 0)
-        // {
-        //     return false;
-        // }
-        //
-        // Vector3 contact = hit["position"].AsVector3();
-        // Vector3 normal = hit["normal"].AsVector3().Normalized();
 
         // minimum dot product from max slope setting
         float minimumUpDot = Mathf.Cos(

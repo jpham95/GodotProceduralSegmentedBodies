@@ -14,6 +14,9 @@ public partial class LocomotionSettings : Resource
     [Export] public float TurnThresholdDegrees = 30f;
     [Export] public Curve StepProgressCurve;
     [Export] public Curve StepLiftCurve;
+    [ExportGroup("Step Groups")] 
+    [Export] public bool UseStepGroups = false;
+    [Export] public uint StepGroupCount = 2;
     [ExportGroup("Ground Detection")] 
     [Export(PropertyHint.Layers3DPhysics)] public uint GroundCollisionMask = 1;
     [Export] public float ProbeHeight = 1f;

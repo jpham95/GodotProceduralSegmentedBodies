@@ -26,6 +26,8 @@ public partial class LimbDef : Resource
     [Export] public bool UseMagnetTargets = false;
     [ExportGroup("Arm Settings")]
     [Export] public ArmSide ArmAttachSide = ArmSide.Left;
+    [ExportGroup("Leg Settings")] 
+    [Export] public uint StepGroup = 1;
     [ExportGroup("Custom Limb Settings")] 
     [Export] private Vector3 CustomLimbDirection = Vector3.Down;
     [Export] public bool CustomGroundFoot = true;

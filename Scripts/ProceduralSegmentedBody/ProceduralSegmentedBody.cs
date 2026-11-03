@@ -714,6 +714,9 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
+        
+        MeshDebug(meshInstance);
+        
         meshInstance.Show();
         return attachment;
     }
@@ -763,6 +766,9 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
+        
+        MeshDebug(meshInstance);
+        
         meshInstance.Show();
         joint.Show();
     }
@@ -788,6 +794,9 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
+        
+        MeshDebug(meshInstance);
+        
         meshInstance.Show();
     }
 
@@ -1356,5 +1365,26 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         }
 
         return previewLines.ToArray();
+    }
+
+    private void MeshDebug(MeshInstance3D meshInstance)
+    {
+        // if (_debugMode)
+        // {
+        //     string path = meshInstance.GetPath().ToString();
+        //     ulong id = meshInstance.GetInstanceId();
+        //     string name = path.Split("/")[^2];
+        //     
+        //     GD.Print($"[Mesh created] {name} id={id}");
+        //     meshInstance.VisibilityChanged += () =>
+        //     {
+        //         if (!meshInstance.Visible)
+        //         {
+        //             GD.Print($"[Mesh hidden] {name} id={id}");
+        //         }
+        //     };
+        //     meshInstance.TreeExiting += () =>
+        //         GD.Print($"[Mesh exiting] {name} id={id}");
+        // }
     }
 }
