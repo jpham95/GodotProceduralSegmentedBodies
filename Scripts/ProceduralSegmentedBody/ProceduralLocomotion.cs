@@ -75,7 +75,7 @@ public partial class ProceduralLocomotion : Node3D
             return;
         }
 
-        settings = _body.LocomotionSettings;
+        settings = _body.BodyDefinition.LocomotionSettings;
         _previousBodyYaw = _body.GlobalRotation.Y;
         InitialiseLimbs();
     }

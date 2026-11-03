@@ -477,260 +477,261 @@ bones/21/rotation = Quaternion(0, 0, 0, 1)
 bones/21/scale = Vector3(1, 1, 1)
 script = ExtResource("1_qlu5l")
 _debugMode = true
+ShowPreview = true
 LocomotionSettings = ExtResource("5_ebf8t")
 DefaultStepProgressCurve = ExtResource("4_2iy2p")
 DefaultStepLiftCurve = ExtResource("5_otscm")
 BodyDefinition = ExtResource("7_c37wc")
 metadata/_custom_type_script = "uid://b2o6rdr1om1jh"
 
-[node name="ProceduralLocomotion" type="Node3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=501092502]
+[node name="ProceduralLocomotion" type="Node3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=396850899]
 script = ExtResource("10_c37wc")
 Limbs = Array[ExtResource("11_c1cxm")]([SubResource("Resource_c37wc"), SubResource("Resource_c1cxm"), SubResource("Resource_37di1"), SubResource("Resource_0ofkx")])
 
-[node name="FrontLeftLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=691918220]
+[node name="FrontLeftLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1044681329]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0500658, 1.1613554, 0.75)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="FrontLeftLeg_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=975564662]
+[node name="FrontLeftLeg_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1782945168]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0500658, 1.1613554, 0.050000012)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="FrontRightLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=2089804997]
+[node name="FrontRightLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1583777421]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0500658, 1.1613554, 0.75)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="FrontRightLeg_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=72726410]
+[node name="FrontRightLeg_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=52003399]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0500658, 1.1613554, 0.050000012)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="BackLeftLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1512334882]
+[node name="BackLeftLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=996428227]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0500658, 1.1613554, -0.75)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="BackLeftLeg_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1340309865]
+[node name="BackLeftLeg_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1493698510]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0500658, 1.1613554, -1.45)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="BackRightLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1313640812]
+[node name="BackRightLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1030382196]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0500658, 1.1613554, -0.75)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="BackRightLeg_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=277003142]
+[node name="BackRightLeg_LandingRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1059293970]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0500658, 1.1613554, -1.45)
 enabled = false
 target_position = Vector3(0, -3, 0)
 
-[node name="Torso" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2060845697]
+[node name="Torso" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=181966984]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0407405, 0)
 bone_name = "Torso"
 bone_idx = 0
 
-[node name="TorsoMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Torso" unique_id=1393503564]
+[node name="TorsoMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Torso" unique_id=2100298384]
 mesh = SubResource("BoxMesh_qvwpr")
 
-[node name="Head" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=249331024]
+[node name="Head" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=98359114]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5407405, 1)
 bone_name = "Head"
 bone_idx = 1
 
-[node name="HeadMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Head" unique_id=1035979069]
+[node name="HeadMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Head" unique_id=1250946909]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.6286161, 0)
 mesh = ExtResource("15_a06y2")
 
-[node name="FrontLeftLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=739842835]
-transform = Transform3D(-0.4730916, -0.88100815, -0.0029869052, 0.8810102, -0.4730785, -0.0042106737, 0.0022965972, -0.004623529, 0.99998665, 0.5, 1.5407405, 0.75)
+[node name="FrontLeftLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1010418876]
+transform = Transform3D(-0.5, -0.8660253, 0, 0.8660253, -0.5, 0, 0, 0, 1, 0.5, 1.5407405, 0.75)
 bone_name = "FrontLeftLeg_segment_0"
 bone_idx = 2
 
-[node name="FrontLeftLeg_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_0" unique_id=1599321128]
+[node name="FrontLeftLeg_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_0" unique_id=101947121]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_0" unique_id=367808087]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_0" unique_id=757294168]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="FrontLeftLeg_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2086191253]
-transform = Transform3D(0.98522955, -0.17121193, -0.0029869052, 0.17119887, 0.98522735, -0.0042106737, 0.003663699, 0.0036371255, 0.99998665, 1.3810081, 2.013819, 0.75462353)
+[node name="FrontLeftLeg_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=117603227]
+transform = Transform3D(0.9396925, -0.34201995, 0, 0.34201995, 0.9396925, 0, 0, 0, 1, 1.3660253, 2.0407405, 0.75)
 bone_name = "FrontLeftLeg_segment_1"
 bone_idx = 3
 
-[node name="FrontLeftLeg_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_1" unique_id=641467785]
+[node name="FrontLeftLeg_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_1" unique_id=1419837645]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_1" unique_id=803326752]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_1" unique_id=83488139]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="FrontLeftLeg_segment_2" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=81494059]
-transform = Transform3D(0.8672509, -0.49786204, -0.0029869052, 0.49784905, 0.86725336, -0.0042106737, 0.004686739, 0.0021646826, 0.99998665, 1.5522201, 1.0285916, 0.7509864)
+[node name="FrontLeftLeg_segment_2" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1445086192]
+transform = Transform3D(0.9396925, -0.34201995, 0, 0.34201995, 0.9396925, 0, 0, 0, 1, 1.7080452, 1.101048, 0.75)
 bone_name = "FrontLeftLeg_segment_2"
 bone_idx = 4
 
-[node name="FrontLeftLeg_segment_2_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_2" unique_id=316195957]
+[node name="FrontLeftLeg_segment_2_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_2" unique_id=871306995]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_2" unique_id=1857512348]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_segment_2" unique_id=1476792427]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="FrontLeftLeg_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1405514775]
-transform = Transform3D(0.9999999, 1.1951397e-07, 4.656613e-10, 3.0468073e-10, 0.9999998, 4.656613e-10, -4.656613e-10, -4.656613e-10, 0.99999994, 2.0500822, 0.16133827, 0.74882174)
+[node name="FrontLeftLeg_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1584715036]
+transform = Transform3D(0.99999976, -5.9604645e-08, 0, 5.9604645e-08, 0.99999976, 0, 0, 0, 1, 2.0500653, 0.1613555, 0.75)
 bone_name = "FrontLeftLeg_end"
 bone_idx = 5
 
-[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_end" unique_id=1787031270]
+[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_end" unique_id=1850918724]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 mesh = ExtResource("12_d0pek")
 
-[node name="FrontRightLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=571854259]
-transform = Transform3D(-0.47306907, 0.8810237, 0.0016945165, -0.8810238, -0.47306383, -0.002757676, -0.0016279633, -0.0027974807, 0.99999475, -0.5, 1.5407405, 0.75)
+[node name="FrontRightLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=777095393]
+transform = Transform3D(-0.5, 0.8660253, 0, -0.8660253, -0.5, 0, 0, 0, 1, -0.5, 1.5407405, 0.75)
 bone_name = "FrontRightLeg_segment_0"
 bone_idx = 7
 
-[node name="FrontRightLeg_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_0" unique_id=2119069129]
+[node name="FrontRightLeg_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_0" unique_id=1024536240]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_0" unique_id=434467020]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_0" unique_id=1881410440]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="FrontRightLeg_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=649821463]
-transform = Transform3D(0.9852341, 0.17120412, 0.0016945165, -0.17119911, 0.98523253, -0.002757676, -0.0021416184, 0.0024268564, 0.99999475, -1.3810236, 2.0138044, 0.7527975)
+[node name="FrontRightLeg_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=733039036]
+transform = Transform3D(0.9396925, 0.34201995, 0, -0.34201995, 0.9396925, 0, 0, 0, 1, -1.3660253, 2.0407405, 0.75)
 bone_name = "FrontRightLeg_segment_1"
 bone_idx = 8
 
-[node name="FrontRightLeg_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_1" unique_id=1305093214]
+[node name="FrontRightLeg_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_1" unique_id=47802213]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_1" unique_id=360978262]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_1" unique_id=1347182114]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="FrontRightLeg_segment_2" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1040613045]
-transform = Transform3D(0.86726195, 0.49784914, 0.0016945165, -0.4978439, 0.86726224, -0.002757676, -0.0028424968, 0.0015480225, 0.99999475, -1.5522277, 1.0285718, 0.7503706)
+[node name="FrontRightLeg_segment_2" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1656095062]
+transform = Transform3D(0.9396925, 0.34201995, 0, -0.34201995, 0.9396925, 0, 0, 0, 1, -1.7080452, 1.101048, 0.75)
 bone_name = "FrontRightLeg_segment_2"
 bone_idx = 9
 
-[node name="FrontRightLeg_segment_2_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_2" unique_id=1585243243]
+[node name="FrontRightLeg_segment_2_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_2" unique_id=241665961]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_2" unique_id=452173958]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_segment_2" unique_id=1820516975]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="FrontRightLeg_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=7317742]
-transform = Transform3D(0.99999994, 3.5840003e-08, 2.3283064e-10, 6.0376806e-09, 1, -2.3283064e-10, -3.4924597e-10, -2.3283064e-10, 1, -2.050077, 0.1613096, 0.74882257)
+[node name="FrontRightLeg_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=286290118]
+transform = Transform3D(0.99999976, 5.9604645e-08, 0, -5.9604645e-08, 0.99999976, 0, 0, 0, 1, -2.0500653, 0.1613555, 0.75)
 bone_name = "FrontRightLeg_end"
 bone_idx = 10
 
-[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_end" unique_id=183531001]
+[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_end" unique_id=1388688850]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 mesh = ExtResource("12_d0pek")
 
-[node name="BackLeftLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=39998990]
-transform = Transform3D(-0.4730916, -0.88100815, 0.0029869052, 0.8810102, -0.4730785, 0.0042106737, -0.0022965972, 0.004623529, 0.99998665, 0.5, 1.5407405, -0.75)
+[node name="BackLeftLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1421871901]
+transform = Transform3D(-0.5, -0.8660253, 0, 0.8660253, -0.5, 0, 0, 0, 1, 0.5, 1.5407405, -0.75)
 bone_name = "BackLeftLeg_segment_0"
 bone_idx = 12
 
-[node name="BackLeftLeg_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_0" unique_id=591409374]
+[node name="BackLeftLeg_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_0" unique_id=702115007]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_0" unique_id=2002282835]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_0" unique_id=1205671033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="BackLeftLeg_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1082757112]
-transform = Transform3D(0.98522955, -0.17121193, 0.0029869052, 0.17119887, 0.98522735, 0.0042106737, -0.003663699, -0.0036371255, 0.99998665, 1.3810081, 2.013819, -0.75462353)
+[node name="BackLeftLeg_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1078089915]
+transform = Transform3D(0.9396925, -0.34201995, 0, 0.34201995, 0.9396925, 0, 0, 0, 1, 1.3660253, 2.0407405, -0.75)
 bone_name = "BackLeftLeg_segment_1"
 bone_idx = 13
 
-[node name="BackLeftLeg_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_1" unique_id=1931819836]
+[node name="BackLeftLeg_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_1" unique_id=1247106051]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_1" unique_id=215846720]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_1" unique_id=1118712025]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="BackLeftLeg_segment_2" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1128083615]
-transform = Transform3D(0.8672509, -0.49786204, 0.0029869052, 0.49784905, 0.86725336, 0.0042106737, -0.004686739, -0.0021646826, 0.99998665, 1.5522201, 1.0285916, -0.7509864)
+[node name="BackLeftLeg_segment_2" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1210141176]
+transform = Transform3D(0.9396925, -0.34201995, 0, 0.34201995, 0.9396925, 0, 0, 0, 1, 1.7080452, 1.101048, -0.75)
 bone_name = "BackLeftLeg_segment_2"
 bone_idx = 14
 
-[node name="BackLeftLeg_segment_2_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_2" unique_id=580534205]
+[node name="BackLeftLeg_segment_2_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_2" unique_id=1760654194]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_2" unique_id=1152113905]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_segment_2" unique_id=663617776]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="BackLeftLeg_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=992208392]
-transform = Transform3D(0.9999999, 1.1951397e-07, -4.656613e-10, 3.0468073e-10, 0.9999998, -4.656613e-10, 4.656613e-10, 4.656613e-10, 0.99999994, 2.0500822, 0.16133827, -0.74882174)
+[node name="BackLeftLeg_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1369682927]
+transform = Transform3D(0.99999976, -5.9604645e-08, 0, 5.9604645e-08, 0.99999976, 0, 0, 0, 1, 2.0500653, 0.1613555, -0.75)
 bone_name = "BackLeftLeg_end"
 bone_idx = 15
 
-[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_end" unique_id=451367626]
+[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_end" unique_id=719938772]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 mesh = ExtResource("12_d0pek")
 
-[node name="BackRightLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=936562345]
-transform = Transform3D(-0.47306907, 0.8810237, -0.0016945165, -0.8810238, -0.47306383, 0.002757676, 0.0016279633, 0.0027974807, 0.99999475, -0.5, 1.5407405, -0.75)
+[node name="BackRightLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=514720476]
+transform = Transform3D(-0.5, 0.8660253, 0, -0.8660253, -0.5, 0, 0, 0, 1, -0.5, 1.5407405, -0.75)
 bone_name = "BackRightLeg_segment_0"
 bone_idx = 17
 
-[node name="BackRightLeg_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_0" unique_id=1908656714]
+[node name="BackRightLeg_segment_0_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_0" unique_id=573840426]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_0" unique_id=674758557]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_0" unique_id=1369246082]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="BackRightLeg_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1184639426]
-transform = Transform3D(0.9852341, 0.17120412, -0.0016945165, -0.17119911, 0.98523253, 0.002757676, 0.0021416184, -0.0024268564, 0.99999475, -1.3810236, 2.0138044, -0.7527975)
+[node name="BackRightLeg_segment_1" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1118058724]
+transform = Transform3D(0.9396925, 0.34201995, 0, -0.34201995, 0.9396925, 0, 0, 0, 1, -1.3660253, 2.0407405, -0.75)
 bone_name = "BackRightLeg_segment_1"
 bone_idx = 18
 
-[node name="BackRightLeg_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_1" unique_id=660398866]
+[node name="BackRightLeg_segment_1_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_1" unique_id=1470319417]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_1" unique_id=563099936]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_1" unique_id=210191933]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="BackRightLeg_segment_2" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=489294342]
-transform = Transform3D(0.86726195, 0.49784914, -0.0016945165, -0.4978439, 0.86726224, 0.002757676, 0.0028424968, -0.0015480225, 0.99999475, -1.5522277, 1.0285718, -0.7503706)
+[node name="BackRightLeg_segment_2" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=635996059]
+transform = Transform3D(0.9396925, 0.34201995, 0, -0.34201995, 0.9396925, 0, 0, 0, 1, -1.7080452, 1.101048, -0.75)
 bone_name = "BackRightLeg_segment_2"
 bone_idx = 19
 
-[node name="BackRightLeg_segment_2_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_2" unique_id=1580701303]
+[node name="BackRightLeg_segment_2_Joint" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_2" unique_id=742082622]
 mesh = SubResource("SphereMesh_bfesj")
 
-[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_2" unique_id=207510370]
+[node name="SegmentMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_segment_2" unique_id=1067540042]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_ga4af")
 
-[node name="BackRightLeg_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1963694193]
-transform = Transform3D(0.99999994, 3.5840003e-08, -2.3283064e-10, 6.0376806e-09, 1, 2.3283064e-10, 3.4924597e-10, 2.3283064e-10, 1, -2.050077, 0.1613096, -0.74882257)
+[node name="BackRightLeg_end" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1302210256]
+transform = Transform3D(0.99999976, 5.9604645e-08, 0, -5.9604645e-08, 0.99999976, 0, 0, 0, 1, -2.0500653, 0.1613555, -0.75)
 bone_name = "BackRightLeg_end"
 bone_idx = 20
 
-[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_end" unique_id=1738238226]
+[node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_end" unique_id=175273326]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
 mesh = ExtResource("12_d0pek")
 
-[node name="FrontLeftLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=427711099]
+[node name="FrontLeftLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1951168165]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0500658, 0.16135535, 0.75)
 
-[node name="FrontLeftLeg_MagnetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_TargetNode" unique_id=1865278450]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15852082, 1.4979877, 0)
+[node name="FrontLeftLeg_MagnetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_TargetNode" unique_id=29909880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34202015, 0.9396925, 0)
 
-[node name="FrontLeftLeg_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2035363912]
+[node name="FrontLeftLeg_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2043994819]
 setting_count = 2
 settings/0/target_node = NodePath("../FrontLeftLeg_TargetNode/FrontLeftLeg_MagnetNode")
 settings/1/target_node = NodePath("../FrontLeftLeg_TargetNode")
@@ -773,7 +774,7 @@ settings/1/joints/2/limitation/rotation_offset = Quaternion(0, 0, -0.5735764, 0.
 settings/1/joints/3/rotation_axis = 3
 settings/1/joints/3/limitation = null
 
-[node name="FrontLeftLeg_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1753717987]
+[node name="FrontLeftLeg_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1942766815]
 setting_count = 1
 settings/0/amount = 1.0
 settings/0/apply_bone_name = "FrontLeftLeg_end"
@@ -785,13 +786,13 @@ settings/0/axes = 7
 settings/0/invert = 0
 settings/0/additive = false
 
-[node name="FrontRightLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=900055523]
+[node name="FrontRightLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1390454330]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0500658, 0.16135535, 0.75)
 
-[node name="FrontRightLeg_MagnetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_TargetNode" unique_id=1528120995]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08491516, 1.4979877, 0)
+[node name="FrontRightLeg_MagnetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_TargetNode" unique_id=1069584738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34202015, 0.9396925, 0)
 
-[node name="FrontRightLeg_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1702681997]
+[node name="FrontRightLeg_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=840393830]
 setting_count = 2
 settings/0/target_node = NodePath("../FrontRightLeg_TargetNode/FrontRightLeg_MagnetNode")
 settings/1/target_node = NodePath("../FrontRightLeg_TargetNode")
@@ -834,7 +835,7 @@ settings/1/joints/2/limitation/rotation_offset = Quaternion(0, 0, 0.5735764, 0.8
 settings/1/joints/3/rotation_axis = 3
 settings/1/joints/3/limitation = null
 
-[node name="FrontRightLeg_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1267120230]
+[node name="FrontRightLeg_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1179214103]
 setting_count = 1
 settings/0/amount = 1.0
 settings/0/apply_bone_name = "FrontRightLeg_end"
@@ -846,13 +847,13 @@ settings/0/axes = 7
 settings/0/invert = 0
 settings/0/additive = false
 
-[node name="BackLeftLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=486460823]
+[node name="BackLeftLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1741159548]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0500658, 0.16135535, -0.75)
 
-[node name="BackLeftLeg_MagnetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_TargetNode" unique_id=471567689]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15852082, 1.4979877, 0)
+[node name="BackLeftLeg_MagnetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_TargetNode" unique_id=295266050]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34202015, 0.9396925, 0)
 
-[node name="BackLeftLeg_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1932675778]
+[node name="BackLeftLeg_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1082262992]
 setting_count = 2
 settings/0/target_node = NodePath("../BackLeftLeg_TargetNode/BackLeftLeg_MagnetNode")
 settings/1/target_node = NodePath("../BackLeftLeg_TargetNode")
@@ -895,7 +896,7 @@ settings/1/joints/2/limitation/rotation_offset = Quaternion(0, 0, -0.5735764, 0.
 settings/1/joints/3/rotation_axis = 3
 settings/1/joints/3/limitation = null
 
-[node name="BackLeftLeg_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2136437217]
+[node name="BackLeftLeg_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=62235165]
 setting_count = 1
 settings/0/amount = 1.0
 settings/0/apply_bone_name = "BackLeftLeg_end"
@@ -907,13 +908,13 @@ settings/0/axes = 7
 settings/0/invert = 0
 settings/0/additive = false
 
-[node name="BackRightLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2030250127]
+[node name="BackRightLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1908959350]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0500658, 0.16135535, -0.75)
 
-[node name="BackRightLeg_MagnetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_TargetNode" unique_id=1371924667]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08491516, 1.4979877, 0)
+[node name="BackRightLeg_MagnetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_TargetNode" unique_id=61188391]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34202015, 0.9396925, 0)
 
-[node name="BackRightLeg_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=176628558]
+[node name="BackRightLeg_CCDIK3D" type="CCDIK3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=126023590]
 setting_count = 2
 settings/0/target_node = NodePath("../BackRightLeg_TargetNode/BackRightLeg_MagnetNode")
 settings/1/target_node = NodePath("../BackRightLeg_TargetNode")
@@ -956,7 +957,7 @@ settings/1/joints/2/limitation/rotation_offset = Quaternion(0, 0, 0.5735764, 0.8
 settings/1/joints/3/rotation_axis = 3
 settings/1/joints/3/limitation = null
 
-[node name="BackRightLeg_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=134457680]
+[node name="BackRightLeg_FootOrientation" type="CopyTransformModifier3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1468994376]
 setting_count = 1
 settings/0/amount = 1.0
 settings/0/apply_bone_name = "BackRightLeg_end"

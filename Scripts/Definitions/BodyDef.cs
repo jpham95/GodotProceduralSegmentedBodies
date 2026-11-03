@@ -12,6 +12,8 @@ public partial class BodyDef : Resource
     [ExportGroup("Head Settings")] 
     [Export] public Vector3 HeadAttachmentOffset = Vector3.Zero;
     [Export] public Vector3 HeadRotationDegrees = Vector3.Zero;
+    [ExportGroup("Locomotion Settings")]
+    [Export] public LocomotionSettings LocomotionSettings;
     [ExportGroup("Ground Detection")] 
     [Export] public uint GroundCollisionMask = 1;
     [Export] public float GroundProbeHeight = 1f;

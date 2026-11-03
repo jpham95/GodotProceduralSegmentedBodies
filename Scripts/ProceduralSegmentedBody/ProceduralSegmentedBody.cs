@@ -54,18 +54,12 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     [ExportToolButton("Clear")] 
     public Callable ClearButton => Callable.From(() => Callable.From(Clear).CallDeferred());
     
-    [Export] public LocomotionSettings LocomotionSettings;
-    
     [ExportGroup("Height Adjustment")]
     [Export] private float _heightFitTolerance = 0.02f;
     [Export] private float _maximumHeightAdjustment = 2f;
     [ExportToolButton("Auto Adjust Torso Height")]
     public Callable HeightAdjustButton => Callable.From(BeginHeightFit);
-
     
-    [ExportCategory("Default Step Curves")]
-    [Export] public Curve DefaultStepProgressCurve;
-    [Export] public Curve DefaultStepLiftCurve;
     [ExportCategory("Body Definition")]
     [Export] public BodyDef BodyDefinition = null;
     
@@ -249,7 +243,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             }
         }
 
-        if (LocomotionSettings == null)
+        if (BodyDefinition.LocomotionSettings == null)
         {
             return "Locomotion settings resource is missing.";
         }
@@ -321,7 +315,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         _locomotionController = new ProceduralLocomotion
         {
             Name = "ProceduralLocomotion",
-            settings = LocomotionSettings
+            settings = BodyDefinition.LocomotionSettings
         };
         AddChild(_locomotionController);
         _locomotionController.Owner = Owner;
@@ -427,8 +421,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             AddIK(
                 generatedLimb.SegmentBones,
                 generatedLimb.EndBone,
-                generatedLimb.Definition,
-                torsoAttachment
+                generatedLimb.Definition
             );
 
             if (_debugMode)
@@ -560,7 +553,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         return settings;
     }
     
-    private void AddIK(int[] segmentBones, int endBoneIndex, LimbDef limb, BoneAttachment3D torsoAttachment)
+    private void AddIK(int[] segmentBones, int endBoneIndex, LimbDef limb)
     {
         int rootBoneIndex = segmentBones[0];
         
@@ -621,29 +614,21 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             int magnetBone = segmentBones[segmentBones.Length / 2 + 1];
 
             Vector3 magnetRestPosition = GetBoneGlobalRest(magnetBone).Origin;
-            int torsoBone = GetBoneParent(rootBoneIndex);
-            Transform3D torsoRest = GetBoneGlobalRest(torsoBone);
 
             Marker3D magnet = new Marker3D
             {
                 Name = $"{limb.LimbID}_MagnetNode",
-                Position = torsoRest.AffineInverse() * magnetRestPosition
+                Position = targetNode.Transform.AffineInverse() * magnetRestPosition
             };
 
-            torsoAttachment.AddChild(magnet);
+            targetNode.AddChild(magnet);
             magnet.Owner = Owner;
 
             ConfigureIK(0, magnetBone, magnet);
         }
 
         ConfigureIK(endpointSetting, endBoneIndex, targetNode);
-        // IKNode.SetSettingCount(1);
-        // IKNode.SetRootBoneName(0, GetBoneName(rootBoneIndex));
-        // IKNode.SetEndBoneName(0, GetBoneName(endBoneIndex));
-        //
-        // IKNode.SetExtendEndBone(0, false);
-        //
-        // IKNode.SetTargetNode(0, IKNode.GetPathTo(targetNode));
+
         for (int setting = 0; setting < IKNode.GetSettingCount(); setting++)
         {
             for (int jointIndex = 0; jointIndex < IKNode.GetJointCount(setting); jointIndex++)
