@@ -49,6 +49,7 @@ public partial class ProceduralLocomotion : Node3D
     private Vector3 _previousBodyPosition;
     private bool _initialised = false;
     private int _nextLimb;
+    private float _previousBodyYaw;
     
     public override void _Ready()
     {
@@ -74,6 +75,7 @@ public partial class ProceduralLocomotion : Node3D
         }
 
         settings = _body.LocomotionSettings;
+        _previousBodyYaw = _body.GlobalRotation.Y;
         InitialiseLimbs();
     }
     
@@ -206,8 +208,14 @@ public partial class ProceduralLocomotion : Node3D
         _previousBodyPosition = bodyPosition;
 
         velocity.Y = 0f;
-
+        
         bool isMoving = velocity.LengthSquared() > 0.0001f;
+
+        float currentYaw = _body.GlobalRotation.Y;
+        float yawChange = Mathf.AngleDifference(_previousBodyYaw, currentYaw);
+        _previousBodyYaw = currentYaw;
+
+        bool isTurning = Mathf.Abs(yawChange) > Mathf.DegToRad(1f) * deltaTime;
         
         Vector3 movementDirection = isMoving
             ? velocity.Normalized()
@@ -273,7 +281,7 @@ public partial class ProceduralLocomotion : Node3D
         if (settings.AnimateLocomotion && 
             !steppingHappeningRN)
         {
-            StartStep(movementDirection);
+            StartStep(movementDirection, isTurning);
         }
         
         // rewrite global transforms to keep limb positions
@@ -287,7 +295,7 @@ public partial class ProceduralLocomotion : Node3D
         }
     }
 
-    private void StartStep(Vector3 movementDirection)
+    private void StartStep(Vector3 movementDirection, bool isTurning)
     {
         bool isMoving = movementDirection.LengthSquared() > 0.0001f;
         
@@ -309,23 +317,20 @@ public partial class ProceduralLocomotion : Node3D
             {
                 continue;
             }
-
-            // float distance = limb.Position.DistanceTo(destination);
-            // float angle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
-            //
-            // if (distance < settings.StepTriggerDistance && angle < settings.TurnThresholdDegrees)
-            // {
-            //     continue;
-            // }
+            
             Vector3 displacement = destination - limb.Position;
             displacement.Y = 0f;
 
             float lag = displacement.Dot(movementDirection);
             float angle = Mathf.RadToDeg(limb.Rotation.AngleTo(rotation));
 
+            Vector3 stanceError = destination - limb.Position;
+            stanceError.Y = 0f;
+
             bool needsMovementStep = isMoving && lag >= settings.StepTriggerDistance;
 
-            bool needsTurningStep = angle >= settings.TurnThresholdDegrees;
+            bool needsTurningStep = angle >= settings.TurnThresholdDegrees ||
+                                    (isTurning && stanceError.Length() >= settings.StepTriggerDistance);
 
             if (!needsMovementStep && !needsTurningStep)
             {

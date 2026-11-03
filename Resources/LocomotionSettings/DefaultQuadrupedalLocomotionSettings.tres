@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="LocomotionSettings" format=3 uid="uid://cxj3tg7uhd3d3"]
 
-[ext_resource type="Curve" uid="uid://b6bkj6o7yceif" path="res://Resources/DefaultStepLiftCurve.tres" id="1_ladha"]
-[ext_resource type="Curve" uid="uid://dxdrj17oov3m6" path="res://Resources/DefaultStepProgressCurve.tres" id="2_8da2r"]
+[ext_resource type="Curve" uid="uid://b6bkj6o7yceif" path="res://Resources/StepCurves/DefaultStepLiftCurve.tres" id="1_ladha"]
+[ext_resource type="Curve" uid="uid://dxdrj17oov3m6" path="res://Resources/StepCurves/DefaultStepProgressCurve.tres" id="2_8da2r"]
 [ext_resource type="Script" uid="uid://bbn7lqonutd8l" path="res://Scripts/Definitions/LocomotionSettings.cs" id="3_wrug6"]
 
 [resource]
