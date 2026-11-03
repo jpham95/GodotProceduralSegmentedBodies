@@ -8,6 +8,7 @@
 script = ExtResource("3_441lc")
 StepTriggerDistance = 0.5
 StepAheadDistance = 0.7
+StepDuration = 0.35
 StepHeight = 0.5
 StepProgressCurve = ExtResource("2_g21m4")
 StepLiftCurve = ExtResource("1_nje4h")

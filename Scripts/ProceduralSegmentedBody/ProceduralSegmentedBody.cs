@@ -72,6 +72,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     private ProceduralLocomotion _locomotionController;
 
     private bool saveRequested = false;
+    private bool _busy = false;
     
     // Auto height fitting variables
     private List<(int Bone, Marker3D target)> heightFitFeet = new();
@@ -122,6 +123,24 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     }
 
     private void Clear()
+    {
+        if (_busy)
+        {
+            return;
+        }
+
+        _busy = true;
+
+        try
+        {
+            ClearGeneratedBody();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+    private void ClearGeneratedBody()
     {
         DisconnectHeightFit();
         fittingHeight = false;
@@ -257,7 +276,25 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     }
     
 #region Generation
+
     private async void Generate()
+    {
+        if (_busy)
+        {
+            return;
+        }
+    
+        _busy = true;
+        try
+        {
+            await GenerateAsync();
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+    private async System.Threading.Tasks.Task GenerateAsync()
     {
         string err = ValidateResources();
         if (err != null)
@@ -269,7 +306,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             GD.Print($"[Generate] Before Clear: bones={GetBoneCount()}");
 
         SceneTree tree = GetTree();
-        Clear();
+        ClearGeneratedBody();
 
         await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
 
