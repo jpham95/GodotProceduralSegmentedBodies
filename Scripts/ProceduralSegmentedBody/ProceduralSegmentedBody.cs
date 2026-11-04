@@ -169,6 +169,9 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         ClearBones();
         _locomotionController = null;
     }
+    
+#region Validation
+
     public string ValidateResources() // TODO: rewrite using LINQ
     {
         if (BodyDefinition == null)
@@ -250,6 +253,262 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         return null;
     }
+
+    private bool ValidateMeshes()
+    {
+        bool valid = true;
+
+        foreach (Node child in GetChildren())
+        {
+            if (child is not BoneAttachment3D attachment)
+            {
+                continue;
+            }
+
+            if (attachment.IsQueuedForDeletion())
+            {
+                valid = false;
+                continue;
+            }
+
+            if (!attachment.Visible)
+            {
+                if (_debugMode)
+                {
+                    GD.Print($"{attachment.Name} is hidden - toggling visibility...");
+                }
+                attachment.Show();
+                valid = false;
+            }
+
+            string boneName = attachment.BoneName;
+
+            if (boneName == "Torso")
+            {
+                if (BodyDefinition.TorsoMesh != null)
+                {
+                    valid &= ValidateAttachmentMesh(attachment, "TorsoMesh", CreateTorsoMesh);
+                }
+
+                continue;
+            }
+
+            if (boneName == "Head")
+            {
+                if (BodyDefinition.HeadMesh != null)
+                {
+                    valid &= ValidateAttachmentMesh(attachment, "HeadMesh", CreateHeadMesh);
+                }
+
+                continue;
+            }
+
+            foreach (LimbDef limb in BodyDefinition.Limbs)
+            {
+                if (boneName == $"{limb.LimbID}_end")
+                {
+                    if (limb.EndMesh != null)
+                    {
+                        valid &= ValidateAttachmentMesh(
+                            attachment, 
+                            "EndMesh",
+                            () => CreateEndMesh(
+                                limb.EndMesh,
+                                limb.EndMeshOffset,
+                                limb.EndMeshRotationDegrees
+                            )
+                        );
+                    }
+                    else if (BodyDefinition.JointMesh != null)
+                    {
+                        string jointName = $"{boneName}_JointMesh";
+
+                        valid &= ValidateAttachmentMesh(
+                            attachment,
+                            jointName,
+                            () => CreateJointMesh(jointName)
+                        );
+                    }
+
+                    break;
+                }
+
+                string prefix = $"{limb.LimbID}_segment_";
+
+                if (!boneName.StartsWith(prefix))
+                {
+                    continue;
+                }
+
+                if (!int.TryParse(boneName.Substring(prefix.Length), out int segmentIndex) ||
+                    segmentIndex < 0 ||
+                    segmentIndex >= limb.Segments.Count)
+                {
+                    GD.PrintErr($"Invalid segment attachment: {boneName}");
+                    valid = false;
+                    break;
+                }
+                
+                if (BodyDefinition.JointMesh != null)
+                {
+                    string jointMeshName = $"{boneName}_JointMesh";
+
+                    valid &= ValidateAttachmentMesh(
+                        attachment,
+                        jointMeshName,
+                        () => CreateJointMesh(jointMeshName)
+                    );
+                }
+
+                SegmentDef segment = limb.Segments[segmentIndex];
+                string segmentMeshName = $"{boneName}_SegmentMesh";
+                
+                valid &= ValidateAttachmentMesh(
+                    attachment,
+                    segmentMeshName,
+                    () => CreateSegmentMesh(
+                        segment,
+                        segment.LengthDirection * segment.Length,
+                        segmentMeshName
+                    )
+                );
+
+                break;
+            }
+        }
+
+        return valid;
+    }
+
+    private bool ValidateAttachmentMesh(BoneAttachment3D attachment, string name, Func<MeshInstance3D> createMesh)
+    {
+        Node node = attachment.GetNodeOrNull<Node>(name);
+
+        if (node != null && node.IsQueuedForDeletion())
+        {
+            if (_debugMode)
+            {
+                GD.Print($"{attachment.Name}/{name} queued for deletion.");
+            }
+
+            return false;
+        }
+
+        if (node == null)
+        {
+            if (_debugMode)
+            {
+                GD.Print($"Recreating {attachment.Name}/{name}");
+            }
+            // create mesh here using one of the following 
+            // CreateTorsoMesh();
+            // CreateJointMesh();
+            // CreateSegmentMesh();
+            // CreateEndMesh();
+            // CreateHeadMesh();
+            
+            MeshInstance3D meshInstance = createMesh();
+            
+            attachment.AddChild(meshInstance);
+            meshInstance.Owner = Owner;
+            meshInstance.Show();
+            return false; // created this pass - confirm it survives next pass
+        }
+
+        if (node is not MeshInstance3D mesh)
+        {
+            GD.PrintErr($"{attachment.Name}/{name} is not a MeshInstance3D");
+            return false;
+        }
+
+        if (mesh.Mesh == null)
+        {
+            MeshInstance3D meshInstance = createMesh();
+
+            mesh.Mesh = meshInstance.Mesh;
+            mesh.Transform = meshInstance.Transform;
+            
+            meshInstance.Free(); // just used for mesh + transform
+
+            if (_debugMode)
+            {
+                GD.Print($"Restored mesh resource for {attachment.Name}/{name}");
+            }
+
+            return false;
+        }
+        
+        if (!mesh.Visible)
+        {
+            if (_debugMode)
+            {
+                GD.Print($"{attachment.Name}/{name} is hidden - recreating...");
+            }
+
+            attachment.RemoveChild(mesh);
+            mesh.QueueFree();
+            MeshInstance3D meshInstance = createMesh();
+            
+            attachment.AddChild(meshInstance);
+            meshInstance.Owner = Owner;
+            meshInstance.Show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private async System.Threading.Tasks.Task<bool> ValidateMeshesAsync()
+    {
+        const int maximumPasses = 10;
+        const int requiredValidPasses = 2;
+        int validPasses = 0;
+        
+
+        SceneTree tree = GetTree();
+
+        for (int pass = 0; pass < maximumPasses; pass++)
+        {
+            await ToSignal(tree, SceneTree.SignalName.ProcessFrame);
+
+            if (!IsInstanceValid(this) || !IsInsideTree())
+            {
+                return false;
+            }
+
+            if (ValidateMeshes())
+            {
+                if (_debugMode)
+                {
+                    GD.Print("=== VALID Mesh Pass ===");
+                }
+                validPasses++;
+
+                if (validPasses >= requiredValidPasses)
+                {
+                    if (_debugMode)
+                    {
+                        GD.Print("=== Meshes Validated ===");
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                if (_debugMode)
+                {
+                    GD.Print("=== INVALID Mesh Pass ===");
+                }
+                validPasses = 0;
+            }
+        }
+        
+        GD.PrintErr("Automatic mesh validation did not pass. Automatic saving skipped.");
+
+        return false;
+    }
+    
+#endregion
     
     private void SaveScene()
     {
@@ -439,7 +698,11 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         if (Engine.IsEditorHint())
         {
             fitTorsoBone = torsoBone;
-            saveRequested = true;
+
+            if (await ValidateMeshesAsync())
+            {
+                saveRequested = true;
+            }
         }
     }
 
@@ -556,13 +819,6 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     private void AddIK(int[] segmentBones, int endBoneIndex, LimbDef limb)
     {
         int rootBoneIndex = segmentBones[0];
-        
-        if (_debugMode)
-            GD.Print(
-                $"[AddIK] skeleton={GetPath()}, " +
-                $"limb={limb.LimbID}, count={GetBoneCount()}, " +
-                $"root={rootBoneIndex}, end={endBoneIndex}"
-            );
         
         Vector3 targetPosition = GetBoneGlobalRest(endBoneIndex).Origin;
         Vector3 rootPosition = GetBoneGlobalRest(rootBoneIndex).Origin;
@@ -701,9 +957,19 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         _locomotionController.AddLimb(limb, targetNode, targetPosition);
     }
 
+    private MeshInstance3D CreateTorsoMesh()
+    {
+        return new MeshInstance3D
+        {
+            Name = "TorsoMesh",
+            Mesh = BodyDefinition.TorsoMesh,
+            Position = -BodyDefinition.TorsoMesh.GetAabb().GetCenter()
+        };
+    }
+
     private BoneAttachment3D AddTorsoMesh(int boneIndex)
     {
-        var attachment = new BoneAttachment3D
+        BoneAttachment3D attachment = new BoneAttachment3D
         {
             Name = "Torso",
             BoneName = GetBoneName(boneIndex)
@@ -713,23 +979,45 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         attachment.Owner = Owner;
 
         Mesh mesh = BodyDefinition.TorsoMesh;
-        
-        var meshInstance = new MeshInstance3D
-        {
-            Name = "TorsoMesh",
-            Mesh = mesh,
-            Position = -mesh.GetAabb().GetCenter()    
-        };
+
+        MeshInstance3D meshInstance = CreateTorsoMesh();
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
-        
-        MeshDebug(meshInstance);
-        
         meshInstance.Show();
+        // MeshDebug(meshInstance);
         return attachment;
     }
-    private void AddSegmentMesh(int boneIndex, Vector3 segmentOffset, SegmentDef segmentDef = null)
+
+    private MeshInstance3D CreateJointMesh(string name)
+    {
+        MeshInstance3D meshInstance = new MeshInstance3D
+        {
+            Name = name,
+            Mesh = BodyDefinition.JointMesh
+        };
+        return meshInstance;
+    }
+    private MeshInstance3D CreateSegmentMesh(SegmentDef segmentDef, Vector3 offset, string name)
+    {
+        MeshInstance3D meshInstance = new MeshInstance3D
+        {
+            Name = name,
+            Mesh = segmentDef.Mesh,
+            RotationDegrees = segmentDef.MeshRotationDegrees,
+            Scale = segmentDef.Scale
+        };
+        
+        // account for mesh origin, rotation + scale
+        Vector3 meshCenter = segmentDef.Mesh.GetAabb().GetCenter();
+        Vector3 transformedCenter = meshInstance.Basis * meshCenter;
+        
+        meshInstance.Position = offset / 2f - transformedCenter + segmentDef.MeshOffset;
+
+        return meshInstance;
+    }
+    
+    private void AddSegmentMesh(int boneIndex, Vector3 segmentLengthOffset, SegmentDef segmentDef = null)
     {
         var attachment = new BoneAttachment3D
         {
@@ -740,18 +1028,18 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         AddChild(attachment);
         attachment.Owner = Owner;
         
-        var joint = new MeshInstance3D
+        if (BodyDefinition.JointMesh != null)
         {
-            Name = $"{GetBoneName(boneIndex)}_JointMesh",
-            Mesh = this.BodyDefinition.JointMesh ?? new SphereMesh{ Radius = 0.12f, Height = 0.24f }
-        };
+            var joint = CreateJointMesh($"{GetBoneName(boneIndex)}_JointMesh");
 
-        attachment.AddChild(joint);
-        joint.Owner = Owner;
+            attachment.AddChild(joint);
+            joint.Owner = Owner;
+            joint.Show();
+        }
 
-        if (segmentOffset == Vector3.Zero)
+        if (segmentLengthOffset == Vector3.Zero)
         {
-            return;
+            return; // Intentional joint only attachment for end without endmesh
         }
 
         if (segmentDef?.Mesh == null)
@@ -760,26 +1048,27 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             return;
         }
 
-        
-        
-        MeshInstance3D meshInstance = new MeshInstance3D { Name = $"{GetBoneName(boneIndex)}_SegmentMesh" };
-        meshInstance.Mesh = segmentDef.Mesh;
-        meshInstance.RotationDegrees = segmentDef.MeshRotationDegrees;
-        meshInstance.Scale = segmentDef.Scale;
-        
-        // account for mesh origin, rotation + scale
-        Vector3 meshCenter = segmentDef.Mesh.GetAabb().GetCenter();
-        Vector3 transformedCenter = meshInstance.Basis * meshCenter;
-        
-        meshInstance.Position = segmentOffset / 2f - transformedCenter + segmentDef.MeshOffset;
+        MeshInstance3D meshInstance =
+            CreateSegmentMesh(segmentDef, segmentLengthOffset, $"{GetBoneName(boneIndex)}_SegmentMesh");
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
         
-        MeshDebug(meshInstance);
+        // MeshDebug(meshInstance);
         
         meshInstance.Show();
-        joint.Show();
+    }
+
+    private MeshInstance3D CreateEndMesh(Mesh mesh, Vector3 offset, Vector3 rotationDegrees)
+    {
+        MeshInstance3D meshInstance = new MeshInstance3D
+        {
+            Name = "EndMesh",
+            Mesh = mesh,
+            Position = offset,
+            RotationDegrees = rotationDegrees
+        };
+        return meshInstance;
     }
     private void AddEndMesh(int boneIndex, Mesh mesh, Vector3 offset, Vector3 endMeshRotationDegrees)
     {
@@ -792,21 +1081,33 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         AddChild(attachment);
         attachment.Owner = Owner;
 
-        MeshInstance3D meshInstance = new MeshInstance3D
-        {
-            Name = "EndMesh",
-            Mesh = mesh,
-            Position = offset
-        };
-
-        meshInstance.RotationDegrees = endMeshRotationDegrees;
+        MeshInstance3D meshInstance = CreateEndMesh(mesh, offset, endMeshRotationDegrees);
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
         
-        MeshDebug(meshInstance);
+        // MeshDebug(meshInstance);
         
         meshInstance.Show();
+    }
+
+    private MeshInstance3D CreateHeadMesh()
+    {
+        MeshInstance3D meshInstance = new MeshInstance3D
+        {
+            Name = "HeadMesh",
+            Mesh = BodyDefinition.HeadMesh,
+            RotationDegrees = BodyDefinition.HeadRotationDegrees
+        };
+        
+        Aabb bounds = new Transform3D(meshInstance.Basis, Vector3.Zero) * BodyDefinition.HeadMesh.GetAabb();
+
+        meshInstance.Position = new Vector3(
+            -bounds.GetCenter().X,
+            -bounds.Position.Y,
+            -bounds.GetCenter().Z
+        );
+        return meshInstance;
     }
 
     private void AddHeadMesh(int boneIndex)
@@ -820,20 +1121,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         AddChild(headAttachment);
         headAttachment.Owner = Owner;
 
-        MeshInstance3D meshInstance = new MeshInstance3D
-        {
-            Name = "HeadMesh",
-            Mesh = BodyDefinition.HeadMesh,
-            RotationDegrees = BodyDefinition.HeadRotationDegrees
-        };
-
-        Aabb bounds = new Transform3D(meshInstance.Basis, Vector3.Zero) * BodyDefinition.HeadMesh.GetAabb();
-
-        meshInstance.Position = new Vector3(
-            -bounds.GetCenter().X,
-            -bounds.Position.Y,
-            -bounds.GetCenter().Z
-        );
+        MeshInstance3D meshInstance = CreateHeadMesh();
         
         headAttachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
