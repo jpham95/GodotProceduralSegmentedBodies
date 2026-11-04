@@ -521,6 +521,13 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         {
             GD.PrintErr($"Scene could not be saved after generation: {err}");
         }
+        else
+        {
+            if (_debugMode)
+            {
+                GD.Print("[Generate] Generation complete - Scene Saved\n");
+            }
+        }
 #endif
     }
     
@@ -545,6 +552,10 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     }
     private async System.Threading.Tasks.Task GenerateAsync()
     {
+        if (_debugMode)
+        {
+            GD.Print("\n[Generate] Generation starting...");
+        }
         string err = ValidateResources();
         if (err != null)
         {
@@ -709,6 +720,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             }
             
             _saveRequested = true;
+            
         }
     }
 
