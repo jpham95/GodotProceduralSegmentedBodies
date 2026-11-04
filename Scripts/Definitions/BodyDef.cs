@@ -16,7 +16,7 @@ public partial class BodyDef : Resource
     [Export] public Mesh JointMesh = null;
     [Export] public Godot.Collections.Array<LimbDef> Limbs = new();
     [ExportGroup("IK Settings")] 
-    [Export] public IKTypeEnum IKType = IKTypeEnum.CCDIK;
+    [Export] public IKTypeEnum InverseKinematicType = IKTypeEnum.CCDIK;
     [ExportGroup("Head Settings")] 
     [Export] public Vector3 HeadAttachmentOffset = Vector3.Zero;
     [Export] public Vector3 HeadRotationDegrees = Vector3.Zero;
