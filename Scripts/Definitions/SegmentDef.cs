@@ -54,7 +54,6 @@ public partial class SegmentDef : Resource
     public enum JointPresetEnum
     {
         Free,
-        Hip,
         Knee,
         Custom
     }

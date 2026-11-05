@@ -719,11 +719,17 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         {
             _fitTorsoBone = torsoBone;
 
+            // Repair missing meshes - there was a persistent (assumed) editor bug
+            // which would hide and subsequently delete a single mesh during some generations
+            // once it was selected.
             if (!await ValidateMeshesAsync())
             {
                 return;
             }
 
+            // Choose the lowest required resting torso height based on grounded limbs
+            // Corrects errors caused by joint limitations where limbs cannot reach
+            // IK targets due to torso height.
             await AutomaticHeightFitAsync();
 
             if (!IsInstanceValid(this) || !IsInsideTree())
@@ -820,8 +826,6 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
         switch (segment.JointPreset)
         {
-            case SegmentDef.JointPresetEnum.Hip:
-                break;
             case SegmentDef.JointPresetEnum.Knee:
                 settings.Axis = SkeletonModifier3D.RotationAxis.X;
                 settings.Limited = true;
