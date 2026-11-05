@@ -143,6 +143,7 @@ public partial class ProceduralLocomotion : Node3D
                 Position = target.GlobalPosition,
                 // https://docs.godotengine.org/en/stable/classes/class_basis.html#class-basis-method-orthonormalized
                 // prevent rounding errors by using Orthonormalized()
+                // removes scale/skew before getting rotation
                 Rotation = target.GlobalBasis.Orthonormalized().GetRotationQuaternion(),
                 // bools default to false
                 // progress defaults to 0
@@ -287,8 +288,7 @@ public partial class ProceduralLocomotion : Node3D
             steppingHappeningRN = steppingHappeningRN || limb.Stepping;
         }
 
-        // one foot at a time for now
-        // only step when moving
+        // start a new individual step or group after current steps finish
         if (settings.AnimateLocomotion && 
             !steppingHappeningRN)
         {
