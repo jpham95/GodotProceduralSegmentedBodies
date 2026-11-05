@@ -5,14 +5,25 @@ using System.Collections.Generic;
 [Tool, GlobalClass]
 public partial class ProceduralLocomotion : Node3D
 {
+    /// <summary>
+    /// Record the current IK target positions as preferred stance positions for this generated body.
+    /// Regenerating replaces these recorded positions.
+    /// </summary>
     [ExportToolButton("Set Current Target Positions as Rest Position")]
     private Callable SetTargetPositionsAsRestPositions => Callable.From(UpdateRestPositions);
 
+    /// <summary>
+    /// Swap saved stance positions with previous values recorded this editor session.
+    /// </summary>
     [ExportToolButton("Undo Target Position Changes")]
     private Callable UndoTargetPositionChanges => Callable.From(UndoRestPositionChanges);
 
     public LocomotionSettings settings;
-    
+
+    /// <summary>
+    /// Generated links between grounded limbs, IK targets and ground probes. Recreated during generation.
+    /// Exported to save editor changes for runtime use. 
+    /// </summary>
     [ExportCategory("Generated Limbs")]
     [Export] public Godot.Collections.Array<LocomotionLimbDef> Limbs = new();
     
@@ -180,7 +191,6 @@ public partial class ProceduralLocomotion : Node3D
             StanceRayPath = GetPathTo(stanceRay),
             LandingRayPath = GetPathTo(landingRay),
             RestPosition = restPosition,
-            PhaseOffset = 0f
         });
     }
 

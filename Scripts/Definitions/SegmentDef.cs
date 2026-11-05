@@ -70,7 +70,7 @@ public partial class SegmentDef : Resource
     [ExportSubgroup("Custom Settings")]
     [Export] public bool LimitJoint = false;
     [Export] public SkeletonModifier3D.RotationAxis JointRotationAxis = SkeletonModifier3D.RotationAxis.X;
-    [Export(PropertyHint.Range, "0,360,1")] public float JointConeAngleDegrees = 90f;
+    [Export(PropertyHint.Range, "0,360,1,suffix:degrees")] public float JointConeAngleDegrees = 90f;
     [Export] public Vector3 JointLimitRotationDegrees = Vector3.Zero;
     
 }

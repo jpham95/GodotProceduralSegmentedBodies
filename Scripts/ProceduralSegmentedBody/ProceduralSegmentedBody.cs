@@ -32,9 +32,14 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         public float ConeAngleDegrees;
         public Quaternion ConeOffset;
     }
-    
+    /// <summary>
+    /// Print detailed generation, mesh validation, and height-fitting messages to output
+    /// </summary>
     [Export] private bool _debugMode = false;
     private bool _showPreview = false;
+    /// <summary>
+    /// Show a definition based preview of the body, joints, and joint limitations. This preview does not show the body in its solved IK pose.
+    /// </summary>
     [Export] public bool ShowPreview
     {
         get => _showPreview;
@@ -49,8 +54,15 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         }
     }
 
+    /// <summary>
+    /// Clear the node's children and skeleton, then generate the segmented body according to input definitions.
+    /// </summary>
     [ExportToolButton("Generate / Regenerate From Definition")]
     public Callable GenerateButton => Callable.From(() => Callable.From(Generate).CallDeferred());
+    
+    /// <summary>
+    /// Clear the node's children and skeleton.
+    /// </summary>
     [ExportToolButton("Clear")] 
     public Callable ClearButton => Callable.From(() => Callable.From(Clear).CallDeferred());
     
