@@ -101,7 +101,7 @@ To be clear, the following controls are found in `Limb Definition` under the `En
 | `End Mesh` | **Optional.** Mesh attached to the limb's end bone. Leave empty if the limb should end at its final joint. If unassigned, `End Mesh Rotation Degrees` and `End Mesh Offset` have no effect. |
 | `End Mesh Rotation Degrees` | Rotates the mesh relative to the end bone. Use this first to point the toes or fingers in the intended direction. |
 | `End Mesh Offset` | Moves the mesh relative to the end bone without moving the IK target. Use this to line up the top of a foot with the ankle of the base of a hand with the wrist. |
-| `End Mesh` | **Grounded limbs only.** Adds a gap between the estimated sole and the ground. Use a small positive value if the foot should sit slightly above surfaces. |
+| `Ground Clearance` | **Grounded limbs only.** Adds a gap between the estimated sole and the ground. Use a small positive value if the foot should sit slightly above surfaces. |
 
 > **Foot placement:** The IK target represents the ankle. The generator estimates the distance to the sole from the lowest point of the foot mesh's bounds after applying its rotation and offset. Position the foot so its sole sits below the ankle in the rest pose. During locomotion, the tool uses that distance to place the ankle above the surface hit.
 
