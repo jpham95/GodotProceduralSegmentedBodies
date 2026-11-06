@@ -100,7 +100,7 @@ To be clear, the following controls are found in `Limb Definition` under the `En
 | --- | --- |
 | `End Mesh` | **Optional.** Mesh attached to the limb's end bone. Leave empty if the limb should end at its final joint. If unassigned, `End Mesh Rotation Degrees` and `End Mesh Offset` have no effect. |
 | `End Mesh Rotation Degrees` | Rotates the mesh relative to the end bone. Use this first to point the toes or fingers in the intended direction. |
-| `End Mesh Offset` | Moves the mesh relative to the end bone without moving the IK target. Use this to line up the top of a foot with the ankle of the base of a hand with the wrist. |
+| `End Mesh Offset` | Moves the mesh relative to the end bone without moving the IK target. Use this to line up the top of a foot with the ankle or the base of a hand with the wrist. |
 | `Ground Clearance` | **Grounded limbs only.** Adds a gap between the estimated sole and the ground. Use a small positive value if the foot should sit slightly above surfaces. |
 
 > **Foot placement:** The IK target represents the ankle. The generator estimates the distance to the sole from the lowest point of the foot mesh's bounds after applying its rotation and offset. Position the foot so its sole sits below the ankle in the rest pose. During locomotion, the tool uses that distance to place the ankle above the surface hit.
@@ -109,9 +109,47 @@ To be clear, the following controls are found in `Limb Definition` under the `En
 
 ## Locomotion settings
 
-// how locomotion settings is structures
+To animate the creature's steps as it moves, assign a `LocomotionSettings` resource to `Locomotion Settings` in the `Body Definition`, then regenerate the body. Leave it unassigned if you only want to pose the creature or are defining your own movement animations using its IK targets.
 
-// table of locomotion settings inputs -> what they do
+Locomotion responds to the bod'y movement and rotation during runtime. Your player controller or enemy script moves the creature - and the locomotion controller decides when and where its grounded limbs should step and how. You can share one settings resource between creatures, or save separate resources to describe different gaits (e.g.: run, walk, hop).
+
+### Stepping
+
+| Locomotion Control | Description |
+| --- | --- |
+| `Animate Locomotion` | Allows grounded limbs to start new steps. Turning it off lets any step already in progress finish, but prevents any new steps from beginning. |
+| `Step Trigger Distance` | How far a planted foot can lag behind its preferred stance along the movement direction before it becomes elgible to step. Smaller values produce more frequent steps. |
+| `Step Ahead Distance` | How far ahead of the preferred stance to look for a landing, measured in direction of velocity. Larger values widen the gait. |
+| `Backward Step Multiplier` | Scales the lookahead distance when moving backward. For example, `0.5` would use half of the defined lookahead distance when moving directly backward. |
+| `Step Duration` | Time in seconds for a foot to move from its planted position to its landing position. |
+| `Step Height` | Maximum lift added above the step path when `Step Lift Curve` reaches `1`. |
+| `Step Turn Threshold Degrees` | Angle between the planted foot's orientation and its desired orientation that can trigger a turning step, even if the body is turning in-place. |
+| `Step Progress Curve` | Controls how quickly the foot travels and rotates toward its landing pose during a step. **Use a curve that starts at `0` and ends at `1`.** |
+| `Step Lift Curve` | Controls how high a foot lifts throughout a single step. **Use a curve that starts and ends at `0` so the foot is planted at both ends.** This value is a multiplier of `Step Height`, so a peak of `1` uses the full `Step Height`. |
+
+> **Curve setup:** Both curves are required for procedural stepping and need at least two points each in order to be sampled by the locomotion script. The horizontal axis is step time: `0` is lift-off and `1` is landing. The vertical axis controls the travel progress or lift, respectively.
+
+### Ground Detection
+
+Each grounded limb uses two downward rays: one for checking the ground at its preferred stance, and the other for checking proposed landing positions ahead of it.
+
+The following controls are under the `Ground Detection` group in a `LocomotionSettings` resource.
+
+| Ground Detection Control | Description |
+| --- | --- |
+| `Ground Collision Mask` | Physics layers the rays can detect. Include the layer used for the floor or terrain collision and exclude the creature's own collider. |
+| `Probe Height` | Distance above the preferred ankle position where each ground check starts. |
+| `Probe Depth` | Distance below the preferred ankle position where each ground check ends. |
+| `Maximum Slope Degrees` | Steepest surface accepted for valid foot placement, measured from a horizontal floor. |
+
+### Step Groups
+
+| Step Group Control | Description |
+| --- | --- |
+| `Use Step Groups` | When disabled, each grounded limb takes individual turns stepping. When enabled, eligible limbs in the same numbered group (assigned by `Step Group` in `LimbDef`) can begin a step together. |
+| `Step Group Count` | Number of groups to cycle through, starting at `1`. Set each grounded limb's `Step Group` to a number up to (and including) this value in its `Limb Definition`. |
+
+> **Quadruped example:** Set `Step Group Count` to `2`. Assign the front-left and back-right legs to group `1`. Assign the `front-right` and `back left` legs to group `2`. This will allow diagonally opposed pairs of legs to step together. An example of this can be found in the supplied `TestQuadrupedalBodyDefinition` resource.
 
 ## Adjust the generated stance
 
