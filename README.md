@@ -217,4 +217,12 @@ Once the gait looks right on flat ground, test it on a slope or uneven ground. I
 
 # Requirements
 
-// godot/.NET version requirements
+- **Godot:** Use the .NET edition of the editor. This project was built and tested with **Godot 4.7.2 .NET** (`v4.7.2.stable.mono.official [ed1daf0bf]`)
+- **.NET SDK:** The project targets **.NET 8**.
+- **Optional Preview:** Enable the included `Segmented Body Gizmo Preview` plugin to use the `Show Preview` option. The plugin is not required to generate or animate the creature - only to show a preview prior to generation.
+
+To verify your setup, run this command from the project root:
+
+```bash
+dotnet build "PCG Segmented Bodies.csproj"
+```
