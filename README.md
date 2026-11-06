@@ -70,10 +70,25 @@ Expand `Limbs` in the `Body Definition`, add an array element, and create a new 
 
 ## Build segment chains
 
-// how a segment is structured
+Expand `Segments` in the `Limb Definition`. For each rigid piece of the limb (i.e. thigh, calf), add an array element, create a `SegmentDef` in that slot, and assign its `Mesh`. Order the segments from the torso outward. Assign feet and hands separately under [Set up feet or hands](#set-up-feet-or-hands).
 
+Choose the `Length Axis` that runs along each mesh. The generator measures the mesh along that axis and uses the result to place the next joint. For example, in a two-segment leg limb, if a calf mesh is longest along its Y axis, choose `Y`. Increasing `Scale.Y` then lengthens both the visible calf mesh and the calf bone itself.
 
-// table of segment definition inputs -> what they do
+| Segment Definition Control | Description |
+| --- | --- |
+| `Mesh` | **Required.** The mesh used for this segment. Its bounds inform the segment length. |
+| `Length Axis` | Local mesh axis used to measure length. The chain extends along the negative direction of the selected axis: left for X, down for Y, forward for Z. |
+| `Rest Position Rotation Degrees` | Rotates the segment's bone relative to its parent. Segments farther along the chain follow this rotation. |
+| `Mesh Offset` | Moves the visible mesh relative to the segment without moving either joint. |
+| `Mesh Rotation Degrees` | Rotates the visible mesh around its centre without changing the bone direction or the selected length axis. |
+| `Scale` | Scales the mesh on each axis. Scaling along `Length Axis` also changes the distance to the next joint - scaling perpendicular to `Length Axis` changes the segment's thickness. |
+| `Joint Preset` | Sets how the joint at the start of this segment can rotate during IK. `Free` allows unrestricted rotation. `Knee` applies a preset X-axis bend restriction that I found simulated a knee joint reasonably well during testing (as seen in the `TestBipedalBodyDefinition` example body definition). `Custom` uses the settings below. |
+| `Joint Rotation Axis` | **Custom preset only.** Selects the axis the joint can rotate around. Choose `All` to allow rotation around all axes. |
+| `Limit Joint` | **Custom preset only.** Enables additional cone limit on the joint's movement. If the preview plugin and option are enabled (*recommended for this option*), this restriction is displayed by a cone which signifies the allowed range of motion for this joint. Controlled by the next two settings. |
+| `Joint Cone Angle Degrees` | **Custom Limit only.** Sets the opening of the allowed cone. A smaller angle restricts movement more, a larger angle restricts less. |
+| `Joint Limit Rotation Degrees` | **Custom Limit only.** Aims the cone relative to the joint. Use this to change which directions are permitted without changing the segment's rest pose. |
+
+> **Example:** For a thigh-calf chain, the thigh starts at the hip and the calf starts at the knee. Apply the `Knee` preset to the *calf segment*. If the ankle is in the correct place but the calf mesh looks sideways, adjust the `Mesh Rotation Degrees`. If the ankle itself needs to move in the rest pose, adjust `Rest Position Rotation Degrees`.
 
 ## Set up feet or hands
 
