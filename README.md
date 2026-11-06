@@ -27,17 +27,22 @@ Test animated locomotion using the supplied test level.
 
 ## Create your own body definition
 
+A `Body Definition` describes a single creature in a saveable, shareable resource `.res` file. 
 
-A `Body Definition` describes a single creature in a saveable, shareable resource `.res` file.
+To create a `Body Definition` first and begin creating a creature
+- Select the `ProceduralSegmentedBody` node.
+- Open the dropdown beside `Body Definition`, and choose `New BodyDef`. 
+- Click on the newly created `BodyDef` to expand it and see its controls.
+- Right click the resource and select `Save` to save and share this resource between scenes or creatures.
 
-| Body Definition Control | Information |
+| Body Definition Control | Description |
 | --- | --- |
 | `Torso Mesh` | Required. Supplies the central body mesh. Its bounds determine the default head and limb attachment positions. |
 | `Head Mesh` | Optional. Adds a head mesh on top of the torso, connected by a single bone. Leave empty to generate a headless creature. |
 | `Joint Mesh` | Optional. Places this mesh at the generated segment joints. Leaving it empty hides the joint visuals - bones and IK still work without it. |
 | `Limbs` | An Array that holds one `Limb Definition` per limb. |
 | `Locomotion Settings` | Optional. Assign a `Locomotion Settings` resource to generate a locomotion controller for grounded limbs to animate creature movement with steps. Leave empty to generate a creature you can pose manually using its IK targets. |
-| `Inverse Kinematics Type` | Selects the solver used by the creature's limb chains: [CCDIK](https://docs.godotengine.org/en/stable/classes/class_ccdik3d.html#class-ccdik3d), [FABRIK](https://docs.godotengine.org/en/stable/classes/class_fabrik3d.html#fabrik3d), or [Jacobian IK](https://docs.godotengine.org/en/stable/classes/class_jacobianik3d.html#class-jacobianik3d). CCDIK and Jacobian IK work a bit better with limbs which use joint limitations. |
+| `Inverse Kinematics Type` | Selects the solver used by the creature's limb chains: [CCDIK](https://docs.godotengine.org/en/stable/classes/class_ccdik3d.html#class-ccdik3d), [FABRIK](https://docs.godotengine.org/en/stable/classes/class_fabrik3d.html#fabrik3d), or [Jacobian IK](https://docs.godotengine.org/en/stable/classes/class_jacobianik3d.html#class-jacobianik3d). CCDIK and Jacobian IK work a bit better than FABRIK with limbs which use joint limitations. |
 | `Head Attachment Offset` | Moves the head from the top of centre of the torso in torso-local coordinates. |
 | `Head Rotation Degrees` | Rotates the head mesh relative to its attachment point, in degrees, |
 
