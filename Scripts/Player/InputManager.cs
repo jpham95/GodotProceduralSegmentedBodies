@@ -18,7 +18,6 @@ public partial class InputManager : Node
 	[Export] private StringName MoveRightAction = "MoveRight";
 	[Export] private StringName MoveForwardAction = "MoveForward";
 	[Export] private StringName MoveBackwardAction = "MoveBackward";
-	[Export] private StringName RunAction = "Run";
 
 	public Vector2 GetMoveInput()
 	{
@@ -48,10 +47,5 @@ public partial class InputManager : Node
 	public float GetMoveBackward()
 	{
 		return Input.GetActionStrength(MoveBackwardAction);
-	}
-
-	public bool IsRunHeld()
-	{
-		return Input.IsActionPressed(RunAction);
 	}
 }
