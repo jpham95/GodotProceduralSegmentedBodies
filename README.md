@@ -4,6 +4,34 @@ Build and pose segmented creatures in the Godot 4.7 editor using your own meshes
 
 To make the creature walk, assign a locomotion settings resource before generating. Grounded limbs will then take procedural steps according to the assigned settings as the body moves and turns.
 
+# Asset Organisation
+
+```
+GodotProceduralSegmentedBodies
+├── Meshes
+│   ├── test_body.res
+│   ├── test_foot.res
+│   ├── test_hand.res
+│   ├── test_head.res
+│   └── test_segment.res
+├── Resources
+│   ├── BodyDefinitions
+│   │   ├── TestBipedalBodyDefinition.tres
+│   │   └── TestQuadrupedalBodyDefinition.tres
+│   ├── LocomotionSettings
+│   │   ├── DefaultBipedalLocomotionSettings.tres
+│   │   └── DefaultQuadrupedalLocomotionSettings.tres
+│   └── StepCurves
+│       ├── DefaultStepLiftCurve.tres
+│       └── DefaultStepProgressCurve.tres
+├── Scenes
+│   └── procedural_segmented_body_test_level.tscn
+├── addons
+│   └── SegmentedBodyGizmoPreview
+│       └── plugin.cfg
+└── project.godot
+```
+
 # Quick start: generate an example using test assets
 
 Use a supplied body definition and locomotion settings to try the generator and see an example before building your own creature.
@@ -22,6 +50,8 @@ Test animated locomotion using the supplied test level.
 2. Open the `procedural_segmented_body_test_level` scene.
 3. Select the existing `ProceduralSegmentedBody` node under `PlayerController` and generate a creature based on your desired `Body Definition` with an associated `Locomotion Settings` resource.
 4. Press the `Run Current Scene (F6)` to run the scene and walk your creature around using the assigned keys - grounded limbs should step according to `Locomotion Settings` assigned in the selected `Body Definition`.
+
+> Creature turning is controlled via mouse movement.
 
 # Generate a body
 
@@ -155,27 +185,35 @@ The following controls are under the `Ground Detection` group in a `LocomotionSe
 
 Each grounded limb has a preferred stance position. This is where the locomotion controller checks for ground relative to the body. Adjust the stance if, for example you want the creature to stand with its feet further apart without changing its limb lengths or rotations.
 
-1. Generate teh creature with `Locomotion Settings` assigned.
+1. Generate the creature with `Locomotion Settings` assigned.
 2. In the Scene tree, select a grounded limb's `TargetNode` marker. Use the Move tool to position it where you want the ankle to attempt to rest. (Move the IK target rather than the foot mesh itself).
 3. Repeat for all other grounded limbs you want to reposition.
 4. Select the generated `ProceduralLocomotion` node and click the **Set Current Target Positions as Rest Position** button. This records the current positions of *all grounded limb targets* relative to the body.
 5. Save the scene and run it to test the new stance.
 
-> **Example:** To widen a biped's stance, move the left and right ankle targets outward by equal amounts, then record their positions with the **Set Current Target Positions as Rest Position** button. To make the same creature take longer steps without changing stance width, adjust the `LocomotionSettings.StepAheadDistance` control instead.
+> **Example:** To widen a biped's stance, move the left and right ankle targets outward by equal amounts, then record their positions with the **Set Current Target Positions as Rest Position** button. To make the same creature take longer steps without changing stance width, adjust the `Step Ahead Distance` control instead.
 
-The **Undo Target Position Changes** button, swaps the recorded stance positions with the previous set. Use it after recording a stance you want to revert. It changes the stored positions used for locomotion. It does not move the markers back in-editor.
+The **Undo Target Position Changes** button swaps the recorded stance positions with the previous set. Use it after recording a stance you want to revert. It changes the stored positions used for locomotion. It does not move the markers back in-editor.
 
-These stance edits belong to the ***current generated body only***. 
-
-**Regenerating the creature rebuilds the targets and replaces their recorded positions.**
+**Regenerating the creature rebuilds the targets and replaces the recorded stance. These edits are saved to the generated body, not its `Body Definition`.**
 
 ## Tune the walk
 
-// value hints
+Start on flat ground and keep the creature moving at the same speed while comparing settings. Adjust one control at a time so you can see the effect it has. If multiple creatures share the same `LocomotionSettings` resource, duplicated it before tuning a gait for one creature or movement mode.
 
-# Asset Organisation
+Once the gait looks right on flat ground, test it on a slope or uneven ground. If a foot does not find a landing, check the terrain's collision layer, probe reach, and `Maximum Slop Degrees` locomotion setting before changing step timing.
 
-// basic file tree
+### Examples
+
+| Desired Result | Adjustment |
+| --- | --- |
+| Let a foot stay planted longer before taking a step | Increase `Step Trigger Distance`. Decrease it if the body travels too far ahead of a planted foot. |
+| Place the next step landing position farther ahead | Increase `Step Ahead Distance`. If the leg struggles to reach its landing, reduce it. |
+| Make each foot complete its step faster | Decrease `Step Duration`. This changes how quickly the foot catches up with its preferred position, without changing the creature's movement speed. |
+| Lift the feet higher | Increase `Step Height`. To change when the foot reaches its highest point throughout a step, move the peak of `Step Lift Curve` earlier or later as desired. |
+| Make the feet follow the body's facing direction more closely | Decrease `Turn Threshold Degrees` so a smaller change in facing direction can trigger a turning step. |
+| Shorten backward steps while retaining forward reach | Reduce `Backward Step Multiplier` and compare forward and backward movement at the same speed. |
+| Encourage limbs with >2 segments arch upward | In the limb definition, enable `Use Magnet Targets`, regenerate, then adjust the generated target node - again, move the end target through its intended range. if the limb folds back on itself, adjust the magnet marker and test again. |
 
 # Requirements
 
