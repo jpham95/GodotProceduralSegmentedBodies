@@ -165,7 +165,9 @@ Each grounded limb has a preferred stance position. This is where the locomotion
 
 The **Undo Target Position Changes** button, swaps the recorded stance positions with the previous set. Use it after recording a stance you want to revert. It changes the stored positions used for locomotion. It does not move the markers back in-editor.
 
-These stance edits belong to the ***current generated body only***. **Regenerating rebuilds the targets and replaces their recorded positions.**
+These stance edits belong to the ***current generated body only***. 
+
+**Regenerating the creature rebuilds the targets and replaces their recorded positions.**
 
 ## Tune the walk
 
