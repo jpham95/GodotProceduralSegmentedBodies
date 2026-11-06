@@ -111,7 +111,7 @@ To be clear, the following controls are found in `Limb Definition` under the `En
 
 To animate the creature's steps as it moves, assign a `LocomotionSettings` resource to `Locomotion Settings` in the `Body Definition`, then regenerate the body. Leave it unassigned if you only want to pose the creature or are defining your own movement animations using its IK targets.
 
-Locomotion responds to the bod'y movement and rotation during runtime. Your player controller or enemy script moves the creature - and the locomotion controller decides when and where its grounded limbs should step and how. You can share one settings resource between creatures, or save separate resources to describe different gaits (e.g.: run, walk, hop).
+Locomotion responds to the body's movement and rotation during runtime. Your player controller or enemy script moves the creature - and the locomotion controller decides when and where its grounded limbs should step and how. You can share one settings resource between creatures, or save separate resources to describe different gaits (e.g.: run, walk, hop).
 
 ### Stepping
 
@@ -123,11 +123,11 @@ Locomotion responds to the bod'y movement and rotation during runtime. Your play
 | `Backward Step Multiplier` | Scales the lookahead distance when moving backward. For example, `0.5` would use half of the defined lookahead distance when moving directly backward. |
 | `Step Duration` | Time in seconds for a foot to move from its planted position to its landing position. |
 | `Step Height` | Maximum lift added above the step path when `Step Lift Curve` reaches `1`. |
-| `Step Turn Threshold Degrees` | Angle between the planted foot's orientation and its desired orientation that can trigger a turning step, even if the body is turning in-place. |
+| `Turn Threshold Degrees` | Angle between the planted foot's orientation and its desired orientation that can trigger a turning step, even if the body is turning in-place. |
 | `Step Progress Curve` | Controls how quickly the foot travels and rotates toward its landing pose during a step. **Use a curve that starts at `0` and ends at `1`.** |
 | `Step Lift Curve` | Controls how high a foot lifts throughout a single step. **Use a curve that starts and ends at `0` so the foot is planted at both ends.** This value is a multiplier of `Step Height`, so a peak of `1` uses the full `Step Height`. |
 
-> **Curve setup:** Both curves are required for procedural stepping and need at least two points each in order to be sampled by the locomotion script. The horizontal axis is step time: `0` is lift-off and `1` is landing. The vertical axis controls the travel progress or lift, respectively.
+> **Curve setup:** Both curves are required for procedural stepping and need at least two points each in order to be sampled by the locomotion script. The horizontal axis is fraction of the step completed: `0` is lift-off and `1` is landing. The vertical axis controls the travel progress or lift, respectively.
 
 ### Ground Detection
 
@@ -153,7 +153,19 @@ The following controls are under the `Ground Detection` group in a `LocomotionSe
 
 ## Adjust the generated stance
 
-// Target/Rest position button usage
+Each grounded limb has a preferred stance position. This is where the locomotion controller checks for ground relative to the body. Adjust the stance if, for example you want the creature to stand with its feet further apart without changing its limb lengths or rotations.
+
+1. Generate teh creature with `Locomotion Settings` assigned.
+2. In the Scene tree, select a grounded limb's `TargetNode` marker. Use the Move tool to position it where you want the ankle to attempt to rest. (Move the IK target rather than the foot mesh itself).
+3. Repeat for all other grounded limbs you want to reposition.
+4. Select the generated `ProceduralLocomotion` node and click the **Set Current Target Positions as Rest Position** button. This records the current positions of *all grounded limb targets* relative to the body.
+5. Save the scene and run it to test the new stance.
+
+> **Example:** To widen a biped's stance, move the left and right ankle targets outward by equal amounts, then record their positions with the **Set Current Target Positions as Rest Position** button. To make the same creature take longer steps without changing stance width, adjust the `LocomotionSettings.StepAheadDistance` control instead.
+
+The **Undo Target Position Changes** button, swaps the recorded stance positions with the previous set. Use it after recording a stance you want to revert. It changes the stored positions used for locomotion. It does not move the markers back in-editor.
+
+These stance edits belong to the ***current generated body only***. **Regenerating rebuilds the targets and replaces their recorded positions.**
 
 ## Tune the walk
 
