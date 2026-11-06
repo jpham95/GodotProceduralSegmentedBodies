@@ -47,7 +47,7 @@ public partial class BodyDef : Resource
     
     [ExportGroup("Locomotion Settings")]
     /// <summary>
-    /// Shared, saveable movement animation and ground-detection settings.
+    /// Optional, shared, saveable movement animation and ground-detection settings.
     /// </summary>
     [Export] public LocomotionSettings LocomotionSettings;
 

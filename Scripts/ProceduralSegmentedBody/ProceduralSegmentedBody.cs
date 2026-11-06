@@ -254,11 +254,6 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             }
         }
 
-        if (BodyDefinition.LocomotionSettings == null)
-        {
-            return "Locomotion settings resource is missing.";
-        }
-
         return null;
     }
 
@@ -590,13 +585,16 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         if (_debugMode)
             GD.Print($"[Generate] After Clear: bones={GetBoneCount()}");
 
-        _locomotionController = new ProceduralLocomotion
+        if (BodyDefinition.LocomotionSettings != null)
         {
-            Name = "ProceduralLocomotion",
-            settings = BodyDefinition.LocomotionSettings
-        };
-        AddChild(_locomotionController);
-        _locomotionController.Owner = Owner;
+            _locomotionController = new ProceduralLocomotion
+            {
+                Name = "ProceduralLocomotion",
+                settings = BodyDefinition.LocomotionSettings
+            };
+            AddChild(_locomotionController);
+            _locomotionController.Owner = Owner;
+        }
         
         // Bones
         int torsoBone = AddBone("Torso");
@@ -988,7 +986,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             AddFootOrientation(endBoneIndex, targetNode, limb);
         }
         
-        _locomotionController.AddLimb(limb, targetNode, targetPosition);
+        _locomotionController?.AddLimb(limb, targetNode, targetPosition);
     }
 
     private MeshInstance3D CreateTorsoMesh()

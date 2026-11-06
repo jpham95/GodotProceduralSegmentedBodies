@@ -519,7 +519,7 @@ public partial class ProceduralLocomotion : Node3D
         return true;
     }
 
-    private void UpdateRestPositions()
+    public void UpdateRestPositions()
     {
         // only run in editor mode
         if (!Engine.IsEditorHint())
@@ -554,7 +554,7 @@ public partial class ProceduralLocomotion : Node3D
         }
     }
 
-    private void UndoRestPositionChanges()
+    public void UndoRestPositionChanges()
     {
         foreach (LocomotionLimbDef limb in Limbs)
         {
