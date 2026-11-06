@@ -5,7 +5,8 @@
 [ext_resource type="Script" uid="uid://lvjxsyprbkyx" path="res://Scripts/Camera.cs" id="1_ux00h"]
 [ext_resource type="Script" uid="uid://dfsudtfcgmk" path="res://Scripts/Player/PlayerController.cs" id="1_xvi7r"]
 [ext_resource type="Script" uid="uid://3d4edbqwiotl" path="res://Scripts/Player/InputManager.cs" id="2_ux00h"]
-[ext_resource type="Resource" uid="uid://sni1j1gic2u3" path="res://Resources/BodyDefinitions/TestQuadrupedalBodyDefinition.tres" id="7_c37wc"]
+[ext_resource type="Script" uid="uid://bbn7lqonutd8l" path="res://Scripts/Definitions/LocomotionSettings.cs" id="8_7n7gr"]
+[ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="9_dxd8p"]
 [ext_resource type="Script" uid="uid://ddyyyc51jutuv" path="res://Scripts/ProceduralSegmentedBody/ProceduralLocomotion.cs" id="10_c37wc"]
 [ext_resource type="Script" uid="uid://bpr8edfsfj12e" path="res://Scripts/Definitions/LocomotionLimbDef.cs" id="11_c1cxm"]
 [ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/test_head.res" id="12_3qodq"]
@@ -21,6 +22,25 @@ size = Vector3(2, 2, 2)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yih1u"]
 height = 4.0
+
+[sub_resource type="Resource" id="Resource_wqbb7"]
+script = ExtResource("13_37di1")
+metadata/_custom_type_script = "uid://dj8l7qj8xaces"
+
+[sub_resource type="Resource" id="Resource_30m4u"]
+script = ExtResource("14_0ofkx")
+Segments = Array[ExtResource("13_37di1")]([SubResource("Resource_wqbb7")])
+metadata/_custom_type_script = "uid://vw061olhvyob"
+
+[sub_resource type="Resource" id="Resource_s31sr"]
+script = ExtResource("8_7n7gr")
+metadata/_custom_type_script = "uid://bbn7lqonutd8l"
+
+[sub_resource type="Resource" id="Resource_og440"]
+script = ExtResource("9_dxd8p")
+Limbs = Array[ExtResource("14_0ofkx")]([SubResource("Resource_30m4u")])
+LocomotionSettings = SubResource("Resource_s31sr")
+metadata/_custom_type_script = "uid://bgc8d1lhe00ad"
 
 [sub_resource type="BoxMesh" id="BoxMesh_ga4af"]
 size = Vector3(0.2, 1, 0.2)
@@ -434,7 +454,7 @@ bones/21/rotation = Quaternion(0, 0, 0, 1)
 bones/21/scale = Vector3(1, 1, 1)
 script = ExtResource("1_qlu5l")
 _debugMode = true
-BodyDefinition = ExtResource("7_c37wc")
+BodyDefinition = SubResource("Resource_og440")
 metadata/_custom_type_script = "uid://b2o6rdr1om1jh"
 
 [node name="ProceduralLocomotion" type="Node3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2050488745]

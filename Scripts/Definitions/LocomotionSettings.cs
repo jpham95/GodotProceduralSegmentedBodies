@@ -41,16 +41,6 @@ public partial class LocomotionSettings : Resource
     /// </summary>
     [Export] public Curve StepLiftCurve;
     
-    [ExportGroup("Step Groups")]
-    /// <summary>
-    /// Check limbs in numbered groups instead of individually.
-    /// </summary>
-    [Export] public bool UseStepGroups = false;
-    /// <summary>
-    /// Number of total Step Groups to cycle through, starting at 1. Assign each grounded limb a step group between 1 and this value. 
-    /// </summary>
-    [Export(PropertyHint.Range, "1,10,1,or_greater")] public uint StepGroupCount = 2;
-    
     [ExportGroup("Ground Detection")]
     /// <summary>
     /// Physics layers that the ground raycasts are tested against.
@@ -68,4 +58,14 @@ public partial class LocomotionSettings : Resource
     /// Steepest ground surface accepted for valid foot placement.
     /// </summary>
     [Export(PropertyHint.Range,"0,89,1,suffix:degrees")] public float MaximumSlopeDegrees = 50f;
+    
+    [ExportGroup("Step Groups")]
+    /// <summary>
+    /// Check limbs in numbered groups instead of individually.
+    /// </summary>
+    [Export] public bool UseStepGroups = false;
+    /// <summary>
+    /// Number of total Step Groups to cycle through, starting at 1. Assign each grounded limb a step group between 1 and this value. 
+    /// </summary>
+    [Export(PropertyHint.Range, "1,10,1,or_greater")] public uint StepGroupCount = 2;
 }

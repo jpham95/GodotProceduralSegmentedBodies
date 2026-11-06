@@ -205,7 +205,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             
             if (limb == null)
             {
-                return "Initial limb resource is not set";
+                return $"Limb resource at index {limbIndex} is not set";
             }
 
             if (string.IsNullOrWhiteSpace(limb.LimbID))
@@ -220,7 +220,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         
             if (limb.Segments.Count == 0)
             {
-                return "Initial limb has no segments";
+                return $"{limb.LimbID} has no segments";
             }
             
 
@@ -243,7 +243,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 }
             }
 
-            if (limb.EndMesh != null)
+            if (limb.GroundFoot && limb.EndMesh != null)
             {
                 float distance = limb.AnkleToContactDistance;
 

@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://b2o6rdr1om1jh" path="res://Scripts/ProceduralSegmentedBody/ProceduralSegmentedBody.cs" id="1_c7owb"]
 [ext_resource type="Resource" uid="uid://cxj3tg7uhd3d3" path="res://Resources/LocomotionSettings/DefaultQuadrupedalLocomotionSettings.tres" id="2_bod6t"]
-[ext_resource type="Curve" uid="uid://der8in35tgaam" path="res://Resources/DefaultStepProgressCurve.tres" id="3_vrhcg"]
-[ext_resource type="Curve" uid="uid://bhlq3nkvfmxqg" path="res://Resources/DefaultStepLiftCurve.tres" id="4_vhm2a"]
-[ext_resource type="Resource" uid="uid://sni1j1gic2u3" path="res://Resources/BodyDefinitions/TestQuadrupedalBodyDefinition.tres" id="5_qd4m0"]
+[ext_resource type="Curve" uid="uid://dxdrj17oov3m6" path="res://Resources/StepCurves/DefaultStepProgressCurve.tres" id="3_vrhcg"]
+[ext_resource type="Curve" uid="uid://b6bkj6o7yceif" path="res://Resources/StepCurves/DefaultStepLiftCurve.tres" id="4_vhm2a"]
+[ext_resource type="Resource" uid="uid://sni1j1gic2u3" path="res://Resources/BodyDefinitions/TestBipedalBodyDefinition.tres" id="5_qd4m0"]
 
 [node name="DisappearingMesh" type="Node3D" unique_id=2137403688]
 
