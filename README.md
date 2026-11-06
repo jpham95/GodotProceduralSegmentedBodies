@@ -84,7 +84,7 @@ Choose the `Length Axis` that runs along each mesh. The generator measures the m
 | `Scale` | Scales the mesh on each axis. Scaling along `Length Axis` also changes the distance to the next joint - scaling perpendicular to `Length Axis` changes the segment's thickness. |
 | `Joint Preset` | Sets how the joint at the start of this segment can rotate during IK. `Free` allows unrestricted rotation. `Knee` applies a preset X-axis bend restriction that I found simulated a knee joint reasonably well during testing (as seen in the `TestBipedalBodyDefinition` example body definition). `Custom` uses the settings below. |
 | `Joint Rotation Axis` | **Custom preset only.** Selects the axis the joint can rotate around. Choose `All` to allow rotation around all axes. |
-| `Limit Joint` | **Custom preset only.** Enables additional cone limit on the joint's movement. If the preview plugin and option are enabled (*recommended for this option*), this restriction is displayed by a cone which signifies the allowed range of motion for this joint. Controlled by the next two settings. |
+| `Limit Joint` | **Custom preset only.** Adds a cone limit on the joint's movement. If the preview plugin and option are enabled (*recommended for this option*), this restriction is displayed by a cone which signifies the allowed range of motion for this joint. Controlled by the next two settings. |
 | `Joint Cone Angle Degrees` | **Custom Limit only.** Sets the opening of the allowed cone. A smaller angle restricts movement more, a larger angle restricts less. |
 | `Joint Limit Rotation Degrees` | **Custom Limit only.** Aims the cone relative to the joint. Use this to change which directions are permitted without changing the segment's rest pose. |
 
@@ -92,7 +92,18 @@ Choose the `Length Axis` that runs along each mesh. The generator measures the m
 
 ## Set up feet or hands
 
-// end mesh settings inputs -> what they do
+Return to the `Limb Definition` and assign an optional `End Mesh`. Use this for the foot, hand, or other rigid piece at the tip of the limb. It attaches to the end bone and is separate from segment entries in `Segments`.
+
+To be clear, the following controls are found in `Limb Definition` under the `End Mesh Settings` group.
+
+| End Mesh Control | Description |
+| --- | --- |
+| `End Mesh` | **Optional.** Mesh attached to the limb's end bone. Leave empty if the limb should end at its final joint. If unassigned, `End Mesh Rotation Degrees` and `End Mesh Offset` have no effect. |
+| `End Mesh Rotation Degrees` | Rotates the mesh relative to the end bone. Use this first to point the toes or fingers in the intended direction. |
+| `End Mesh Offset` | Moves the mesh relative to the end bone without moving the IK target. Use this to line up the top of a foot with the ankle of the base of a hand with the wrist. |
+| `End Mesh` | **Grounded limbs only.** Adds a gap between the estimated sole and the ground. Use a small positive value if the foot should sit slightly above surfaces. |
+
+> **Foot placement:** The IK target represents the ankle. The generator estimates the distance to the sole from the lowest point of the foot mesh's bounds after applying its rotation and offset. Position the foot so its sole sits below the ankle in the rest pose. During locomotion, the tool uses that distance to place the ankle above the surface hit.
 
 # Procedural Animation
 
