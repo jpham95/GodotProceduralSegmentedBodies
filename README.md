@@ -4,7 +4,7 @@ Build and pose segmented creatures in the Godot 4.7 editor using your own meshes
 
 To make the creature walk, assign a locomotion settings resource before generating. Grounded limbs will then take procedural steps according to the assigned settings as the body moves and turns.
 
-## Quick start: generate an example using test assets
+# Quick start: generate an example using test assets
 
 Use a supplied body definition and locomotion settings to try the generator and see an example before building your own creature.
 
@@ -23,9 +23,9 @@ Test animated locomotion using the supplied test level.
 3. Select the existing `ProceduralSegmentedBody` node under `PlayerController` and generate a creature based on your desired `Body Definition` with an associated `Locomotion Settings` resource.
 4. Press the `Run Current Scene (F6)` to run the scene and walk your creature around using the assigned keys - grounded limbs should step according to `Locomotion Settings` assigned in the selected `Body Definition`.
 
-## Generate a body
+# Generate a body
 
-### Create your own body definition
+## Create your own body definition
 
 A `Body Definition` describes a single creature in a saveable, shareable resource `.res` file. 
 
@@ -46,7 +46,7 @@ To create a `Body Definition` first and begin creating a creature
 | `Head Rotation Degrees` | Rotates the head mesh relative to its attachment point, in degrees, |
 | `Locomotion Settings` | **Optional.** Assign a `Locomotion Settings` resource to generate a locomotion controller for grounded limbs to animate creature movement with steps. Leave empty to generate a creature you can pose manually using its IK targets. |
 
-### Add limbs
+## Add limbs
 
 Expand `Limbs` in the `Body Definition`, add an array element, and create a new `LimbDef` in that slot. Give it a unique `Limb ID`, such as `FrontLeftLeg`, then choose a `Preset`.
 
@@ -68,37 +68,37 @@ Expand `Limbs` in the `Body Definition`, add an array element, and create a new 
 
 **NOTE:** Limb Definition also includes End Mesh settings discussed below in [Set up feet or hands](#set-up-feet-or-hands)
 
-### Build segment chains
+## Build segment chains
 
 // how a segment is structured
 
 
 // table of segment definition inputs -> what they do
 
-### Set up feet or hands
+## Set up feet or hands
 
 // end mesh settings inputs -> what they do
 
-## Procedural Animation
+# Procedural Animation
 
-### Locomotion settings
+## Locomotion settings
 
 // how locomotion settings is structures
 
 // table of locomotion settings inputs -> what they do
 
-### Adjust the generated stance
+## Adjust the generated stance
 
 // Target/Rest position button usage
 
-### Tune the walk
+## Tune the walk
 
 // value hints
 
-## Asset Organisation
+# Asset Organisation
 
 // basic file tree
 
-## Requirements
+# Requirements
 
 // godot/.NET version requirements
