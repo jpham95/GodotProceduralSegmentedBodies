@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cm2ceuaw4povi"
-path.s3tc="res://.godot/imported/test_level_gray.png-3c86d1b5edc5cf41c43d6bb34eff5216.s3tc.ctex"
+uid="uid://db0rdirc5vs25"
+path.s3tc="res://.godot/imported/test_level_dirt.png-81090a78fbab0f5ae43fa1efb38daeb6.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "bed0be6dc4d9d55cf3eeedba82d51d28"
+"md5": "56014a825e21f2b837e279cc4d9537c2"
 }
 
 [deps]
 
-source_file="res://Textures/test_level_gray.png"
-dest_files=["res://.godot/imported/test_level_gray.png-3c86d1b5edc5cf41c43d6bb34eff5216.s3tc.ctex"]
+source_file="res://Textures/ProceduralSegmentedBodies/test_level_dirt.png"
+dest_files=["res://.godot/imported/test_level_dirt.png-81090a78fbab0f5ae43fa1efb38daeb6.s3tc.ctex"]
 
 [params]
 

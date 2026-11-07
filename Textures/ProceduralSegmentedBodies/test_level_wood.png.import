@@ -2,20 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://57ypg7jin8cu"
-path.s3tc="res://.godot/imported/test_level_gray_dark.png-ae02cb1d376cfe4895289b3d93ad60c8.s3tc.ctex"
+uid="uid://bwjqgy4rxid3i"
+path.s3tc="res://.godot/imported/test_level_wood.png-e6324002979fab8dee68a7b415e4176f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 generator_parameters={
-"md5": "a7fc0f7705421274975c024b8e83afd3"
+"md5": "c3943ab3e9ff1e4c0ef9c15f045e1e5c"
 }
 
 [deps]
 
-source_file="res://Meshes/test_level_gray_dark.png"
-dest_files=["res://.godot/imported/test_level_gray_dark.png-ae02cb1d376cfe4895289b3d93ad60c8.s3tc.ctex"]
+source_file="res://Textures/ProceduralSegmentedBodies/test_level_wood.png"
+dest_files=["res://.godot/imported/test_level_wood.png-e6324002979fab8dee68a7b415e4176f.s3tc.ctex"]
 
 [params]
 

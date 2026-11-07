@@ -9,23 +9,26 @@ To make the creature walk, assign a locomotion settings resource before generati
 ```
 GodotProceduralSegmentedBodies
 ├── Meshes
-│   ├── test_body.res
-│   ├── test_foot.res
-│   ├── test_hand.res
-│   ├── test_head.res
-│   └── test_segment.res
+│   └── ProceduralSegmentedBodies
+│       ├── test_body.res
+│       ├── test_foot.res
+│       ├── test_hand.res
+│       ├── test_head.res
+│       └── test_segment.res
 ├── Resources
-│   ├── BodyDefinitions
-│   │   ├── TestBipedalBodyDefinition.tres
-│   │   └── TestQuadrupedalBodyDefinition.tres
-│   ├── LocomotionSettings
-│   │   ├── DefaultBipedalLocomotionSettings.tres
-│   │   └── DefaultQuadrupedalLocomotionSettings.tres
-│   └── StepCurves
-│       ├── DefaultStepLiftCurve.tres
-│       └── DefaultStepProgressCurve.tres
+│   └── ProceduralSegmentedBodies
+│       ├── BodyDefinitions
+│       │   ├── TestBipedalBodyDefinition.tres
+│       │   └── TestQuadrupedalBodyDefinition.tres
+│       ├── LocomotionSettings
+│       │   ├── DefaultBipedalLocomotionSettings.tres
+│       │   └── DefaultQuadrupedalLocomotionSettings.tres
+│       └── StepCurves
+│           ├── DefaultStepLiftCurve.tres
+│           └── DefaultStepProgressCurve.tres
 ├── Scenes
-│   └── procedural_segmented_body_test_level.tscn
+│   └── ProceduralSegmentedBodies
+│       └── procedural_segmented_body_test_level.tscn
 ├── addons
 │   └── SegmentedBodyGizmoPreview
 │       └── plugin.cfg

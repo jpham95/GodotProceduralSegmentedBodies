@@ -1,5 +1,0 @@
-[gd_scene format=3 uid="uid://i7y17bspl7st"]
-
-[ext_resource type="PackedScene" uid="uid://dm5pfjv1xhqp6" path="res://Meshes/test_level.glb" id="1_iti4p"]
-
-[node name="test_level" unique_id=421628456 instance=ExtResource("1_iti4p")]

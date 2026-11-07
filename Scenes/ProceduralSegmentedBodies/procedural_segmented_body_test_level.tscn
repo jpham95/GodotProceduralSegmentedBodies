@@ -1,18 +1,18 @@
 [gd_scene format=3 uid="uid://demnv03jshfkv"]
 
-[ext_resource type="PackedScene" uid="uid://dm5pfjv1xhqp6" path="res://Meshes/test_level.glb" id="1_c1cxm"]
-[ext_resource type="Script" uid="uid://b2o6rdr1om1jh" path="res://Scripts/ProceduralSegmentedBody/ProceduralSegmentedBody.cs" id="1_qlu5l"]
-[ext_resource type="Script" uid="uid://lvjxsyprbkyx" path="res://Scripts/Camera.cs" id="1_ux00h"]
-[ext_resource type="Script" uid="uid://dfsudtfcgmk" path="res://Scripts/Player/PlayerController.cs" id="1_xvi7r"]
-[ext_resource type="Script" uid="uid://3d4edbqwiotl" path="res://Scripts/Player/InputManager.cs" id="2_ux00h"]
-[ext_resource type="Script" uid="uid://bbn7lqonutd8l" path="res://Scripts/Definitions/LocomotionSettings.cs" id="8_7n7gr"]
-[ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="9_dxd8p"]
-[ext_resource type="Script" uid="uid://ddyyyc51jutuv" path="res://Scripts/ProceduralSegmentedBody/ProceduralLocomotion.cs" id="10_c37wc"]
-[ext_resource type="Script" uid="uid://bpr8edfsfj12e" path="res://Scripts/Definitions/LocomotionLimbDef.cs" id="11_c1cxm"]
-[ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/test_head.res" id="12_3qodq"]
-[ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/test_foot.res" id="12_d0pek"]
-[ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="13_37di1"]
-[ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/Definitions/LimbDef.cs" id="14_0ofkx"]
+[ext_resource type="Script" uid="uid://lvjxsyprbkyx" path="res://Scripts/ProceduralSegmentedBodies/Camera.cs" id="1_1qhiv"]
+[ext_resource type="PackedScene" uid="uid://dm5pfjv1xhqp6" path="res://Meshes/ProceduralSegmentedBodies/test_level.glb" id="2_wcqe4"]
+[ext_resource type="Script" uid="uid://dfsudtfcgmk" path="res://Scripts/ProceduralSegmentedBodies/Player/PlayerController.cs" id="3_hpkp2"]
+[ext_resource type="Script" uid="uid://3d4edbqwiotl" path="res://Scripts/ProceduralSegmentedBodies/Player/InputManager.cs" id="4_71wbp"]
+[ext_resource type="Script" uid="uid://b2o6rdr1om1jh" path="res://Scripts/ProceduralSegmentedBodies/ProceduralSegmentedBody/ProceduralSegmentedBody.cs" id="5_0cwp2"]
+[ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/ProceduralSegmentedBodies/Definitions/LimbDef.cs" id="6_27w7f"]
+[ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/ProceduralSegmentedBodies/Definitions/SegmentDef.cs" id="7_qhvau"]
+[ext_resource type="Script" uid="uid://bbn7lqonutd8l" path="res://Scripts/ProceduralSegmentedBodies/Definitions/LocomotionSettings.cs" id="8_f0w87"]
+[ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/ProceduralSegmentedBodies/Definitions/BodyDef.cs" id="9_b1jvn"]
+[ext_resource type="Script" uid="uid://ddyyyc51jutuv" path="res://Scripts/ProceduralSegmentedBodies/ProceduralSegmentedBody/ProceduralLocomotion.cs" id="10_ph1kl"]
+[ext_resource type="Script" uid="uid://bpr8edfsfj12e" path="res://Scripts/ProceduralSegmentedBodies/Definitions/LocomotionLimbDef.cs" id="11_i3urp"]
+[ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/ProceduralSegmentedBodies/test_foot.res" id="12_eqtrg"]
+[ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/ProceduralSegmentedBodies/test_head.res" id="13_c23xb"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xvi7r"]
 size = Vector3(2, 2, 2)
@@ -24,21 +24,21 @@ size = Vector3(2, 2, 2)
 height = 4.0
 
 [sub_resource type="Resource" id="Resource_wqbb7"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_30m4u"]
-script = ExtResource("14_0ofkx")
-Segments = Array[ExtResource("13_37di1")]([SubResource("Resource_wqbb7")])
+script = ExtResource("6_27w7f")
+Segments = Array[ExtResource("7_qhvau")]([SubResource("Resource_wqbb7")])
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
 [sub_resource type="Resource" id="Resource_s31sr"]
-script = ExtResource("8_7n7gr")
+script = ExtResource("8_f0w87")
 metadata/_custom_type_script = "uid://bbn7lqonutd8l"
 
 [sub_resource type="Resource" id="Resource_og440"]
-script = ExtResource("9_dxd8p")
-Limbs = Array[ExtResource("14_0ofkx")]([SubResource("Resource_30m4u")])
+script = ExtResource("9_b1jvn")
+Limbs = Array[ExtResource("6_27w7f")]([SubResource("Resource_30m4u")])
 LocomotionSettings = SubResource("Resource_s31sr")
 metadata/_custom_type_script = "uid://bgc8d1lhe00ad"
 
@@ -46,7 +46,7 @@ metadata/_custom_type_script = "uid://bgc8d1lhe00ad"
 size = Vector3(0.2, 1, 0.2)
 
 [sub_resource type="Resource" id="Resource_lc6hd"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 Mesh = SubResource("BoxMesh_ga4af")
 JointPreset = 3
 LimitJoint = true
@@ -56,7 +56,7 @@ JointLimitRotationDegrees = Vector3(40, 0, -30)
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_eyh1v"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 Mesh = SubResource("BoxMesh_ga4af")
 RestPositionRotationDegrees = Vector3(0, 0, -100)
 JointPreset = 3
@@ -66,7 +66,7 @@ JointConeAngleDegrees = 180.0
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_qvwpr"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 Mesh = SubResource("BoxMesh_ga4af")
 JointPreset = 3
 LimitJoint = true
@@ -76,19 +76,19 @@ JointLimitRotationDegrees = Vector3(0, 0, -70)
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_cwrbu"]
-script = ExtResource("14_0ofkx")
+script = ExtResource("6_27w7f")
 LimbID = "FrontLeftLeg"
-Segments = Array[ExtResource("13_37di1")]([SubResource("Resource_lc6hd"), SubResource("Resource_eyh1v"), SubResource("Resource_qvwpr")])
+Segments = Array[ExtResource("7_qhvau")]([SubResource("Resource_lc6hd"), SubResource("Resource_eyh1v"), SubResource("Resource_qvwpr")])
 AttachmentPosition = Vector3(0.5, 0, 0.75)
 AttachmentRotationDegrees = Vector3(0, 0, 120)
 Preset = 0
-EndMesh = ExtResource("12_d0pek")
+EndMesh = ExtResource("12_eqtrg")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
 [sub_resource type="Resource" id="Resource_3qodq"]
 resource_name = "FrontLeftLeg"
-script = ExtResource("11_c1cxm")
+script = ExtResource("11_i3urp")
 Definition = SubResource("Resource_cwrbu")
 StanceRayPath = NodePath("FrontLeftLeg_StanceRaycast")
 LandingRayPath = NodePath("FrontLeftLeg_LandingRaycast")
@@ -96,7 +96,7 @@ TargetPath = NodePath("../FrontLeftLeg_TargetNode")
 RestPosition = Vector3(2.0500658, 0.16135535, 0.75)
 
 [sub_resource type="Resource" id="Resource_ga4af"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 Mesh = SubResource("BoxMesh_ga4af")
 JointPreset = 3
 LimitJoint = true
@@ -106,7 +106,7 @@ JointLimitRotationDegrees = Vector3(40, 0, 30)
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_ahllg"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 Mesh = SubResource("BoxMesh_ga4af")
 RestPositionRotationDegrees = Vector3(0, 0, 100)
 JointPreset = 3
@@ -116,7 +116,7 @@ JointConeAngleDegrees = 180.0
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_j08ty"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 Mesh = SubResource("BoxMesh_ga4af")
 JointPreset = 3
 LimitJoint = true
@@ -126,20 +126,20 @@ JointLimitRotationDegrees = Vector3(0, 0, 70)
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_vblhj"]
-script = ExtResource("14_0ofkx")
+script = ExtResource("6_27w7f")
 LimbID = "FrontRightLeg"
-Segments = Array[ExtResource("13_37di1")]([SubResource("Resource_ga4af"), SubResource("Resource_ahllg"), SubResource("Resource_j08ty")])
+Segments = Array[ExtResource("7_qhvau")]([SubResource("Resource_ga4af"), SubResource("Resource_ahllg"), SubResource("Resource_j08ty")])
 AttachmentPosition = Vector3(-0.5, 0, 0.75)
 AttachmentRotationDegrees = Vector3(0, 0, -120)
 Preset = 0
 StepGroup = 2
-EndMesh = ExtResource("12_d0pek")
+EndMesh = ExtResource("12_eqtrg")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
 [sub_resource type="Resource" id="Resource_ebf8t"]
 resource_name = "FrontRightLeg"
-script = ExtResource("11_c1cxm")
+script = ExtResource("11_i3urp")
 Definition = SubResource("Resource_vblhj")
 StanceRayPath = NodePath("FrontRightLeg_StanceRaycast")
 LandingRayPath = NodePath("FrontRightLeg_LandingRaycast")
@@ -147,7 +147,7 @@ TargetPath = NodePath("../FrontRightLeg_TargetNode")
 RestPosition = Vector3(-2.0500658, 0.16135535, 0.75)
 
 [sub_resource type="Resource" id="Resource_y0i3b"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 Mesh = SubResource("BoxMesh_ga4af")
 JointPreset = 3
 LimitJoint = true
@@ -157,20 +157,20 @@ JointLimitRotationDegrees = Vector3(-40, 0, -30)
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_67sif"]
-script = ExtResource("14_0ofkx")
+script = ExtResource("6_27w7f")
 LimbID = "BackLeftLeg"
-Segments = Array[ExtResource("13_37di1")]([SubResource("Resource_y0i3b"), SubResource("Resource_eyh1v"), SubResource("Resource_qvwpr")])
+Segments = Array[ExtResource("7_qhvau")]([SubResource("Resource_y0i3b"), SubResource("Resource_eyh1v"), SubResource("Resource_qvwpr")])
 AttachmentPosition = Vector3(0.5, 0, -0.75)
 AttachmentRotationDegrees = Vector3(0, 0, 120)
 Preset = 0
 StepGroup = 2
-EndMesh = ExtResource("12_d0pek")
+EndMesh = ExtResource("12_eqtrg")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
 [sub_resource type="Resource" id="Resource_c37wc"]
 resource_name = "BackLeftLeg"
-script = ExtResource("11_c1cxm")
+script = ExtResource("11_i3urp")
 Definition = SubResource("Resource_67sif")
 StanceRayPath = NodePath("BackLeftLeg_StanceRaycast")
 LandingRayPath = NodePath("BackLeftLeg_LandingRaycast")
@@ -178,7 +178,7 @@ TargetPath = NodePath("../BackLeftLeg_TargetNode")
 RestPosition = Vector3(2.0500658, 0.16135535, -0.75)
 
 [sub_resource type="Resource" id="Resource_d0pek"]
-script = ExtResource("13_37di1")
+script = ExtResource("7_qhvau")
 Mesh = SubResource("BoxMesh_ga4af")
 JointPreset = 3
 LimitJoint = true
@@ -188,19 +188,19 @@ JointLimitRotationDegrees = Vector3(-40, 0, 30)
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_2j7rs"]
-script = ExtResource("14_0ofkx")
+script = ExtResource("6_27w7f")
 LimbID = "BackRightLeg"
-Segments = Array[ExtResource("13_37di1")]([SubResource("Resource_d0pek"), SubResource("Resource_ahllg"), SubResource("Resource_j08ty")])
+Segments = Array[ExtResource("7_qhvau")]([SubResource("Resource_d0pek"), SubResource("Resource_ahllg"), SubResource("Resource_j08ty")])
 AttachmentPosition = Vector3(-0.5, 0, -0.75)
 AttachmentRotationDegrees = Vector3(0, 0, -120)
 Preset = 0
-EndMesh = ExtResource("12_d0pek")
+EndMesh = ExtResource("12_eqtrg")
 EndMeshOffset = Vector3(0, 0, 0.1)
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
 [sub_resource type="Resource" id="Resource_c1cxm"]
 resource_name = "BackRightLeg"
-script = ExtResource("11_c1cxm")
+script = ExtResource("11_i3urp")
 Definition = SubResource("Resource_2j7rs")
 StanceRayPath = NodePath("BackRightLeg_StanceRaycast")
 LandingRayPath = NodePath("BackRightLeg_LandingRaycast")
@@ -274,7 +274,7 @@ mesh = SubResource("BoxMesh_ux00h")
 
 [node name="Camera3D" type="Camera3D" parent="Level" unique_id=2090721745 node_paths=PackedStringArray("Target")]
 transform = Transform3D(-4.222196e-08, -0.25881907, 0.9659258, -1.131334e-08, 0.9659259, 0.25881907, -1, 8.881784e-16, -4.371139e-08, 33.139534, 15.424576, 0)
-script = ExtResource("1_ux00h")
+script = ExtResource("1_1qhiv")
 Target = NodePath("../../PlayerController")
 Distance = 10.0
 
@@ -282,16 +282,16 @@ Distance = 10.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7826452, 0)
 omni_range = 50.0
 
-[node name="test_level" parent="Level" unique_id=421628456 instance=ExtResource("1_c1cxm")]
+[node name="test_level" parent="Level" unique_id=421628456 instance=ExtResource("2_wcqe4")]
 
 [node name="PlayerController" type="CharacterBody3D" parent="." unique_id=2036044955]
-script = ExtResource("1_xvi7r")
+script = ExtResource("3_hpkp2")
 MoveSpeed = 2.0
 InputManagerPath = NodePath("InputManager")
 CameraPath = NodePath("../Level/Camera3D")
 
 [node name="InputManager" type="Node" parent="PlayerController" unique_id=2084750113]
-script = ExtResource("2_ux00h")
+script = ExtResource("4_71wbp")
 
 [node name="PlayerCollider" type="CollisionShape3D" parent="PlayerController" unique_id=1049008572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9999998, 0)
@@ -452,14 +452,14 @@ bones/21/enabled = true
 bones/21/position = Vector3(0, -0.15135534, 0)
 bones/21/rotation = Quaternion(0, 0, 0, 1)
 bones/21/scale = Vector3(1, 1, 1)
-script = ExtResource("1_qlu5l")
+script = ExtResource("5_0cwp2")
 _debugMode = true
 BodyDefinition = SubResource("Resource_og440")
 metadata/_custom_type_script = "uid://b2o6rdr1om1jh"
 
 [node name="ProceduralLocomotion" type="Node3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2050488745]
-script = ExtResource("10_c37wc")
-Limbs = Array[ExtResource("11_c1cxm")]([SubResource("Resource_3qodq"), SubResource("Resource_ebf8t"), SubResource("Resource_c37wc"), SubResource("Resource_c1cxm")])
+script = ExtResource("10_ph1kl")
+Limbs = Array[ExtResource("11_i3urp")]([SubResource("Resource_3qodq"), SubResource("Resource_ebf8t"), SubResource("Resource_c37wc"), SubResource("Resource_c1cxm")])
 
 [node name="FrontLeftLeg_StanceRaycast" type="RayCast3D" parent="PlayerController/ProceduralSegmentedBody/ProceduralLocomotion" unique_id=1116690932]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0500658, 1.1613554, 0.75)
@@ -516,7 +516,7 @@ bone_idx = 1
 
 [node name="HeadMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/Head" unique_id=336956463]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.6286161, 0)
-mesh = ExtResource("12_3qodq")
+mesh = ExtResource("13_c23xb")
 
 [node name="FrontLeftLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1384618249]
 transform = Transform3D(-0.5, -0.8660253, 0, 0.8660253, -0.5, 0, 0, 0, 1, 0.5, 1.5407405, 0.75)
@@ -561,7 +561,7 @@ bone_idx = 5
 
 [node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontLeftLeg_end" unique_id=1442642882]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
-mesh = ExtResource("12_d0pek")
+mesh = ExtResource("12_eqtrg")
 
 [node name="FrontRightLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1450595850]
 transform = Transform3D(-0.5, 0.8660253, 0, -0.8660253, -0.5, 0, 0, 0, 1, -0.5, 1.5407405, 0.75)
@@ -606,7 +606,7 @@ bone_idx = 10
 
 [node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/FrontRightLeg_end" unique_id=1215504284]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
-mesh = ExtResource("12_d0pek")
+mesh = ExtResource("12_eqtrg")
 
 [node name="BackLeftLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1365157646]
 transform = Transform3D(-0.5, -0.8660253, 0, 0.8660253, -0.5, 0, 0, 0, 1, 0.5, 1.5407405, -0.75)
@@ -651,7 +651,7 @@ bone_idx = 15
 
 [node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackLeftLeg_end" unique_id=646420106]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
-mesh = ExtResource("12_d0pek")
+mesh = ExtResource("12_eqtrg")
 
 [node name="BackRightLeg_segment_0" type="BoneAttachment3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=529360020]
 transform = Transform3D(-0.5, 0.8660253, 0, -0.8660253, -0.5, 0, 0, 0, 1, -0.5, 1.5407405, -0.75)
@@ -696,7 +696,7 @@ bone_idx = 20
 
 [node name="EndMesh" type="MeshInstance3D" parent="PlayerController/ProceduralSegmentedBody/BackRightLeg_end" unique_id=1190460119]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
-mesh = ExtResource("12_d0pek")
+mesh = ExtResource("12_eqtrg")
 
 [node name="FrontLeftLeg_TargetNode" type="Marker3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=1356091912]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0500658, 0.16135535, 0.75)

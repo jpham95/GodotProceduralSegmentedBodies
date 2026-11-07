@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="BodyDef" format=3 uid="uid://sni1j1gic2u3"]
 
-[ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/test_head.res" id="1_qvwpr"]
-[ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/Definitions/LimbDef.cs" id="1_wwjl5"]
-[ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/Definitions/SegmentDef.cs" id="2_gkyp0"]
-[ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/test_foot.res" id="3_cwrbu"]
-[ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/Definitions/BodyDef.cs" id="3_y0i3b"]
-[ext_resource type="Resource" uid="uid://cxj3tg7uhd3d3" path="res://Resources/LocomotionSettings/DefaultQuadrupedalLocomotionSettings.tres" id="5_5nt3t"]
+[ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/ProceduralSegmentedBodies/test_head.res" id="1_qvwpr"]
+[ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/ProceduralSegmentedBodies/Definitions/LimbDef.cs" id="1_wwjl5"]
+[ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/ProceduralSegmentedBodies/Definitions/SegmentDef.cs" id="2_gkyp0"]
+[ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/ProceduralSegmentedBodies/test_foot.res" id="3_cwrbu"]
+[ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/ProceduralSegmentedBodies/Definitions/BodyDef.cs" id="3_y0i3b"]
+[ext_resource type="Resource" uid="uid://cxj3tg7uhd3d3" path="res://Resources/ProceduralSegmentedBodies/LocomotionSettings/DefaultQuadrupedalLocomotionSettings.tres" id="5_5nt3t"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
 radius = 0.1
