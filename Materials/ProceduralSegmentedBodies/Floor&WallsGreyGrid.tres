@@ -1,6 +1,6 @@
 [gd_resource type="StandardMaterial3D" format=3 uid="uid://bmu2pst3hgsa6"]
 
-[ext_resource type="Texture2D" uid="uid://cprt254hd5gil" path="res://Textures/ProceduralSegmentedBodies/sbs_-_texture_grid_pack/512x512/Gray/Prototype_Grid_Gray_10-512x512.png" id="1_4ydsd"]
+[ext_resource type="Texture2D" uid="uid://cprt254hd5gil" path="res://Textures/ProceduralSegmentedBodies/Prototype_Grid_Gray_10-512x512.png" id="1_4ydsd"]
 
 [resource]
 albedo_texture = ExtResource("1_4ydsd")

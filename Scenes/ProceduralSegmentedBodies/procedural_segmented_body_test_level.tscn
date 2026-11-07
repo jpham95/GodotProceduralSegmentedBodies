@@ -2,17 +2,16 @@
 
 [ext_resource type="Script" uid="uid://lvjxsyprbkyx" path="res://Scripts/ProceduralSegmentedBodies/Camera.cs" id="1_71wbp"]
 [ext_resource type="Material" uid="uid://dqi81txni3kay" path="res://Materials/ProceduralSegmentedBodies/UnevenCubesGreyGrid.tres" id="2_0cwp2"]
-[ext_resource type="Texture2D" uid="uid://cprt254hd5gil" path="res://Textures/ProceduralSegmentedBodies/sbs_-_texture_grid_pack/512x512/Gray/Prototype_Grid_Gray_10-512x512.png" id="3_27w7f"]
+[ext_resource type="Texture2D" uid="uid://cprt254hd5gil" path="res://Textures/ProceduralSegmentedBodies/Prototype_Grid_Gray_10-512x512.png" id="3_27w7f"]
 [ext_resource type="Material" uid="uid://bmu2pst3hgsa6" path="res://Materials/ProceduralSegmentedBodies/Floor&WallsGreyGrid.tres" id="4_qhvau"]
 [ext_resource type="Material" uid="uid://deldmfdyvgc44" path="res://Materials/ProceduralSegmentedBodies/RampGreyGrid.tres" id="5_f0w87"]
 [ext_resource type="Script" uid="uid://dfsudtfcgmk" path="res://Scripts/ProceduralSegmentedBodies/Player/PlayerController.cs" id="6_b1jvn"]
 [ext_resource type="Script" uid="uid://3d4edbqwiotl" path="res://Scripts/ProceduralSegmentedBodies/Player/InputManager.cs" id="7_ph1kl"]
 [ext_resource type="Script" uid="uid://b2o6rdr1om1jh" path="res://Scripts/ProceduralSegmentedBodies/ProceduralSegmentedBody/ProceduralSegmentedBody.cs" id="8_i3urp"]
 [ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/ProceduralSegmentedBodies/Definitions/LimbDef.cs" id="9_eqtrg"]
+[ext_resource type="Resource" uid="uid://sni1j1gic2u3" path="res://Resources/ProceduralSegmentedBodies/BodyDefinitions/TestQuadrupedalBodyDefinition.tres" id="9_hpkp2"]
 [ext_resource type="Script" uid="uid://dj8l7qj8xaces" path="res://Scripts/ProceduralSegmentedBodies/Definitions/SegmentDef.cs" id="10_c23xb"]
-[ext_resource type="Script" uid="uid://bbn7lqonutd8l" path="res://Scripts/ProceduralSegmentedBodies/Definitions/LocomotionSettings.cs" id="11_jb3o2"]
 [ext_resource type="ArrayMesh" uid="uid://4k1ot2mdkx1e" path="res://Meshes/ProceduralSegmentedBodies/test_foot.res" id="12_eqtrg"]
-[ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/ProceduralSegmentedBodies/Definitions/BodyDef.cs" id="12_yu6qk"]
 [ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/ProceduralSegmentedBodies/test_head.res" id="13_c23xb"]
 [ext_resource type="Script" uid="uid://ddyyyc51jutuv" path="res://Scripts/ProceduralSegmentedBodies/ProceduralSegmentedBody/ProceduralLocomotion.cs" id="13_ldjuf"]
 [ext_resource type="Script" uid="uid://bpr8edfsfj12e" path="res://Scripts/ProceduralSegmentedBodies/Definitions/LocomotionLimbDef.cs" id="14_331lp"]
@@ -57,22 +56,6 @@ size = Vector3(15, 2, 4)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_yih1u"]
 height = 4.0
-
-[sub_resource type="Resource" id="Resource_wqbb7"]
-script = ExtResource("10_c23xb")
-metadata/_custom_type_script = "uid://dj8l7qj8xaces"
-
-[sub_resource type="Resource" id="Resource_30m4u"]
-script = ExtResource("9_eqtrg")
-Segments = Array[ExtResource("10_c23xb")]([SubResource("Resource_wqbb7")])
-
-[sub_resource type="Resource" id="Resource_s31sr"]
-script = ExtResource("11_jb3o2")
-
-[sub_resource type="Resource" id="Resource_og440"]
-script = ExtResource("12_yu6qk")
-Limbs = Array[ExtResource("9_eqtrg")]([SubResource("Resource_30m4u")])
-LocomotionSettings = SubResource("Resource_s31sr")
 
 [sub_resource type="BoxMesh" id="BoxMesh_ga4af"]
 size = Vector3(0.2, 1, 0.2)
@@ -748,7 +731,7 @@ bones/21/rotation = Quaternion(0, 0, 0, 1)
 bones/21/scale = Vector3(1, 1, 1)
 script = ExtResource("8_i3urp")
 _debugMode = true
-BodyDefinition = SubResource("Resource_og440")
+BodyDefinition = ExtResource("9_hpkp2")
 metadata/_custom_type_script = "uid://b2o6rdr1om1jh"
 
 [node name="ProceduralLocomotion" type="Node3D" parent="PlayerController/ProceduralSegmentedBody" unique_id=2050488745]
