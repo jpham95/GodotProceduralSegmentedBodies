@@ -319,7 +319,8 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                             () => CreateEndMesh(
                                 limb.EndMesh,
                                 limb.EndMeshOffset,
-                                limb.EndMeshRotationDegrees
+                                limb.EndMeshRotationDegrees,
+                                limb.EndMeshScale
                             )
                         );
                     }
@@ -681,7 +682,8 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                     generatedLimb.EndBone, 
                     limb.EndMesh, 
                     limb.EndMeshOffset, 
-                    limb.EndMeshRotationDegrees
+                    limb.EndMeshRotationDegrees,
+                    limb.EndMeshScale
                 );
             }
             else
@@ -842,7 +844,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                 ).GetRotationQuaternion();
                 break;
             default:
-                GD.PrintErr($"{segment.GetName()} has invalid JointPreset");
+                GD.PrintErr("Segment has invalid JointPreset");
                 break;
         }
 
@@ -1092,18 +1094,25 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         meshInstance.Show();
     }
 
-    private MeshInstance3D CreateEndMesh(Mesh mesh, Vector3 offset, Vector3 rotationDegrees)
+    private MeshInstance3D CreateEndMesh(Mesh mesh, Vector3 offset, Vector3 rotationDegrees, Vector3 scale)
     {
         MeshInstance3D meshInstance = new MeshInstance3D
         {
             Name = "EndMesh",
             Mesh = mesh,
             Position = offset,
-            RotationDegrees = rotationDegrees
+            RotationDegrees = rotationDegrees,
+            Scale = scale
         };
         return meshInstance;
     }
-    private void AddEndMesh(int boneIndex, Mesh mesh, Vector3 offset, Vector3 endMeshRotationDegrees)
+    private void AddEndMesh(
+        int boneIndex, 
+        Mesh mesh, 
+        Vector3 offset, 
+        Vector3 endMeshRotationDegrees, 
+        Vector3 endMeshScale
+    )
     {
         BoneAttachment3D attachment = new BoneAttachment3D
         {
@@ -1114,7 +1123,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         AddChild(attachment);
         attachment.Owner = Owner;
 
-        MeshInstance3D meshInstance = CreateEndMesh(mesh, offset, endMeshRotationDegrees);
+        MeshInstance3D meshInstance = CreateEndMesh(mesh, offset, endMeshRotationDegrees, endMeshScale);
         
         attachment.AddChild(meshInstance);
         meshInstance.Owner = Owner;
@@ -1585,8 +1594,11 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
             if (limb.EndMesh != null)
             {
-                contactPosition += Vector3.Down * limb.AnkleToContactDistance;
-                AddLine(anklePosition, contactPosition);
+                if (limb.GroundFoot)
+                {
+                    contactPosition += Vector3.Down * limb.AnkleToContactDistance;
+                    AddLine(anklePosition, contactPosition);
+                }
 
                 Basis footRotation = Basis.FromEuler(
                     Util.Vector3DegToRad(limb.EndMeshRotationDegrees)
@@ -1596,7 +1608,10 @@ public partial class ProceduralSegmentedBody : Skeleton3D
                     ? Basis.Identity
                     : boneTransform.Basis;
                 
-                Transform3D footTransform = new Transform3D(endBasis * footRotation, anklePosition + endBasis * limb.EndMeshOffset);
+                Transform3D footTransform = new Transform3D(
+                    endBasis * footRotation * Basis.FromScale(limb.EndMeshScale), 
+                    anklePosition + endBasis * limb.EndMeshOffset
+                );
                 
                 AddBox(limb.EndMesh.GetAabb(), footTransform);
             }

@@ -80,6 +80,10 @@ public partial class LimbDef : Resource
     /// </summary>
     [Export] public Vector3 EndMeshRotationDegrees = Vector3.Zero;
     /// <summary>
+    /// Mesh scale applied during generation.
+    /// </summary>
+    [Export(PropertyHint.Link)] public Vector3 EndMeshScale = Vector3.One;
+    /// <summary>
     /// Extra distance between the contact and the ground, measured against the ground's normal during locomotion.
     /// </summary>
     [Export(PropertyHint.Range,"0,0.5,0.001,or_greater")] public float GroundClearance = 0.01f;

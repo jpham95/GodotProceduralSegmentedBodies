@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://bgc8d1lhe00ad" path="res://Scripts/ProceduralSegmentedBodies/Definitions/BodyDef.cs" id="3_y0i3b"]
 [ext_resource type="ArrayMesh" uid="uid://ck0nphgbxael3" path="res://Meshes/ProceduralSegmentedBodies/test_segment.res" id="5_67sif"]
 [ext_resource type="ArrayMesh" uid="uid://mmvchb5ox2xh" path="res://Meshes/ProceduralSegmentedBodies/test_body.res" id="6_ga4af"]
+[ext_resource type="ArrayMesh" uid="uid://dmc4c4tdee6j" path="res://Meshes/ProceduralSegmentedBodies/test_hand.res" id="6_ybv8l"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
 radius = 0.1
@@ -15,14 +16,13 @@ height = 0.2
 [sub_resource type="Resource" id="Resource_b2h2w"]
 script = ExtResource("2_gkyp0")
 Mesh = ExtResource("5_67sif")
-JointPreset = 1
 JointRotationAxis = 3
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_45tr1"]
 script = ExtResource("2_gkyp0")
 Mesh = ExtResource("5_67sif")
-JointPreset = 2
+JointPreset = 1
 metadata/_custom_type_script = "uid://dj8l7qj8xaces"
 
 [sub_resource type="Resource" id="Resource_bfdir"]
@@ -122,7 +122,7 @@ shadow_mesh = SubResource("ArrayMesh_j08ty")
 [sub_resource type="Resource" id="Resource_2j7rs"]
 script = ExtResource("2_gkyp0")
 Mesh = SubResource("ArrayMesh_vblhj")
-JointPreset = 3
+JointPreset = 2
 LimitJoint = true
 JointRotationAxis = 3
 JointConeAngleDegrees = 180.0
@@ -136,43 +136,10 @@ Segments = Array[ExtResource("2_gkyp0")]([SubResource("Resource_ahllg"), SubReso
 AttachmentPosition = Vector3(0, 0.5, 0)
 AttachmentRotationDegrees = Vector3(0, 0, -90)
 Preset = 1
-EndMesh = ExtResource("3_cwrbu")
-EndMeshRotationDegrees = Vector3(90, 0, 180)
+EndMesh = ExtResource("6_ybv8l")
+EndMeshRotationDegrees = Vector3(-90, 0, 180)
+EndMeshScale = Vector3(0.15, 0.15, 0.15)
 metadata/_custom_type_script = "uid://vw061olhvyob"
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8hy4i"]
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_qvwpr"]
-_surfaces = [{
-"aabb": AABB(-0.23249169, -0.15135534, -0.48574674, 0.4649834, 0.28386706, 0.9714935),
-"format": 34896613377,
-"index_count": 240,
-"index_data": PackedByteArray("AAABAAIAAgABABgAAQAVABgAAgAYABAAAQAUABUAFwAYABUAFAAXABUAHAAQABgAFwAcABgAHQAUAAEAAAAdAAEAFAATABcAFgAcABcAEwAWABcAEQATABQAHQARABQAEwASABYAFgAeABwAEgAeABYAHgAZABwAHAAZABAAHgAaABkAEQAPABMADwASABMAEgALAB4ACwAaAB4ADwAOABIADgALABIAGwAZABoACwAbABoADQAQABkAGwANABkADQACABAAHwAbAAsADgAfAAsADAANABsAHwAMABsABQACAA0ADAAFAA0ABQAAAAIAIAAMAB8ABwAFAAwAIAAHAAwABwAEAAUABAAAAAUAIQAHACAAIgAEAAcAIQAiAAcAIwAhACAACQAgAB8AIwAgAAkACQAfAA4AJAAhACMAJAAjAAkAJQAiACEAJAAlACEACgAJAA4AJAAJAAoACgAOAA8AJgAlACQAJgAkAAoAJQAnACIAIgAnAAQACAAKAA8AJgAKAAgACAAPABEAJgAoACUAKAAmAAgAKAAnACUAKQAIABEAKAAIACkAKQARAB0AKAAGACcABgAoACkAJwAGAAMABgApAAMAAwApAB0AJwADAAQAAwAdAAAABAADAAAA"),
-"lods": [0.34852424, PackedByteArray("AAABAAIAAwABAAAABAADAAAABAAAAAUABQAAAAIABgADAAQABwAEAAUABgAEAAcABgAIAAMAAwAIAAEABgAHAAkABgAKAAgABgAJAAoACQAHAAsABwAFAAwABwAMAAsADAAFAA0ABQACAA0ACgAJAA4ACQALAA4ACgAOAA8ACAAKAA8ADQACABAACAAPABEACAARAAEADwAOABIADgALABIAEQAPABMADwASABMAAQARABQAEQATABQAAQAUABUAEwASABYAEgALABYAFAATABcAFAAXABUAEwAWABcAAQAVABgAAgABABgAFwAYABUAAgAYABAAFwAZABgAGQAQABgAFgAZABcADQAQABkAFgAaABkACwAaABYAGwANABkAGwAZABoACwAbABoADAANABsACwAMABsA")],
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 42,
-"vertex_data": PackedByteArray("YjXoQRbdAABjBR6X/38AAKg3y5UZ2QAAqDdvExnZAAD/f0ETm/oAAP9/6EH//wAAa0OmBdDFAABWyG8TGdkAACEWbxPlJgAA3elvE+UmAAD/f0ETYwUAAJv6Hpf/fwAAnMroQRbdAAD/fx6Xm/oAAJDv6EHoIgAA/3/oQQAAAABrQ2bW0MUAAG4Q6EHoIgAA3enLleUmAAD/fx6XYwUAACEWy5XlJgAA8TBm1i46AAANz2bWLjoAAP9/0uPhKgAA4SrS4/9/AAD/f9LjHdUAAJO8ZtbQxQAAVsjLlRnZAAD/f////38AAAAA6EH/fwAAHdXS4/9/AAD//+hB/38AAJv6QRP/fwAAHdXTA/9/AACTvKYF0MUAAA3PpgUuOgAA/3/TA+EqAAD/fwAA/38AAPEwpgUuOgAA/3/TAx3VAADhKtMD/38AAGMFQRP/fwAA")
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_cwrbu"]
-resource_name = "foot_Cube_005"
-_surfaces = [{
-"aabb": AABB(-0.23249169, -0.15135534, -0.48574674, 0.4649834, 0.28386706, 0.9714935),
-"attribute_data": PackedByteArray("Orv//8/L/+9Ty///Crn//565/9/dv//fz8v/7+fL/99Ty///bNv/72zb///Py//vbNv/3+fL/9/dv//f58v/z+fL/9/dv//P58v/32zb/89s2//f58v/z+fL/89s2/+/bNv/z+vL/7/dv//P68v/v+fL/8/dv/+/3b//v/fL/6/ry/+/grn/v/fL/6+Cuf+f3b//n+vL/5/ry/+/98v/r2zb/79s2/+f68v/n92//5/Py/+P68v/n3q//4/ry/+fbNv/j2zb/5/Py/+Pz8v/j2zb/39s2/+PU8v/f3q//49Ty/9/z8v/jzq7/39s2/+/te3/n7Xt/79s2/+f////r////7+17f+f////n9q2/3+Guf+Pgrn/nwq5/39Ikv+fgrn/v565/8/atv//nrn/3wq5//+Cuf+fer//j92//5+Guf+Phrn/jzq7/396v/+PCrn/f565/9/dv//P3b//3565/8+euf/P3b//v92//8+Cuf+/Orv//3q//+9s2//vz8v/73q//+/dv//f3b//v92//68I3P+v98v/rwjc/6/dv/+v3b//n0iS/78fpP+vkaT/v0iS/6+RpP+/YbL/r9q2/78fpP+vH6T/r9q2/59hsv+vkaT/n0iS/6+RpP+fH6T/r8Xt/68I3P+vte3/v8Xt/6/F7f+v////rwjc/6/F7f+v2rb/n9q2/4/atv+Phrn/j9q2/78suf+vgrn/v2Gy/6/dv/+vLLn/ryy5/6/dv/+vYbL/r4K5/58suf+v2rb/n9q2/9+euf/P2rb/z9q2/8/atv+/hrn/79q2/+96v//vhrn/74a5/+96v//v2rb/7565/9+Guf/v2rb/3w=="),
-"format": 34896613399,
-"index_count": 240,
-"index_data": PackedByteArray("XQABAAIAXQBeAAEACABfAAoACABgAF8ACwAMAAkACwANAAwAYQAHAAYAYQBiAAcADgAPABAADgARAA8AEgATABQAEgAVABMAFgAXABgAFgAZABcAGgAbABwAGgAdABsAYwAfACAAYwBkAB8AJgBlACgAJgAnAGUAZgApAGcAZgAqACkAaAAlACIAaABpACUAKwAsAC0AKwAuACwALwAwADEALwAyADAAMwA0ADUAMwA2ADQANwA4ADkANwA6ADgAagBrAGwAagBtAGsAbgBvAHAAbgBxAG8AcgBzAHQAcgB1AHMAdgB3AHgAdgBHAHcAOwB5AD0AOwB6AHkAewA/AEAAewB8AD8AfQBCAH4AfQBBAEIAfwA8AIAAfwA+ADwAgQBEAEUAgQCCAEQATQBOAE8ATQBQAE4AUQBSAFMAUQBUAFIAgwBGAIQAgwBDAEYAhQCGAIcAhQCIAIYAIQCJAB4AIQCKAIkAiwAkAIwAiwAjACQAjQCOAI8AjQCQAI4AkQCSAEsAkQCTAJIAVQBWAFcAVQBYAFYAWQBaAFsAWQBcAFoAlABIAEkAlACVAEgASgCWAEwASgCXAJYAAwCYAAAAAwCZAJgAmgAFAJsAmgAEAAUAnACdAJ4AnACfAJ0A"),
-"lods": [0.34852424, PackedByteArray("AAABAAIAAwABAAAAAwAEAAEABAAFAAEABgAFAAcACAAJAAoACAALAAkACwAMAAkACwANAAwADgAPABAADgARAA8AEgATABQAEgAVABMAFgAXABgAFgAZABcAGgAbABwAGgAdABsAHgAfACAAIQAiAB4AIQAjACIAIwAkACIAIgAkACUAJgAnACgAJwApACgAJwAqACkAKwAsAC0AKwAuACwALwAwADEALwAyADAAMwA0ADUAMwA2ADQANwA4ADkANwA6ADgAOwA8AD0AOwA+ADwAPQA8AD8APQA/AEAAQQBCAD8AQwBEAEUAQwBGAEQARwBFAEgARwBIAEkASgBJAEsASgBLAEwATQBOAE8ATQBQAE4AUQBSAFMAUQBUAFIAVQBWAFcAVQBYAFYAWQBaAFsAWQBcAFoA")],
-"material": SubResource("StandardMaterial3D_8hy4i"),
-"primitive": 3,
-"uv_scale": Vector4(1.7500002, 2, 0, 0),
-"vertex_count": 160,
-"vertex_data": PackedByteArray("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")
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_qvwpr")
 
 [sub_resource type="Resource" id="Resource_4fw4w"]
 script = ExtResource("1_wwjl5")
@@ -183,8 +150,9 @@ AttachmentRotationDegrees = Vector3(0, 0, 90)
 Preset = 1
 ArmAttachSide = 1
 CustomLimbDirection = Vector3(0, 0, 0)
-EndMesh = SubResource("ArrayMesh_cwrbu")
-EndMeshRotationDegrees = Vector3(90, 0, 180)
+EndMesh = ExtResource("6_ybv8l")
+EndMeshRotationDegrees = Vector3(-90, 0, 0)
+EndMeshScale = Vector3(0.15, 0.15, 0.15)
 metadata/_custom_type_script = "uid://vw061olhvyob"
 
 [resource]
