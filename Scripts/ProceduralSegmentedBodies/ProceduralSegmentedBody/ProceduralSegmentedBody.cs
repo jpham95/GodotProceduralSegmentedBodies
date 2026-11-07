@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 using Vector3 = Godot.Vector3;
 
@@ -461,7 +462,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
         return true;
     }
 
-    private async System.Threading.Tasks.Task<bool> ValidateMeshesAsync()
+    private async Task<bool> ValidateMeshesAsync()
     {
         const int maximumPasses = 10;
         const int requiredValidPasses = 2;
@@ -557,7 +558,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
             _busy = false;
         }
     }
-    private async System.Threading.Tasks.Task GenerateAsync()
+    private async Task GenerateAsync()
     {
         if (_debugMode)
         {
@@ -1191,7 +1192,7 @@ public partial class ProceduralSegmentedBody : Skeleton3D
     
 #region Height Fitting
 
-    private async System.Threading.Tasks.Task AutomaticHeightFitAsync()
+    private async Task AutomaticHeightFitAsync()
     {
         if (!Engine.IsEditorHint() || _heightFitFeet.Count == 0)
         {
