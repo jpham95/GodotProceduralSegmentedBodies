@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BodyDef" format=3 uid="uid://sni1j1gic2u3"]
+[gd_resource type="Resource" script_class="BodyDef" format=3 uid="uid://fpt6fm6mwm24"]
 
 [ext_resource type="ArrayMesh" uid="uid://b7ukx22wvhcr1" path="res://Meshes/ProceduralSegmentedBodies/test_head.res" id="1_qvwpr"]
 [ext_resource type="Script" uid="uid://vw061olhvyob" path="res://Scripts/ProceduralSegmentedBodies/Definitions/LimbDef.cs" id="1_wwjl5"]
