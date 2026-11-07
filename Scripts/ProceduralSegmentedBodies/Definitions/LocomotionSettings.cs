@@ -11,11 +11,11 @@ public partial class LocomotionSettings : Resource
     /// <summary>
     /// Distance threshold used to trigger a new step.
     /// </summary>
-    [Export(PropertyHint.Range, "0.01,2,0.01,or_greater")] public float StepTriggerDistance = 0.35f;
+    [Export(PropertyHint.Range, "0.01,2,0.01,or_greater")] public float StepTriggerDistance = 0.5f;
     /// <summary>
     /// Distance ahead of the rest stance position to probe for a landing along movement direction.
     /// </summary>
-    [Export(PropertyHint.Range, "0.01,2,0.01,or_greater")] public float StepAheadDistance = 0.25f;
+    [Export(PropertyHint.Range, "0.01,2,0.01,or_greater")] public float StepAheadDistance = 0.7f;
     /// <summary>
     /// Multiplier applied to landing lookahead when moving backward. Used to shorten backsteps.
     /// </summary>
@@ -23,11 +23,11 @@ public partial class LocomotionSettings : Resource
     /// <summary>
     /// Duration of a single step in seconds.
     /// </summary>
-    [Export(PropertyHint.Range, "0.01,2,0.01,or_greater,suffix:sec")] public float StepDuration = 0.25f;
+    [Export(PropertyHint.Range, "0.01,2,0.01,or_greater,suffix:sec")] public float StepDuration = 0.35f;
     /// <summary>
     /// Maximum added foot lift when the lift curve reaches a value of 1 in the world up direction.
     /// </summary>
-    [Export(PropertyHint.Range, "0.01,2,0.01,or_greater")] public float StepHeight = 0.2f;
+    [Export(PropertyHint.Range, "0.01,2,0.01,or_greater")] public float StepHeight = 0.5f;
     /// <summary>
     /// Foot to body orientation difference that triggers a turning step.
     /// </summary>
