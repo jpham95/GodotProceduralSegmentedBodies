@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://deldmfdyvgc44"]
+
+[ext_resource type="Texture2D" uid="uid://cprt254hd5gil" path="res://Textures/ProceduralSegmentedBodies/sbs_-_texture_grid_pack/512x512/Gray/Prototype_Grid_Gray_10-512x512.png" id="1_62sqp"]
+
+[resource]
+albedo_texture = ExtResource("1_62sqp")
+uv1_scale = Vector3(15, 2, 4)
+uv1_triplanar_sharpness = 9.189596
+uv1_world_triplanar = true
