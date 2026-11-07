@@ -6,7 +6,6 @@
 
 [resource]
 script = ExtResource("3_441lc")
-StepHeight = 0.8
 StepProgressCurve = ExtResource("2_g21m4")
 StepLiftCurve = ExtResource("1_nje4h")
 metadata/_custom_type_script = "uid://bbn7lqonutd8l"

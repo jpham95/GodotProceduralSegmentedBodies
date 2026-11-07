@@ -60,9 +60,10 @@ script = ExtResource("1_71wbp")
 Target = NodePath("../../PlayerController")
 Distance = 10.0
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Level" unique_id=1281078227]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7826452, 0)
-omni_range = 50.0
+[node name="OmniLight3D" type="DirectionalLight3D" parent="Level" unique_id=322989426]
+transform = Transform3D(-0.40511382, -0.43958598, 0.8016527, -3.3381887e-08, 0.8768263, 0.48080742, -0.9142663, 0.19478169, -0.35521445, 17.26345, 21.148924, -17.427929)
+light_energy = 4.0
+sky_mode = 1
 
 [node name="UnevenGround" type="Node3D" parent="Level" unique_id=446240573]
 transform = Transform3D(0.9772971, 0, 0.21187334, 0, 1, 0, -0.21187334, 0, 0.9772971, -1.8154225, 0, 6.6729517)
@@ -361,5 +362,4 @@ shape = SubResource("CapsuleShape3D_yih1u")
 
 [node name="ProceduralSegmentedBody" type="Skeleton3D" parent="PlayerController" unique_id=590985275]
 script = ExtResource("8_i3urp")
-_debugMode = true
 metadata/_custom_type_script = "uid://b2o6rdr1om1jh"

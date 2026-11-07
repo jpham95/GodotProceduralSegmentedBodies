@@ -31,7 +31,7 @@ public partial class LocomotionSettings : Resource
     /// <summary>
     /// Foot to body orientation difference that triggers a turning step.
     /// </summary>
-    [Export(PropertyHint.Range, "1,359,1,suffix:degrees")] public float TurnThresholdDegrees = 30f;
+    [Export(PropertyHint.Range, "1,359,1,suffix:degrees")] public float TurnThresholdDegrees = 15f;
     /// <summary>
     /// Maps normalised step time to travel and rotation degrees. Use time 0..1.
     /// </summary>

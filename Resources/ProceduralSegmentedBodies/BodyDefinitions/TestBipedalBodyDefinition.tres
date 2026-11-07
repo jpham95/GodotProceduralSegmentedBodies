@@ -8,6 +8,7 @@
 [ext_resource type="ArrayMesh" uid="uid://ck0nphgbxael3" path="res://Meshes/ProceduralSegmentedBodies/test_segment.res" id="5_67sif"]
 [ext_resource type="ArrayMesh" uid="uid://mmvchb5ox2xh" path="res://Meshes/ProceduralSegmentedBodies/test_body.res" id="6_ga4af"]
 [ext_resource type="ArrayMesh" uid="uid://dmc4c4tdee6j" path="res://Meshes/ProceduralSegmentedBodies/test_hand.res" id="6_ybv8l"]
+[ext_resource type="Resource" uid="uid://ov7wjhwhhbdt" path="res://Resources/ProceduralSegmentedBodies/LocomotionSettings/DefaultBipedalLocomotionSettings.tres" id="7_ottuw"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_bfesj"]
 radius = 0.1
@@ -163,4 +164,5 @@ JointMesh = SubResource("SphereMesh_bfesj")
 Limbs = Array[ExtResource("1_wwjl5")]([SubResource("Resource_bfdir"), SubResource("Resource_qvwpr"), SubResource("Resource_lxplk"), SubResource("Resource_4fw4w")])
 HeadAttachmentOffset = Vector3(0, 0, 0.4)
 HeadRotationDegrees = Vector3(0, 180, 0)
+LocomotionSettings = ExtResource("7_ottuw")
 metadata/_custom_type_script = "uid://bgc8d1lhe00ad"
