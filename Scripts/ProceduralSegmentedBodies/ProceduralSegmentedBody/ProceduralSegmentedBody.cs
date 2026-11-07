@@ -172,8 +172,11 @@ public partial class ProceduralSegmentedBody : Skeleton3D
 
         foreach (Node child in GetChildren())
         {
-            RemoveChild(child);
-            child.QueueFree();
+            Callable.From(() =>
+            {
+                RemoveChild(child);
+                child.QueueFree();
+            }).CallDeferred();
         }
         ClearBones();
         _locomotionController = null;
