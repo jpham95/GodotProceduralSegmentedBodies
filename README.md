@@ -8,6 +8,11 @@ To make the creature walk, assign a locomotion settings resource before generati
 
 ```
 GodotProceduralSegmentedBodies
+├── Materials
+│   └── ProceduralSegmentedBodies
+│       ├── Floor&WallsGreyGrid.tres
+│       ├── RampGreyGrid.tres
+│       └── UnevenCubesGreyGrid.tres
 ├── Meshes
 │   └── ProceduralSegmentedBodies
 │       ├── test_body.res
